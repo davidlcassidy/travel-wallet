@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.davidlcassidy.travelwallet">
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="false"/>
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/app_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/MyMaterialTheme">
+        <activity android:name=".Activities.MainActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activities.ProgramDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.CardDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.ProgramAddEditActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.CardAddEditActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.SettingsActivity"
+            android:screenOrientation="portrait"/>
+        <service android:name=".Classes.TimerService"/>
+    </application>
+</manifest>
