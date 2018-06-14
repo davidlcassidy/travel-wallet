@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +28,9 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     // user data as long as the unique ID remains unchanged
     public static int DATABASE_VERSION = 1;
 
-    private String DB_PATH = null;
-    private static String DB_NAME = "RefDatabase.db";
+    private String DB_DIRECTORY;
+    private static String DB_NAME;
+    private String DB_PATH;
     private SQLiteDatabase db;
     private final Context context;
 
@@ -38,33 +40,41 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     public RefDatabaseHelper(Context context) {
         super(context, DB_NAME, null, 1);
         this.context = context;
-        DB_PATH="/data/data/"+context.getPackageName()+"/"+"databases/";
+        DB_DIRECTORY = "/data/data/" + context.getPackageName() + "/databases/";
+        DB_NAME = "RefDatabase.db";
+        DB_PATH = DB_DIRECTORY + DB_NAME;
+
     }
 
     public SQLiteDatabase getDB()  {
-        boolean localDbExist = doesLocalDBExists();
-        if(!localDbExist){
-            SQLiteDatabase db = this.getReadableDatabase();
-        }
-        db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+        if(db == null){
+            createDataBaseFromAppAssetsDir();
+            db = SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
+            }
         return db;
     }
 
-    private boolean doesLocalDBExists(){
-        SQLiteDatabase checkdb = null;
-        try{
-            checkdb = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY);
-        }catch(SQLiteException e){
-			;
-        }
+    public final void createDataBaseFromAppAssetsDir() {
 
-        if(checkdb != null){
-            checkdb.close();
-        }
+        // Creates local copy of Ref Database
+        try {
+            InputStream myInput = null;
+            myInput = context.getAssets().open(DB_NAME);
+            OutputStream myOutput = new FileOutputStream(DB_PATH);
 
-        return checkdb != null ? true : false;
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = myInput.read(buffer))>0){
+                myOutput.write(buffer, 0, length);
+            }
+
+            myOutput.flush();
+            myOutput.close();
+            myInput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 
     @Override
     public synchronized void close() {
@@ -80,26 +90,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int v1, int v2) {
-		
-		// Creates local copy of Ref Database
-        try {
-            InputStream myInput = null;
-            myInput = context.getAssets().open(DB_NAME);
-            OutputStream myOutput = new FileOutputStream(DB_PATH + DB_NAME);
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = myInput.read(buffer))>0){
-                myOutput.write(buffer, 0, length);
-            }
-
-            myOutput.flush();
-            myOutput.close();
-            myInput.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createDataBaseFromAppAssetsDir();
     }
 
     public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy){
