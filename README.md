@@ -6,7 +6,7 @@ frequent travelers and  regular users of rewards credit cards, Travel Wallet all
 flier miles, hotel/rental car points, and credit cards all in one location. Travel Wallet also monitors all of these 
 items and provides helpful notifications to its users. 
 
-Finally, after the initial instalation, Travel Wallet never connects to the internet and functions completely offline. 
+Finally, after the initial installation, Travel Wallet works completely offline. 
 Along with the superior privacy implications of preventing user data from ever leaving the device, this also makes 
 Travel Wallet an ideal travel app for any world traveler.
 
@@ -23,13 +23,15 @@ Features:
 
 This application is listed on the Google Play store and can be downloaded and installed directly from there.
 
-This application requireds Android 4.0.3 "Ice Cream Sandwich" or higher (API 15+).
+This application requires Android 4.0.3 "Ice Cream Sandwich" or higher (API 15+).
+
+[Google Play Store Link](https://play.google.com/store/apps/details?id=com.davidlcassidy.travelwallet "Travel Wallet")
 
 ## Getting Started
 
 ### Introduction
 
-Travel Wallet consist of three interfaces, each with it's own tab and display window.
+Travel Wallet consist of three interfaces, each with its own tab and display window.
 
 - Notifications Interface - Displays notifications from both the loyalty programs and the credit cards
 - Loyalty Program Interface - Provides users the ability add, view, edit, and delete loyalty programs
@@ -51,12 +53,12 @@ event notifications that are sent:
 - Upcoming credit card annual fee
 
 In the Settings, the user can adjust the period of time before these events that a notification will 
-be sent. Futhermore, monitoring of each individual loyalty program and credit card can be turned on 
-or off, dictating whether or not notifications will be sent. This makes for a flexable notifications 
+be sent. Furthermore, monitoring of each individual loyalty program and credit card can be turned on 
+or off, dictating whether or not notifications will be sent. This makes for a flexible notifications 
 interface that is customizable to the needs of each user.
 
 Along with the Notifications tab, Travel Wallet can also send push notifications to the phone status 
-bar in real time. This can be useful for users who would like to be automatically notificed of events 
+bar in real time. This can be useful for users who would like to be automatically notified of events 
 rather than regularly opening the app and checking their notifications manually. These phone 
 notifications can be turned on/off in the Settings. 
 
@@ -70,14 +72,14 @@ credit card causing the notification.
 Loyalty programs will appear in the second tab titled Loyalty Programs. New loyalty programs are added 
 by clicking the pink plus button in the bottom right. Once programs have been added, the main screen 
 will show a summary of all of the programs. The sort order and primary display field can be configured 
-in the Settings. Clicking on an program will pull up that programs's detail screen displaying all fields 
-for that program along a button to toggle the notification monitoring for the paticular program. On the 
+in the Settings. Clicking on an program will pull up that program's detail screen displaying all fields 
+for that program along a button to toggle the notification monitoring for the particular program. On the 
 top of the detail screen, there are also buttons for editing or deleting the specific program.
 
 ### Credit Cards Interface
 
-Credit cards will appear in the third tab titled Credit Cards. The credit card interface fuctions 
-essentually the same as the loyalty program interface in regards to adding, viewing, editing, and deleting 
+Credit cards will appear in the third tab titled Credit Cards. The credit card interface functions 
+essentially the same as the loyalty program interface in regards to adding, viewing, editing, and deleting 
 credit cards.
 
 ## Support
@@ -118,7 +120,7 @@ can avoid duplicated effort or unnecessary work.
 Copyright (C) 2018 David Cassidy.
 
 This project is open source and licensed under the GNU AGPLv3 license, Version 3.0 - see the [LICENSE](LICENSE) 
-file distributed with this project for additional information. You may not use this project or its accociated 
+file distributed with this project for additional information. You may not use this project or its associated 
 files except in compliance with the License. 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is 
