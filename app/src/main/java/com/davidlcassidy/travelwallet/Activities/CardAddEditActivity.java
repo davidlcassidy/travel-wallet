@@ -185,14 +185,106 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
 	// Displays date picker dialog for user selection of card open date
     private void openDateFieldClick (){
-        DialogFragment dialogFragment = new openDatePicker();
-        dialogFragment.show(getFragmentManager(), "open_date_picker");
+
+        // Sets currently selected date in dialog to the date in the field
+        Calendar cal = Calendar.getInstance();
+        Date lastActivityDate = null;
+        try {
+            lastActivityDate = dateFormat.parse(openDateField.getText().toString());
+        } catch (ParseException e) {
+            if (cardId != -1) {
+                CreditCard program = cardDS.getSingle(cardId);
+                lastActivityDate = program.getOpenDate();
+            }
+        }
+        if (lastActivityDate != null){
+            cal.setTime(lastActivityDate);
+        }
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // Create date picker
+        DatePickerDialog datePicker =
+                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+                    // Save date to program field
+                    @Override
+                    public void onDateSet(final DatePicker view, final int year, final int month,
+                                          final int dayOfMonth) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        cal.set(Calendar.MONTH, month);
+                        cal.set(Calendar.YEAR, year);
+                        Date pickedDate = cal.getTime();
+                        openDateField.setText(dateFormat.format(pickedDate));
+
+                        // If annual fee field is blank, set to one year after open date
+                        String currentAfDate = afDateField.getText().toString();
+                        if (currentAfDate.equals("")) {
+                            cal.add(Calendar.YEAR, 1);
+                            Date newAfDate = cal.getTime();
+                            afDateField.setText(dateFormat.format(newAfDate));
+                        }
+                    }
+                }, year, month, day); // set date picker to current date
+
+        datePicker.show();
+
+        datePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(final DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
     }
 
 	// Displays date picker dialog for user selection of card annual fee date
     private void annualFeeDateFieldClick(){
-        DialogFragment dialogFragment = new afDatePicker();
-        dialogFragment.show(getFragmentManager(), "af_date_picker");
+
+        // Sets currently selected date in dialog to the date in the field
+        Calendar cal = Calendar.getInstance();
+        Date lastActivityDate = null;
+        try {
+            lastActivityDate = dateFormat.parse(afDateField.getText().toString());
+        } catch (ParseException e) {
+            if (cardId != -1) {
+                CreditCard program = cardDS.getSingle(cardId);
+                lastActivityDate = program.getAfDate();
+            }
+        }
+        if (lastActivityDate != null){
+            cal.setTime(lastActivityDate);
+        }
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // Create date picker
+        DatePickerDialog datePicker =
+                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+                    // Save date to program field
+                    @Override
+                    public void onDateSet(final DatePicker view, final int year, final int month,
+                                          final int dayOfMonth) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        cal.set(Calendar.MONTH, month);
+                        cal.set(Calendar.YEAR, year);
+                        Date pickedDate = cal.getTime();
+                        afDateField.setText(dateFormat.format(pickedDate));
+                    }
+                }, year, month, day); // set date picker to current date
+
+        datePicker.show();
+
+        datePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(final DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
     }
 
 	// Creates standard list selection dialog
@@ -252,87 +344,6 @@ public class CardAddEditActivity extends BaseActivity_Save {
 		// Dims background while dialog is active
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
-
-	// Creates date picker dialog for card open date
-    @SuppressLint("ValidFragment")
-    private class openDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener{
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            
-			// Sets currently selected date in dialog to the date in the field
-			Calendar cal = Calendar.getInstance();
-            Date openDate = null;
-            try {
-                openDate = dateFormat.parse(openDateField.getText().toString());
-            } catch (ParseException e) {
-                if (cardId != -1) {
-                    CreditCard card = cardDS.getSingle(cardId);
-                    openDate = card.getOpenDate();
-                }
-            }
-            if (openDate != null){
-                cal.setTime(openDate);
-            }
-			
-			// Creates dialog
-            DatePickerDialog dialog = new DatePickerDialog(CardAddEditActivity.this, this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-            return dialog;
-        }
-		
-		// Saves selected date to open date field
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.DAY_OF_MONTH, day);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.YEAR, year);
-            Date pickedDate = cal.getTime();
-            openDateField.setText(dateFormat.format(pickedDate));
-
-			// If annual fee field is blank, set to one year after open date
-            String currentAfDate = afDateField.getText().toString();
-            if (currentAfDate.equals("")) {
-                cal.add(Calendar.YEAR, 1);
-                Date newAfDate = cal.getTime();
-                afDateField.setText(dateFormat.format(newAfDate));
-            }
-        }
-    }
-
-	// Creates date picker dialog for card annual fee date
-    @SuppressLint("ValidFragment")
-    private class afDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener{
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-			
-			// Sets currently selected date in dialog to the date in the field
-            Calendar cal = Calendar.getInstance();
-            Date afDate = null;
-            try {
-                afDate = dateFormat.parse(afDateField.getText().toString());
-            } catch (ParseException e) {
-                if (cardId != -1) {
-                    CreditCard card = cardDS.getSingle(cardId);
-                    afDate = card.getAfDate();
-                }
-            }
-            if (afDate != null){
-                cal.setTime(afDate);
-            }
-			
-			// Creates dialog
-            DatePickerDialog dialog = new DatePickerDialog(CardAddEditActivity.this, this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-            return dialog;
-        }
-		
-		// Saves selected date to annual fee field
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.DAY_OF_MONTH, day);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.YEAR, year);
-            Date pickedDate = cal.getTime();
-            afDateField.setText(dateFormat.format(pickedDate));
-        }
-    }
-
 
 	// Sets all click listeners so all label clicks match actions of field clicks
     private void setClickListeners(){

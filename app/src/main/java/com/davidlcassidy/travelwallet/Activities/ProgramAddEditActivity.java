@@ -1,11 +1,8 @@
 package com.davidlcassidy.travelwallet.Activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -189,8 +186,50 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
 	// Displays date picker dialog for user selection of last activity date
     private void lastActivityDateFieldClick(){
-        DialogFragment dialogFragment = new lastActivityDatePicker();
-        dialogFragment.show(getFragmentManager(), "start_date_picker");
+
+        // Sets currently selected date in dialog to the date in the field
+        Calendar cal = Calendar.getInstance();
+        Date lastActivityDate = null;
+        try {
+            lastActivityDate = dateFormat.parse(lastActivityField.getText().toString());
+        } catch (ParseException e) {
+            if (programId != -1) {
+                LoyaltyProgram program = programDS.getSingle(programId);
+                lastActivityDate = program.getLastActivityDate();
+            }
+        }
+        if (lastActivityDate != null){
+            cal.setTime(lastActivityDate);
+        }
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // Create date picker
+        DatePickerDialog datePicker =
+                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+                    // Save date to program field
+                    @Override
+                    public void onDateSet(final DatePicker view, final int year, final int month,
+                                          final int dayOfMonth) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        cal.set(Calendar.MONTH, month);
+                        cal.set(Calendar.YEAR, year);
+                        Date pickedDate = cal.getTime();
+                        lastActivityField.setText(dateFormat.format(pickedDate));
+                    }
+                }, year, month, day); // set date picker to current date
+
+        datePicker.show();
+
+        datePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(final DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
     }
 
 	// Creates standard list selection dialog
@@ -250,43 +289,6 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
 		// Dims background while dialog is active
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-    }
-
-	// Creates date picker dialog for program last activity date
-    @SuppressLint("ValidFragment")
-    private class lastActivityDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener{
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-			
-			// Sets currently selected date in dialog to the date in the field
-            Calendar cal = Calendar.getInstance();
-            Date lastActivityDate = null;
-            try {
-                lastActivityDate = dateFormat.parse(lastActivityField.getText().toString());
-            } catch (ParseException e) {
-                if (programId != -1) {
-                    LoyaltyProgram program = programDS.getSingle(programId);
-                    lastActivityDate = program.getLastActivityDate();
-                }
-            }
-            if (lastActivityDate != null){
-                cal.setTime(lastActivityDate);
-            }
-			
-			// Creates dialog
-            DatePickerDialog dialog = new DatePickerDialog(ProgramAddEditActivity.this, this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-            return dialog;
-        }
-		
-		// Saves selected date to last activity date field
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.DAY_OF_MONTH, day);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.YEAR, year);
-            Date pickedDate = cal.getTime();
-            lastActivityField.setText(dateFormat.format(pickedDate));
-        }
     }
 
 	// Sets all click listeners so all label clicks match actions of field clicks

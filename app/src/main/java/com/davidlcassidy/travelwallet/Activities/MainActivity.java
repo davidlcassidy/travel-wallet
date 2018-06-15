@@ -188,7 +188,7 @@ public class MainActivity extends BaseActivity_Main {
         // Sets text in dialog
         TextView mainText = (TextView) v1.findViewById(R.id.text);
         String text =
-                "Travel Wallet v1.0\n\n" +
+                "Travel Wallet v1.2\n\n" +
                         "I hope you are able to find some value out of this app. If you have any feature requests, " +
                         "bug reports, or any other feedback, please feel free to shoot me an email. " +
                         "I love hearing back about my projects! \n\n" +
