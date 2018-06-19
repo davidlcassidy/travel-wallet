@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity_Main {
 
         // Opens summary dialog if configured in user settings
         userPreferences = UserPreferences.getInstance(this);
-        if (userPreferences.getInitialSummary()){
+        if (userPreferences.getSetting_InitialSummary()){
             menuSummaryClicked();
         }
 		
@@ -217,7 +217,7 @@ public class MainActivity extends BaseActivity_Main {
     @Override
     public void menuSummaryClicked() {
         NumberPattern numberPattern = NumberPattern.COMMADOT;
-        Currency currency = userPreferences.getCurrency();
+        Currency currency = userPreferences.getSetting_Currency();
 
         ProgramDataSource programDS = ProgramDataSource.getInstance(this);
         CardDataSource cardDS = CardDataSource.getInstance(this);
@@ -242,7 +242,7 @@ public class MainActivity extends BaseActivity_Main {
         toolBar2.setTitle("Summary");
 
         // Retrieves program summary data and saves to dialog fields
-        SimpleDateFormat dateFormat = userPreferences.getDatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         programCount.setText(String.valueOf(programDS.getAll(null).size()));
         programNotifications.setText(String.valueOf(programDS.getProgramsWithNotifications().size()));
         programValue.setText(currency.numToString(programDS.getAllProgramsValue(), numberPattern));

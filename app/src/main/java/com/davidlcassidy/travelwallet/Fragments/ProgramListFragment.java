@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
 import com.davidlcassidy.travelwallet.Adapters.ProgramListAdapter;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
@@ -39,10 +42,14 @@ public class ProgramListFragment extends Fragment {
 
     private UserPreferences userPreferences;
     private ProgramDataSource programDS;
-    private ArrayList<LoyaltyProgram> programList;
+    private ArrayList<LoyaltyProgram> fullProgramList;
+    private ArrayList<LoyaltyProgram> filteredProgramList;
 
     private TextView emptyListText;
     private ListView lv;
+
+    private Spinner filter1;
+    private Spinner filter2;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -63,12 +70,16 @@ public class ProgramListFragment extends Fragment {
 			// Opens ProgramDetail Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String programID = programList.get(position).getId().toString();
+                String programID = filteredProgramList.get(position).getId().toString();
                 Intent intent = new Intent(context, ProgramDetailActivity.class);
                 intent.putExtra("PROGRAM_ID", programID);
                 startActivity(intent);
             }
         });
+
+        filter1 = (Spinner) view.findViewById(R.id.spinner1);
+        filter2 = (Spinner) view.findViewById(R.id.spinner2);
+        setFilters();
 
         return view;
     }
@@ -77,11 +88,12 @@ public class ProgramListFragment extends Fragment {
         super.onResume();
 
 		// Gets all loyalty programs sorted by field defined in user preferences
-        ItemField sortField = userPreferences.getProgramSortField();
-        programList = programDS.getAll(sortField);
+        ItemField sortField = userPreferences.getSetting_ProgramSortField();
+        fullProgramList = programDS.getAll(sortField);
+        filterPrograms();
 
 		// Hides list and shows empty list text if there are no loyalty programs
-        if (programList.size() == 0){
+        if (fullProgramList.size() == 0){
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
 
@@ -92,9 +104,89 @@ public class ProgramListFragment extends Fragment {
             lv.setVisibility(View.VISIBLE);
 
 			// Sets adaptor to list view
-            ProgramListAdapter adapter = new ProgramListAdapter(activity, programList);
+            ProgramListAdapter adapter = new ProgramListAdapter(activity, filteredProgramList);
             lv.setAdapter(adapter);
         }
 
+    }
+
+    private void setFilters(){
+
+        // Creates program type filter with values
+        ArrayList<String> programTypes = programDS.getAvailableTypes(false);
+        programTypes.add(0,"Filter Off");
+        FilterSpinnerAdapter programTypeSpinnerAdapter =new FilterSpinnerAdapter(activity,programTypes);
+        filter1.setAdapter(programTypeSpinnerAdapter);
+        filter1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                userPreferences.setFilter_ProgramType(parent.getItemAtPosition(position).toString());
+                onResume();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // Sets program type filter to value in user preferences
+        String filter1value = userPreferences.getFilter_ProgramType();
+        int filter1Position= programTypes.indexOf(filter1value);
+        if (filter1Position == -1){
+            filter1.setSelection(0);
+        } else {
+            filter1.setSelection(filter1Position);
+        }
+
+        // Creates program points filter with values
+        ArrayList<String> programPoints = new ArrayList<String>();
+        programPoints.add("Filter Off");
+        programPoints.add("Points = 0");
+        programPoints.add("Points > 0");
+        FilterSpinnerAdapter programPointsSpinnerAdapter =new FilterSpinnerAdapter(activity,programPoints);
+        filter2.setAdapter(programPointsSpinnerAdapter);
+        filter2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                userPreferences.setFilter_ProgramPoints(parent.getItemAtPosition(position).toString());
+                onResume();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // Sets program points filter to value in user preferences
+        String filter2value = userPreferences.getFilter_ProgramPoints();
+        int filter2Position= programPoints.indexOf(filter2value);
+        if (filter2Position == -1){
+            filter2.setSelection(0);
+        } else {
+            filter2.setSelection(filter2Position);
+        }
+    }
+
+    private void filterPrograms(){
+        filteredProgramList = new ArrayList<LoyaltyProgram>();
+
+        String filter1value = userPreferences.getFilter_ProgramType();
+        String filter2value = userPreferences.getFilter_ProgramPoints();
+        for (LoyaltyProgram program : fullProgramList) {
+            if (!filter1value.equals("Filter Off")) {
+                if (!program.getType().equals(filter1value)) {
+                    continue;
+                }
+            }
+            if (filter2value.equals("Points = 0")) {
+                if (program.getPoints() != 0) {
+                    continue;
+                }
+            } else if (filter2value.equals("Points > 0")) {
+                if (program.getPoints() == 0) {
+                    continue;
+                }
+            }
+            filteredProgramList.add(program);
+        }
     }
 }

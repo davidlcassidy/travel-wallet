@@ -67,18 +67,18 @@ public class ProgramDataSource {
 
 	// Check and update local database version if necessary
     public void checkDbVersion(SQLiteDatabase mainDB, SQLiteDatabase refDB) {
-        int userMainDbVersion = userPreferences.getMainDBVersion();
-        int userRefDbVersion = userPreferences.getRefDBVersion();
+        int userMainDbVersion = userPreferences.getDatabase_MainDBVersion();
+        int userRefDbVersion = userPreferences.getDatabase_RefDBVersion();
         int currentMainDbVersion = dbHelperMain.DATABASE_VERSION;
         int currentRefDbVersion = dbHelperRef.DATABASE_VERSION;
 
         if (userMainDbVersion != currentMainDbVersion) {
             dbHelperMain.onUpgrade(mainDB, userMainDbVersion, currentMainDbVersion);
-            userPreferences.setMainDBVersion(currentMainDbVersion);
+            userPreferences.setDatabase_MainDBVersion(currentMainDbVersion);
         }
         if (userRefDbVersion != currentRefDbVersion) {
             dbHelperRef.onUpgrade(refDB, userRefDbVersion, currentRefDbVersion);
-            userPreferences.setRefDBVersion(currentRefDbVersion);
+            userPreferences.setDatabase_RefDBVersion(currentRefDbVersion);
         }
     }
 
@@ -296,7 +296,7 @@ public class ProgramDataSource {
 
 		// Calculates number of days before program points expiration to send notification to user
         Integer notificationDays = null;
-        String[] notificationPeriodArray = userPreferences.getProgramNotificationPeriod().split(" ");
+        String[] notificationPeriodArray = userPreferences.getSetting_ProgramNotificationPeriod().split(" ");
         Integer value = Integer.valueOf(notificationPeriodArray[0]);
         String period = notificationPeriodArray[1];
         switch (period) {

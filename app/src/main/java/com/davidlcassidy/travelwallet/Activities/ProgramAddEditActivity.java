@@ -47,7 +47,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
     private Integer programId;
 
     private EditText typeField;
-    private EditText programField;
+    private EditText nameField;
     private EditText accountNumberField;
     private EditText pointsField;
     private EditText lastActivityField;
@@ -59,7 +59,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         setContentView(R.layout.activity_programaddedit);
 
         userPreferences = UserPreferences.getInstance(this);
-        dateFormat = userPreferences.getDatePattern().getDateFormat();
+        dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         programDS = ProgramDataSource.getInstance(this);
 		
 		// Gets program ID from intent. Program ID of -1 means add new program
@@ -67,7 +67,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
 		// Gets ProgramAddEdit activity fields
         typeField = (EditText) findViewById(R.id.typeField);
-        programField = (EditText) findViewById(R.id.programField);
+        nameField = (EditText) findViewById(R.id.nameField);
         accountNumberField = (EditText) findViewById(R.id.accountNumberField);
         pointsField = (EditText) findViewById(R.id.pointsField);
         lastActivityField = (EditText) findViewById(R.id.lastActivityField);
@@ -93,7 +93,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             Integer pPoints = program.getPoints();
             Date pLastActivityDate = program.getLastActivityDate();
             if (pType != null) {typeField.setText(pType);}
-            if (pName != null) {programField.setText(pName);}
+            if (pName != null) {nameField.setText(pName);}
             if (pAccountNumber != null) {accountNumberField.setText(pAccountNumber);}
             if (pPoints != null) {pointsField.setText(String.valueOf(pPoints));}
             if (pLastActivityDate != null) {lastActivityField.setText(dateFormat.format(pLastActivityDate));}
@@ -102,12 +102,13 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
         } else {
             setTitle("Add Loyalty Program");
+            pointsField.setText(String.valueOf(0));
         }
     }
 
 	// Hides last activity date field for programs with no expiration date or when no program is selected
     private void updateLastActivityFieldVisibility() {
-        String programName = programField.getText().toString();
+        String programName = nameField.getText().toString();
         if (programName.equals("")) {
             lastActivityLayout.setVisibility(View.GONE);
         } else {
@@ -123,7 +124,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 	// Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
-        String programName = programField.getText().toString();
+        String programName = nameField.getText().toString();
         Integer programRefId = programDS.getProgramRefId(programName);
         String accountNumber = accountNumberField.getText().toString();
 
@@ -171,7 +172,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
     }
 
 	// Displays list of program types for user selection
-    private void programFieldClick () {
+    private void nameFieldClick () {
         String type = typeField.getText().toString();
         ArrayList<String> programs = programDS.getAvailablePrograms(type, true);
         if (programs.size() > 0){
@@ -262,11 +263,11 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
                             String currentType = typeField.getText().toString();
                             if (!currentType.equals(selectedItem)) {
                                 typeField.setText(selectedItem);
-                                programField.setText("");
+                                nameField.setText("");
                             }
                             break;
                         case "program":
-                            programField.setText(selectedItem);
+                            nameField.setText(selectedItem);
                             break;
                     }
 
@@ -318,26 +319,26 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        TextView programLabel = (TextView) findViewById(R.id.programLabel);
-        programLabel.setOnClickListener(new View.OnClickListener() {
+        TextView nameLabel = (TextView) findViewById(R.id.nameLabel);
+        nameLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                programFieldClick();
+                nameFieldClick();
             }});
 
-        programField.setInputType(InputType.TYPE_NULL);
-        programField.setOnClickListener(new View.OnClickListener() {
+        nameField.setInputType(InputType.TYPE_NULL);
+        nameField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                programFieldClick();}
+                nameFieldClick();}
         });
-        programField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        nameField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus) {
                     hideSoftKeyboard(ProgramAddEditActivity.this);
-                    programField.performClick();}
+                    nameField.performClick();}
             }
         });
 
@@ -390,5 +391,4 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
-
 }

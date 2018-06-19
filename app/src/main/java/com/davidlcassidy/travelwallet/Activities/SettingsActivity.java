@@ -82,17 +82,17 @@ public class SettingsActivity extends BaseActivity_Save {
         super.onResume();
 
 		// Gets values from user preferences
-        String programNotificationPeriod = userPreferences.getProgramNotificationPeriod();
-        ItemField programPrimary = userPreferences.getProgramPrimaryField();
-        ItemField programSort = userPreferences.getProgramSortField();
-        String cardNotificationPeriod = userPreferences.getCardNotificationPeriod();
-        ItemField cardPrimary = userPreferences.getCardPrimaryField();
-        ItemField cardSort = userPreferences.getCardSortField();
-        String initialSummary = userPreferences.getInitialSummary() ? "Yes" : "No";
-        String phoneNotifications = userPreferences.getPhoneNotifications() ? "Yes" : "No";
-        Language language = userPreferences.getLanguage();
-        Currency currency = userPreferences.getCurrency();
-        DatePattern datePattern = userPreferences.getDatePattern();
+        String programNotificationPeriod = userPreferences.getSetting_ProgramNotificationPeriod();
+        ItemField programPrimary = userPreferences.getSetting_ProgramPrimaryField();
+        ItemField programSort = userPreferences.getSetting_ProgramSortField();
+        String cardNotificationPeriod = userPreferences.getSetting_CardNotificationPeriod();
+        ItemField cardPrimary = userPreferences.getSetting_CardPrimaryField();
+        ItemField cardSort = userPreferences.getSetting_CardSortField();
+        String initialSummary = userPreferences.getSetting_InitialSummary() ? "Yes" : "No";
+        String phoneNotifications = userPreferences.getSetting_PhoneNotifications() ? "Yes" : "No";
+        Language language = userPreferences.getSetting_Language();
+        Currency currency = userPreferences.getSetting_Currency();
+        DatePattern datePattern = userPreferences.getSetting_DatePattern();
 
 		// Sets activity fields to values from user preferences
         setNotificationField(ItemType.LOYALTY_PROGRAM, programNotificationPeriod);
@@ -124,17 +124,17 @@ public class SettingsActivity extends BaseActivity_Save {
         String currency = currencyField.getText().toString();
 
 		// Saves values from activity fields to user preferences
-        userPreferences.setProgramNotificationPeriod(getNotificationField(ItemType.LOYALTY_PROGRAM));
-        userPreferences.setProgramPrimaryField(ItemField.fromName(programPrimary));
-        userPreferences.setProgramSortField(ItemField.fromName(programSort));
-        userPreferences.setCardNotificationPeriod(getNotificationField(ItemType.CREDIT_CARD));
-        userPreferences.setCardPrimaryField(ItemField.fromName(cardPrimary));
-        userPreferences.setCardSortField(ItemField.fromName(cardSort));
-        userPreferences.setInitialSummary(initialSummary.equals("Yes"));
-        userPreferences.setPhoneNotifications(phoneNotifications.equals("Yes"));
-        userPreferences.setLanguage(Language.fromName(language));
-        userPreferences.setCurrency(Currency.fromName(currency));
-        userPreferences.setDatePattern(DatePattern.fromSampleDate(date));
+        userPreferences.setSetting_ProgramNotificationPeriod(getNotificationField(ItemType.LOYALTY_PROGRAM));
+        userPreferences.setSetting_ProgramPrimaryField(ItemField.fromName(programPrimary));
+        userPreferences.setSetting_ProgramSortField(ItemField.fromName(programSort));
+        userPreferences.setSetting_CardNotificationPeriod(getNotificationField(ItemType.CREDIT_CARD));
+        userPreferences.setSetting_CardPrimaryField(ItemField.fromName(cardPrimary));
+        userPreferences.setSetting_CardSortField(ItemField.fromName(cardSort));
+        userPreferences.setSetting_InitialSummary(initialSummary.equals("Yes"));
+        userPreferences.setSetting_PhoneNotifications(phoneNotifications.equals("Yes"));
+        userPreferences.setSetting_Language(Language.fromName(language));
+        userPreferences.setSetting_Currency(Currency.fromName(currency));
+        userPreferences.setSetting_DatePattern(DatePattern.fromSampleDate(date));
 
 		//Closes activity and sends success message to user
         finish();
@@ -199,16 +199,22 @@ public class SettingsActivity extends BaseActivity_Save {
 
 	// Displays yes/no option list for user selection
     private void initialSummaryFieldClick () {
-        String title = "Open Summary on Launch";
-        List<String> types = Arrays.asList("Yes", "No");
-        fieldSelectDialog(title, types, "initialSummary");
+        String currentValue = initialSummaryField.getText().toString();
+        if (currentValue.equals("Yes")){
+            initialSummaryField.setText("No");
+        } else if (currentValue.equals("No")){
+            initialSummaryField.setText("Yes");
+        }
     }
 
 	// Displays yes/no option list for user selection
     private void phoneNotificationsFieldClick () {
-        String title = "Phone Notifications";
-        List<String> types = Arrays.asList("Yes", "No");
-        fieldSelectDialog(title, types, "phoneNotifications");
+        String currentValue = phoneNotificationsField.getText().toString();
+        if (currentValue.equals("Yes")){
+            phoneNotificationsField.setText("No");
+        } else if (currentValue.equals("No")){
+            phoneNotificationsField.setText("Yes");
+        }
     }
 
 	// Displays list of languages for user selection
@@ -269,12 +275,6 @@ public class SettingsActivity extends BaseActivity_Save {
                             break;
                         case "cardSort":
                             cardSortField.setText(selectedItem);
-                            break;
-                        case "initialSummary":
-                            initialSummaryField.setText(selectedItem);
-                            break;
-                        case "phoneNotifications":
-                            phoneNotificationsField.setText(selectedItem);
                             break;
                         case "language":
                             languageField.setText(selectedItem);

@@ -84,10 +84,10 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
     protected void onResume() {
         super.onResume();
 
-        SimpleDateFormat dateFormat = userPreferences.getDatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         NumberPattern numberPattern = NumberPattern.COMMADOT;
         DecimalFormat decimalFormat = numberPattern.getDecimalFormat();
-        Currency currency = userPreferences.getCurrency();
+        Currency currency = userPreferences.getSetting_Currency();
 
         // Gets card annual fee and formats as currency string
         CreditCard card = cardDS.getSingle(cardId);
@@ -103,6 +103,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         detailList.clear();
         detailList.add(new Detail("Name", card.getName()));
         detailList.add(new Detail("Bank", card.getBank()));
+        detailList.add(new Detail("Status", card.getStatus().getName()));
         detailList.add(new Detail("Annual Fee", cardAFString));
         detailList.add(new Detail("Foreign Fee", decimalFormat.format(card.getForeignTransactionFee()) + " %"));
 		Date openDate = card.getOpenDate();

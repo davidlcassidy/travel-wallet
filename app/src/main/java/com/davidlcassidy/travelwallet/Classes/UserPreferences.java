@@ -3,13 +3,15 @@ package com.davidlcassidy.travelwallet.Classes;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.Language;
 
 /*
-UserPreferences class is used to read and write to the UserPreferences.
+UserPreferences class is used to read and write values to the shared user preferences. These are used
+for filters, settings, and database versions which need to remain consistent across different sessions.
  */
 
 public class UserPreferences {
@@ -19,39 +21,56 @@ public class UserPreferences {
     private static SharedPreferences.Editor spEditor;
 
 
-    //Sets user preference name
-    private static String nUserPreference = "UserPreferences";
+    // Sets user preference keys
+    private static String nUserPreferences = "UserPreferences";
+    private static String nAppType = "AppType";
 
-    //Sets user preference keys
-    private static String nProgramNotificationPeriod = "ProgramNotificationPeriod";
-    private static String nProgramPrimaryField = "ProgramPrimaryField";
-    private static String nProgramSortField = "ProgramSortField";
-    private static String nCardNotificationPeriod = "CardNotificationPeriod";
-    private static String nCardPrimaryField = "CardPrimaryField";
-    private static String nCardSortField = "CardSortField";
-    private static String nInitialSummary = "InitialSummary";
-    private static String nPhoneNotifications = "PhoneNotifications";
-    private static String nLanguage = "Language";
-    private static String nCurrency = "Currency";
-    private static String nDatePattern = "DatePattern";
-    private static String nMainDBVersion = "MainDBVersion";
-    private static String nRefDBVersion = "RefDBVersion";
-	
-    //Sets user preference default values
-    private static String dProgramNotificationPeriod = "4 W";
-    private static ItemField dProgramPrimaryField = ItemField.ACCOUNTNUMBER;
-    private static ItemField dProgramSortField = ItemField.PROGRAMNAME;
-    private static String dCardNotificationPeriod = "4 W";
-    private static ItemField dCardPrimaryField = ItemField.OPENDATE;
-    private static ItemField dCardSortField = ItemField.CARDNAME;
-    private static boolean dInitialSummary = false;
-    private static boolean dPhoneNotifications = true;
-    private static Language dLanguage = Language.ENGLISH;
-    private static Currency dCurrency = Currency.USD;
-    private static DatePattern dDatePattern = DatePattern.MDY_LONG;
-    private static Integer dMainDBVersion = 0;
-    private static Integer dRefDBVersion = 0;
+    private static String nFilter_ProgramType = "Filter_ProgramType";
+    private static String nFilter_ProgramPoints = "Filter_ProgramValue";
+    private static String nFilter_CardStatus = "Filter_CardStatus";
+    private static String nFilter_CardAF = "Filter_CardAF";
 
+    private static String nSetting_ProgramNotificationPeriod = "Setting_ProgramNotificationPeriod";
+    private static String nSetting_ProgramPrimaryField = "Setting_ProgramPrimaryField";
+    private static String nSetting_ProgramSortField = "Setting_ProgramSortField";
+    private static String nSetting_CardNotificationPeriod = "Setting_CardNotificationPeriod";
+    private static String nSetting_CardPrimaryField = "Setting_CardPrimaryField";
+    private static String nSetting_CardSortField = "Setting_CardSortField";
+    private static String nSetting_InitialSummary = "Setting_InitialSummary";
+    private static String nSetting_PhoneNotifications = "Setting_PhoneNotifications";
+    private static String nSetting_Language = "Setting_Language";
+    private static String nSetting_Currency = "Setting_Currency";
+    private static String nSetting_DatePattern = "Setting_DatePattern";
+
+    private static String nDatabase_MainDBVersion = "Database_MainDBVersion";
+    private static String nDatabase_RefDBVersion = "Database_RefDBVersion";
+
+
+    // Sets user preference default values
+    private static AppType dAppType = AppType.Lite;
+
+    private static String dFilter_ProgramType = "Filter Off";
+    private static String dFilter_ProgramPoints = "Filter Off";
+    private static String dFilter_CardStatus = "Filter Off";
+    private static String dFilter_CardAF = "Filter Off";
+
+    private static String dSetting_ProgramNotificationPeriod = "4 W";
+    private static ItemField dSetting_ProgramPrimaryField = ItemField.ACCOUNTNUMBER;
+    private static ItemField dSetting_ProgramSortField = ItemField.PROGRAMNAME;
+    private static String dSetting_CardNotificationPeriod = "4 W";
+    private static ItemField dSetting_CardPrimaryField = ItemField.OPENDATE;
+    private static ItemField dSetting_CardSortField = ItemField.CARDNAME;
+    private static boolean dSetting_InitialSummary = false;
+    private static boolean dSetting_PhoneNotifications = true;
+    private static Language dSetting_Language = Language.ENGLISH;
+    private static Currency dSetting_Currency = Currency.USD;
+    private static DatePattern dSetting_DatePattern = DatePattern.MDY_LONG;
+
+    private static Integer dDatabase_MainDBVersion = 0;
+    private static Integer dDatabase_RefDBVersion = 0;
+
+
+    // Gets instance of UserPreferences. Creates instance if it doesn't exist.
     public static UserPreferences getInstance(Context context) {
         if (instance == null) {
             instance = new UserPreferences(context.getApplicationContext());
@@ -59,178 +78,247 @@ public class UserPreferences {
         return instance;
     }
 
-    private UserPreferences(Context c){
-        sharedPref = c.getSharedPreferences(nUserPreference, Context.MODE_PRIVATE);
+
+    // Private UserPreferences constructor called by getInstance method
+    private UserPreferences(Context c) {
+        sharedPref = c.getSharedPreferences(nUserPreferences, Context.MODE_PRIVATE);
         spEditor = sharedPref.edit();
     }
 
-    public String getProgramNotificationPeriod() {
-        return sharedPref.getString(nProgramNotificationPeriod, dProgramNotificationPeriod);
+    // AppType UserPreference getter
+    public AppType getAppType() {
+        return dAppType;
     }
 
-    public void setProgramNotificationPeriod(String programNotificationPeriod) {
-        spEditor.putString(nProgramNotificationPeriod, programNotificationPeriod);
+
+    // Filter UserPreferences setters/getters
+    public String getFilter_ProgramType() {
+        return sharedPref.getString(nFilter_ProgramType, dFilter_ProgramType);
+    }
+
+    public void setFilter_ProgramType(String programType) {
+        spEditor.putString(nFilter_ProgramType, programType);
         spEditor.commit();
     }
 
-    public ItemField getProgramPrimaryField() {
-        int id = sharedPref.getInt(nProgramPrimaryField, dProgramPrimaryField.getId());
+    public String getFilter_ProgramPoints() {
+        return sharedPref.getString(nFilter_ProgramPoints, dFilter_ProgramPoints);
+    }
+
+    public void setFilter_ProgramPoints(String programPoints) {
+        spEditor.putString(nFilter_ProgramPoints, programPoints);
+        spEditor.commit();
+    }
+
+    public String getFilter_CardStatus() {
+        return sharedPref.getString(nFilter_CardStatus, dFilter_CardStatus);
+    }
+
+    public void setFilter_CardStatus(String cardStatus) {
+        spEditor.putString(nFilter_CardStatus, cardStatus);
+        spEditor.commit();
+    }
+
+    public String getFilter_CardAF() {
+        return sharedPref.getString(nFilter_CardAF, dFilter_CardAF);
+    }
+
+    public void setFilter_CardAF(String cardAF) {
+        spEditor.putString(nFilter_CardAF, cardAF);
+        spEditor.commit();
+    }
+
+
+    // Setting UserPreferences setters/getters
+    public String getSetting_ProgramNotificationPeriod() {
+        return sharedPref.getString(nSetting_ProgramNotificationPeriod, dSetting_ProgramNotificationPeriod);
+    }
+
+    public void setSetting_ProgramNotificationPeriod(String programNotificationPeriod) {
+        spEditor.putString(nSetting_ProgramNotificationPeriod, programNotificationPeriod);
+        spEditor.commit();
+    }
+
+    public ItemField getSetting_ProgramPrimaryField() {
+        int id = sharedPref.getInt(nSetting_ProgramPrimaryField, dSetting_ProgramPrimaryField.getId());
         ItemField itemField = ItemField.fromId(id);
         if (itemField != null){
             return itemField;
         } else {
-            spEditor.putInt(nProgramPrimaryField, dProgramPrimaryField.getId());
-            return dProgramPrimaryField;
+            spEditor.putInt(nSetting_ProgramPrimaryField, dSetting_ProgramPrimaryField.getId());
+            return dSetting_ProgramPrimaryField;
         }
     }
 
-    public void setProgramPrimaryField(ItemField programPrimaryField) {
-        spEditor.putInt(nProgramPrimaryField, programPrimaryField.getId());
+    public void setSetting_ProgramPrimaryField(ItemField programPrimaryField) {
+        spEditor.putInt(nSetting_ProgramPrimaryField, programPrimaryField.getId());
         spEditor.commit();
     }
 
-    public ItemField getProgramSortField() {
-        int id = sharedPref.getInt(nProgramSortField, dProgramSortField.getId());
+    public ItemField getSetting_ProgramSortField() {
+        int id = sharedPref.getInt(nSetting_ProgramSortField, dSetting_ProgramSortField.getId());
         ItemField itemField = ItemField.fromId(id);
         if (itemField != null){
             return itemField;
         } else {
-            spEditor.putInt(nProgramSortField, dProgramSortField.getId());
-            return dProgramSortField;
+            spEditor.putInt(nSetting_ProgramSortField, dSetting_ProgramSortField.getId());
+            return dSetting_ProgramSortField;
         }
     }
 
-    public void setProgramSortField(ItemField programSortField) {
-        spEditor.putInt(nProgramSortField, programSortField.getId());
+    public void setSetting_ProgramSortField(ItemField programSortField) {
+        spEditor.putInt(nSetting_ProgramSortField, programSortField.getId());
         spEditor.commit();
     }
 
-    public String getCardNotificationPeriod() {
-        return sharedPref.getString(nCardNotificationPeriod, dCardNotificationPeriod);
+    public String getSetting_CardNotificationPeriod() {
+        return sharedPref.getString(nSetting_CardNotificationPeriod, dSetting_CardNotificationPeriod);
     }
 
-    public void setCardNotificationPeriod(String cardNotificationPeriod) {
-        spEditor.putString(nCardNotificationPeriod, cardNotificationPeriod);
+    public void setSetting_CardNotificationPeriod(String cardNotificationPeriod) {
+        spEditor.putString(nSetting_CardNotificationPeriod, cardNotificationPeriod);
         spEditor.commit();
     }
 
-    public ItemField getCardPrimaryField() {
-        int id = sharedPref.getInt(nCardPrimaryField, dCardPrimaryField.getId());
+    public ItemField getSetting_CardPrimaryField() {
+        int id = sharedPref.getInt(nSetting_CardPrimaryField, dSetting_CardPrimaryField.getId());
         ItemField itemField = ItemField.fromId(id);
         if (itemField != null){
             return itemField;
         } else {
-            spEditor.putInt(nCardPrimaryField, dCardPrimaryField.getId());
-            return dCardPrimaryField;
+            spEditor.putInt(nSetting_CardPrimaryField, dSetting_CardPrimaryField.getId());
+            return dSetting_CardPrimaryField;
         }
     }
 
-    public void setCardPrimaryField(ItemField cardPrimaryField) {
-        spEditor.putInt(nCardPrimaryField, cardPrimaryField.getId());
+    public void setSetting_CardPrimaryField(ItemField cardPrimaryField) {
+        spEditor.putInt(nSetting_CardPrimaryField, cardPrimaryField.getId());
         spEditor.commit();
     }
 
-    public ItemField getCardSortField() {
-        int id = sharedPref.getInt(nCardSortField, dCardSortField.getId());
+    public ItemField getSetting_CardSortField() {
+        int id = sharedPref.getInt(nSetting_CardSortField, dSetting_CardSortField.getId());
         ItemField itemField = ItemField.fromId(id);
         if (itemField != null){
             return itemField;
         } else {
-            spEditor.putInt(nCardSortField, dCardSortField.getId());
-            return dCardSortField;
+            spEditor.putInt(nSetting_CardSortField, dSetting_CardSortField.getId());
+            return dSetting_CardSortField;
         }
     }
 
-    public void setCardSortField(ItemField cardSortField) {
-        spEditor.putInt(nCardSortField, cardSortField.getId());
+    public void setSetting_CardSortField(ItemField cardSortField) {
+        spEditor.putInt(nSetting_CardSortField, cardSortField.getId());
         spEditor.commit();
     }
 
-    public boolean getInitialSummary() {
-        int initSummary = (dInitialSummary) ? 1 : 0;
-        return sharedPref.getInt(nInitialSummary, initSummary) == 1;
+    public boolean getSetting_InitialSummary() {
+        int initSummary = (dSetting_InitialSummary) ? 1 : 0;
+        return sharedPref.getInt(nSetting_InitialSummary, initSummary) == 1;
     }
 
-    public void setInitialSummary(boolean initialSummary) {
+    public void setSetting_InitialSummary(boolean initialSummary) {
         int initSummary = (initialSummary) ? 1 : 0;
-        spEditor.putInt(nInitialSummary, initSummary);
+        spEditor.putInt(nSetting_InitialSummary, initSummary);
         spEditor.commit();
     }
 
-    public boolean getPhoneNotifications() {
-        int phoneNotifications = (dPhoneNotifications) ? 1 : 0;
-        return sharedPref.getInt(nPhoneNotifications, phoneNotifications) == 1;
+    public boolean getSetting_PhoneNotifications() {
+        int phoneNotifications = (dSetting_PhoneNotifications) ? 1 : 0;
+        return sharedPref.getInt(nSetting_PhoneNotifications, phoneNotifications) == 1;
     }
 
-    public void setPhoneNotifications(boolean phoneNotifications) {
+    public void setSetting_PhoneNotifications(boolean phoneNotifications) {
         int pn = (phoneNotifications) ? 1 : 0;
-        spEditor.putInt(nPhoneNotifications, pn);
+        spEditor.putInt(nSetting_PhoneNotifications, pn);
         spEditor.commit();
     }
 
-    public Language getLanguage() {
-        int id = sharedPref.getInt(nLanguage, dLanguage.getId());
+    public Language getSetting_Language() {
+        int id = sharedPref.getInt(nSetting_Language, dSetting_Language.getId());
         Language language = Language.fromId(id);
         if (language != null){
             return language;
         } else {
-            spEditor.putInt(nLanguage, dLanguage.getId());
-            return dLanguage;
+            spEditor.putInt(nSetting_Language, dSetting_Language.getId());
+            return dSetting_Language;
         }
     }
 
-    public void setLanguage(Language language) {
-        spEditor.putInt(nLanguage, language.getId());
+    public void setSetting_Language(Language language) {
+        spEditor.putInt(nSetting_Language, language.getId());
         spEditor.commit();
     }
 
-    public Currency getCurrency() {
-        int id = sharedPref.getInt(nCurrency, dCurrency.getId());
+    public Currency getSetting_Currency() {
+        int id = sharedPref.getInt(nSetting_Currency, dSetting_Currency.getId());
         Currency currency = Currency.fromId(id);
         if (currency != null){
             return currency;
         } else {
-            spEditor.putInt(nCurrency, dCurrency.getId());
-            return dCurrency;
+            spEditor.putInt(nSetting_Currency, dSetting_Currency.getId());
+            return dSetting_Currency;
         }
     }
 
-    public void setCurrency(Currency currencyFormat) {
-        spEditor.putInt(nCurrency, currencyFormat.getId());
+    public void setSetting_Currency(Currency currencyFormat) {
+        spEditor.putInt(nSetting_Currency, currencyFormat.getId());
         spEditor.commit();
     }
 
-    public DatePattern getDatePattern() {
-        int id = sharedPref.getInt(nDatePattern, dDatePattern.getId());
+    public DatePattern getSetting_DatePattern() {
+        int id = sharedPref.getInt(nSetting_DatePattern, dSetting_DatePattern.getId());
         DatePattern datePattern = DatePattern.fromId(id);
         if (datePattern != null){
             return datePattern;
         } else {
-            spEditor.putInt(nDatePattern, dDatePattern.getId());
-            return dDatePattern;
+            spEditor.putInt(nSetting_DatePattern, dSetting_DatePattern.getId());
+            return dSetting_DatePattern;
         }
     }
 
-    public void setDatePattern(DatePattern datePattern) {
-        spEditor.putInt(nDatePattern, datePattern.getId());
+    public void setSetting_DatePattern(DatePattern datePattern) {
+        spEditor.putInt(nSetting_DatePattern, datePattern.getId());
         spEditor.commit();
     }
 
-    public Integer getMainDBVersion() {
-        return sharedPref.getInt(nMainDBVersion, dMainDBVersion);
+
+    // Database UserPreferences setters/getters
+    public Integer getDatabase_MainDBVersion() {
+        // return sharedPref.getInt(nDatabase_MainDBVersion, dDatabase_MainDBVersion);
+
+        // Code below added to backward compatibility with old naming convention.
+        // This can be removed after a couple versions.
+        Integer mainVersion = sharedPref.getInt(nDatabase_MainDBVersion, dDatabase_MainDBVersion);
+        if (mainVersion == 0){
+            String nOldDatabase_MainDBVersion = "MainDBVersion";
+            mainVersion = sharedPref.getInt(nOldDatabase_MainDBVersion, dDatabase_MainDBVersion);
+            setDatabase_MainDBVersion(mainVersion);
+        }
+        return mainVersion;
     }
 
-    public void setMainDBVersion(Integer version) {
-        spEditor.putInt(nMainDBVersion, version);
+    public void setDatabase_MainDBVersion(Integer version) {
+        spEditor.putInt(nDatabase_MainDBVersion, version);
         spEditor.commit();
     }
 
-    public Integer getRefDBVersion() {
-        return sharedPref.getInt(nRefDBVersion, dRefDBVersion);
+    public Integer getDatabase_RefDBVersion() {
+        // return sharedPref.getInt(nDatabase_RefDBVersion, dDatabase_RefDBVersion);
+
+        // Code below added to backward compatibility with old naming convention.
+        // This can be removed after a couple versions.
+        Integer refVersion = sharedPref.getInt(nDatabase_RefDBVersion, dDatabase_RefDBVersion);
+        if (refVersion == 0){
+            String nOldDatabase_RefDBVersion = "RefDBVersion";
+            refVersion = sharedPref.getInt(nOldDatabase_RefDBVersion, dDatabase_RefDBVersion);
+            setDatabase_RefDBVersion(refVersion);
+        }
+        return refVersion;
     }
 
-    public void setRefDBVersion(Integer version) {
-        spEditor.putInt(nRefDBVersion, version);
+    public void setDatabase_RefDBVersion(Integer version) {
+        spEditor.putInt(nDatabase_RefDBVersion, version);
         spEditor.commit();
     }
 }

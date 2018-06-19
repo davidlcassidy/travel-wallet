@@ -1,5 +1,6 @@
 package com.davidlcassidy.travelwallet.Classes;
 
+import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class CreditCard {
 
     private Integer id;
     private Integer cardId;
-    private String status;
+    private CardStatus status;
     private String bank;
     private Integer bankId;
     private String name;
@@ -29,7 +30,7 @@ public class CreditCard {
     private String logoIcon;
     private String notes;
 
-    public CreditCard(Integer id, Integer cardId, String status, String bank, Integer bankId, String name, String type, BigDecimal annualFee, Boolean annualFeeWaived, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer cardId, CardStatus status, String bank, Integer bankId, String name, String type, BigDecimal annualFee, Boolean annualFeeWaived, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.cardId = cardId;
         this.status = status;
@@ -72,11 +73,11 @@ public class CreditCard {
         this.cardId = cardId;
     }
 
-    public String getStatus() {
+    public CardStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CardStatus status) {
         this.status = status;
     }
 

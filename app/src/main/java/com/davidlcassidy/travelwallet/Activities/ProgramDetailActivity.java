@@ -89,10 +89,10 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
     protected void onResume() {
         super.onResume();
 
-        SimpleDateFormat dateFormat = userPreferences.getDatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         NumberPattern numberPattern = NumberPattern.COMMADOT;
         DecimalFormat numberFormat = numberPattern.getNumberFormat();
-        Currency currency = userPreferences.getCurrency();
+        Currency currency = userPreferences.getSetting_Currency();
 
         // Gets loyalty program value and formats as currency string
         LoyaltyProgram program = programDS.getSingle(programId);

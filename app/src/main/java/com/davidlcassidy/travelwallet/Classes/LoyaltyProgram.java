@@ -121,7 +121,7 @@ public class LoyaltyProgram {
     }
 
     public void setPoints(Integer points) {
-        this.points = points;
+        this.points = Math.max(points,0);
     }
 
     public BigDecimal getPointValue() {

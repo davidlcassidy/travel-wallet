@@ -45,7 +45,7 @@
 
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/programLayout"
+            android:id="@+id/nameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/typeLayout"
@@ -54,7 +54,7 @@
             android:background="@drawable/boarder">
 
             <TextView
-                android:id="@+id/programLabel"
+                android:id="@+id/nameLabel"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -65,7 +65,7 @@
                 android:textSize="@dimen/text"/>
 
             <EditText
-                android:id="@+id/programField"
+                android:id="@+id/nameField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -81,7 +81,7 @@
             android:id="@+id/accountNumberLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/programLayout"
+            android:layout_below="@+id/nameLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:background="@drawable/boarder">

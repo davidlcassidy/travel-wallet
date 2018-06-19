@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -60,25 +61,15 @@ public class NotificationsListFragment extends Fragment {
         notificationList = new ArrayList<Notification>();
 		
 		// TEST MODE:
-		// This will launch app with one of every available loyalty program and credit card
+		// Launches app with one of every available loyalty program and credit card
         boolean testMode = false;
         if (testMode) {
-            programDS.deleteAll();
-            cardDS.deleteAll();
-            for (String type : programDS.getAvailableTypes(false)) {
-                for (String pName : programDS.getAvailablePrograms(type, false)) {
-                    Integer refID = programDS.getProgramRefId(pName);
-                    Double pointValue = Math.random() * 100000;
-                    programDS.create(refID, "ABC", pointValue.intValue(), new Date(), "");
-                }
-            }
-            for (String bank : cardDS.getAvailableBanks(false)) {
-                for (String cName : cardDS.getAvailableCards(bank, false)) {
-                    Integer refID = cardDS.getCardRefId(cName);
-                    cardDS.create(refID, CardStatus.OPEN, new Date(), new Date(), null, "");
-                }
-            }
+            addAllCardsAndPrograms();
         }
+
+        // Hides filters
+        LinearLayout filterLayout = (LinearLayout) view.findViewById(R.id.filterLayout);
+        filterLayout.setVisibility(LinearLayout.GONE);
 
 		// Set's text used when notification list is empty
 		emptyListText = (TextView) view.findViewById(R.id.emptyListText);
@@ -162,6 +153,24 @@ public class NotificationsListFragment extends Fragment {
 			// Sets adaptor to list view
             NotificationListAdapter adapter = new NotificationListAdapter(activity, notificationList);
             lv.setAdapter(adapter);
+        }
+    }
+
+    private void addAllCardsAndPrograms(){
+        programDS.deleteAll();
+        cardDS.deleteAll();
+        for (String type : programDS.getAvailableTypes(false)) {
+            for (String pName : programDS.getAvailablePrograms(type, false)) {
+                Integer refID = programDS.getProgramRefId(pName);
+                Double pointValue = Math.random() * 100000;
+                programDS.create(refID, "ABC", pointValue.intValue(), new Date(), "");
+            }
+        }
+        for (String bank : cardDS.getAvailableBanks(false)) {
+            for (String cName : cardDS.getAvailableCards(bank, false)) {
+                Integer refID = cardDS.getCardRefId(cName);
+                cardDS.create(refID, CardStatus.OPEN, new Date(), new Date(), null, "");
+            }
         }
     }
 }

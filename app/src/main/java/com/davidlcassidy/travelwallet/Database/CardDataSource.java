@@ -66,18 +66,18 @@ public class CardDataSource {
 
 	// Check and update local database version if necessary
     public void checkDbVersion(SQLiteDatabase mainDB, SQLiteDatabase refDB) {
-        int userMainDbVersion = userPreferences.getMainDBVersion();
-        int userRefDbVersion = userPreferences.getRefDBVersion();
+        int userMainDbVersion = userPreferences.getDatabase_MainDBVersion();
+        int userRefDbVersion = userPreferences.getDatabase_RefDBVersion();
         int currentMainDbVersion = dbHelperMain.DATABASE_VERSION;
         int currentRefDbVersion = dbHelperRef.DATABASE_VERSION;
 
         if (userMainDbVersion != currentMainDbVersion) {
             dbHelperMain.onUpgrade(mainDB, userMainDbVersion, currentMainDbVersion);
-            userPreferences.setMainDBVersion(currentMainDbVersion);
+            userPreferences.setDatabase_MainDBVersion(currentMainDbVersion);
         }
         if (userRefDbVersion != currentRefDbVersion) {
             dbHelperRef.onUpgrade(refDB, userRefDbVersion, currentRefDbVersion);
-            userPreferences.setRefDBVersion(currentRefDbVersion);
+            userPreferences.setDatabase_RefDBVersion(currentRefDbVersion);
         }
     }
 
@@ -290,7 +290,7 @@ public class CardDataSource {
 
 		// Calculates number of days before annual fee to send notification to user
         Integer notificationDays = null;
-        String[] notificationPeriodArray = userPreferences.getCardNotificationPeriod().split(" ");
+        String[] notificationPeriodArray = userPreferences.getSetting_CardNotificationPeriod().split(" ");
         Integer value = Integer.valueOf(notificationPeriodArray[0]);
         String period = notificationPeriodArray[1];
         switch (period) {
@@ -380,7 +380,7 @@ public class CardDataSource {
     public int update(CreditCard card)  {
         Integer ID = card.getId();
         Integer cardRefId = card.getCardId();
-        String status = card.getStatus();
+        CardStatus status = card.getStatus();
         Date openDate = card.getOpenDate();
         Date afDate = card.getAfDate();
         Date closeDate = card.getCloseDate();
@@ -389,7 +389,7 @@ public class CardDataSource {
 
         ContentValues values = new ContentValues();
         values.put(dbHelperMain.COLUMN_CC_REFID, cardRefId);
-        values.put(dbHelperMain.COLUMN_CC_STATUS, status);
+        values.put(dbHelperMain.COLUMN_CC_STATUS, status.getId());
         if (openDate != null){
             values.put(dbHelperMain.COLUMN_CC_OPENDATE, dbDateFormat.format(openDate));
         }
@@ -411,7 +411,7 @@ public class CardDataSource {
         Integer id = cursor.getInt(0);
         Integer cardId = cursor.getInt(1);
         String owner = cursor.getString(2);
-        String status = cursor.getString(3);
+        CardStatus status = CardStatus.fromId(cursor.getInt(3));
         Integer cardNumber = cursor.getInt(4);
         Date openDate = null;
         try {

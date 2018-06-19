@@ -43,8 +43,8 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
-        SimpleDateFormat dateFormat = userPreferences.getDatePattern().getDateFormat();
-        final ItemField primaryField = userPreferences.getCardPrimaryField();
+        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
+        final ItemField primaryField = userPreferences.getSetting_CardPrimaryField();
         
 		// Gets the item at this position
 		CreditCard card = getItem(position);
@@ -63,7 +63,7 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
         cardField.setText(card.getName());
         switch (primaryField.getName()) {
             case "Annual Fee":
-                Currency currency = userPreferences.getCurrency();
+                Currency currency = userPreferences.getSetting_Currency();
                 BigDecimal annualFee = card.getAnnualFee();
                 String annualFeeString = currency.numToString(annualFee, NumberPattern.COMMADOT);
                 messageField.setText(annualFeeString);

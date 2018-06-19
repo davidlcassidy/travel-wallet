@@ -44,9 +44,9 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
-        final ItemField primaryField = userPreferences.getProgramPrimaryField();
+        final ItemField primaryField = userPreferences.getSetting_ProgramPrimaryField();
         DecimalFormat numberFormat = NumberPattern.COMMADOT.getNumberFormat();
-        SimpleDateFormat dateFormat = userPreferences.getDatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
 
 		// Gets the item at this position
         LoyaltyProgram program = getItem(position);
@@ -71,7 +71,7 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
                 messageField.setText(numberFormat.format(program.getPoints()));
                 break;
             case "Value":
-                Currency currency = userPreferences.getCurrency();
+                Currency currency = userPreferences.getSetting_Currency();
                 BigDecimal programValue = program.getTotalValue();
                 String programValueString = currency.numToString(programValue, NumberPattern.COMMADOT);
                 messageField.setText(programValueString);

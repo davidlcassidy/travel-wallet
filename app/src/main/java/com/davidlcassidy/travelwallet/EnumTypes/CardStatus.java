@@ -7,6 +7,8 @@ WARNING : Changing the id values may end backwards compatibility and can cause l
 app instability within current app installs
  */
 
+import java.util.ArrayList;
+
 public enum CardStatus {
 
 	// Enum members
@@ -14,16 +16,21 @@ public enum CardStatus {
     CLOSED(2, "Closed");
 
 	private final int id;
-    private final String text;
+    private final String name;
 
-    private CardStatus(int id, String text) {
+    private CardStatus(int id, String name) {
 		this.id = id;
-        this.text = text;
+        this.name = name;
     }
 	
 	// Returns card status ID
     public int getId() {
         return id;
+    }
+
+    // Returns card status name
+    public String getName() {
+        return name;
     }
 
 	// Returns card status from ID
@@ -34,4 +41,20 @@ public enum CardStatus {
         return null;
     }
 
+    // Returns card status from name
+    public static CardStatus fromName(String name) {
+        for (CardStatus cs : CardStatus.values()) {
+            if (cs.getName().equals(name)) {return cs;}
+        }
+        return null;
+    }
+
+    // Returns the names of every card status
+    public static ArrayList<String> getAllNames() {
+        ArrayList<String> list = new ArrayList <String>();
+        for (CardStatus cs : CardStatus.values()) {
+            list.add(cs.getName());
+        }
+        return list;
+    }
 }
