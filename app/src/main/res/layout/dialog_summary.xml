@@ -179,7 +179,7 @@
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:textStyle="bold"
-                android:text="Card Count"
+                android:text="Open Card Count"
                 android:gravity="left|center_vertical"
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>

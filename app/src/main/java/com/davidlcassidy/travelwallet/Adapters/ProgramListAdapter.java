@@ -21,14 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/*
-ProgramListFragment is the second fragment within MainActivity. It is where a summary of
-all user added loyalty programs is displayed to the user. It is primarily composed of a
-listview utilizing the ProgramListAdapter. There is also a floating "add" button allowing
-the user to add new loyalty programs and a textview directing users to the "add" button
-that is only visible when there are no loyalty programs (empty listview).
- */
-
 public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
 
     private UserPreferences userPreferences;

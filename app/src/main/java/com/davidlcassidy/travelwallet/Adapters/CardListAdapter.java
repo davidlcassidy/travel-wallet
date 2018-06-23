@@ -20,14 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/*
-Card ListFragment is the third and final fragment within MainActivity. It is where a
-summary of all user added credit cards is displayed to the user. It is primarily composed
-of a listview utilizing the CardListAdapter. There is also a floating "add" button
-allowing the user to add new credit cards and a textview directing users to the "add"
-button that is only visible when there are no credit cards (empty listview).
- */
-
 public class CardListAdapter extends ArrayAdapter<CreditCard> {
 
     private UserPreferences userPreferences;

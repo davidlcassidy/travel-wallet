@@ -29,7 +29,8 @@
             android:layout_marginBottom="20dp"
             android:layout_below="@+id/programSettingsText"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/programNotificationLabel"
@@ -42,12 +43,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/programNotificationField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="number"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -62,7 +63,8 @@
             android:layout_below="@+id/programNotificationLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/programPrimaryLabel"
@@ -75,12 +77,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/programPrimaryField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="number"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -95,7 +97,8 @@
             android:layout_below="@+id/programPrimaryLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/programSortLabel"
@@ -108,12 +111,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/programSortField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="number"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -141,7 +144,8 @@
             android:layout_below="@+id/cardSettingsText"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/cardNotificationLabel"
@@ -154,12 +158,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/cardNotificationField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="number"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -174,7 +178,8 @@
             android:layout_below="@+id/cardNotificationLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/cardPrimaryLabel"
@@ -187,12 +192,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/cardPrimaryField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="number"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -207,7 +212,8 @@
             android:layout_below="@+id/cardPrimaryLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/cardSortLabel"
@@ -220,12 +226,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/cardSortField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="number"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -253,7 +259,8 @@
             android:layout_below="@+id/generalSettingsText"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/initialSummaryLabel"
@@ -266,12 +273,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/initialSummaryField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="textCapCharacters"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -286,7 +293,8 @@
             android:layout_below="@+id/initialSummaryLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/phoneNotificationsLabel"
@@ -299,12 +307,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/phoneNotificationsField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="textCapCharacters"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -319,7 +327,8 @@
             android:layout_below="@+id/phoneNotificationsLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/languageLabel"
@@ -332,12 +341,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/languageField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="textCapCharacters"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -352,7 +361,8 @@
             android:layout_below="@+id/languageLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/currencyLabel"
@@ -365,12 +375,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/currencyField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="textCapCharacters"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -385,7 +395,8 @@
             android:layout_below="@+id/currencyLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/dateLabel"
@@ -398,12 +409,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/dateField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="textCapCharacters"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"

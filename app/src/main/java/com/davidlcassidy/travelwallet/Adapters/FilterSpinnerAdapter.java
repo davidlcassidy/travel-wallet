@@ -19,9 +19,9 @@ public class FilterSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
     private final Context activity;
     private ArrayList<String> items;
 
-    public FilterSpinnerAdapter(Context context, ArrayList<String> items) {
+    public FilterSpinnerAdapter(Context activity, ArrayList<String> items) {
         this.items=items;
-        activity = context;
+        this.activity = activity;
     }
 
 

@@ -1,7 +1,6 @@
 package com.davidlcassidy.travelwallet.Fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,9 +39,7 @@ the user when there are no notifications (empty listview).
 
 public class NotificationsListFragment extends Fragment {
 
-    private Context context;
     private Activity activity;
-
     private ProgramDataSource programDS;
     private CardDataSource cardDS;
     private List<Notification> notificationList;
@@ -53,11 +50,10 @@ public class NotificationsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        context = view.getContext();
         activity= getActivity();
 
-        programDS = ProgramDataSource.getInstance(activity);
-        cardDS = CardDataSource.getInstance(activity);
+        programDS = ProgramDataSource.getInstance(getContext());
+        cardDS = CardDataSource.getInstance(getContext());
         notificationList = new ArrayList<Notification>();
 		
 		// TEST MODE:
@@ -106,8 +102,8 @@ public class NotificationsListFragment extends Fragment {
 
 		// Update all notifications
         notificationList.clear();
-        programDS.updateProgramsNotifications(context);
-        cardDS.updateCardsNotifications(context);
+        programDS.updateProgramsNotifications();
+        cardDS.updateCardsNotifications();
 		
 		// Hides list and shows empty list text if there are no notifications
         ArrayList<LoyaltyProgram> programsWithNotifications = programDS.getProgramsWithNotifications();

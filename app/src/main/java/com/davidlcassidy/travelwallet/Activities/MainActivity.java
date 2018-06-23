@@ -13,9 +13,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Main;
@@ -72,7 +74,7 @@ public class MainActivity extends BaseActivity_Main {
         // Opens summary dialog if configured in user settings
         userPreferences = UserPreferences.getInstance(this);
         if (userPreferences.getSetting_InitialSummary()){
-            menuSummaryClicked();
+            showSummary();
         }
 		
 		// Sets actions of floating "plus" button, depending on displayed fragment
@@ -213,9 +215,38 @@ public class MainActivity extends BaseActivity_Main {
         diag1.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-    // Runs when summary button is clicked
+    // Runs when expand button is clicked
     @Override
-    public void menuSummaryClicked() {
+    public void menuExpandClicked() {
+        View menuView = findViewById(R.id.menu_expand);
+        PopupMenu popupMenu = new PopupMenu(this, menuView);
+        popupMenu.inflate(R.menu.mainpopup);
+
+        // Sets menu click listeners
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                String selectedItemName = (String) item.getTitle();
+
+                switch (selectedItemName) {
+                    case "Summary":
+                        // Opens Summary Popup
+                        showSummary();
+                        break;
+                    case "Chase 5/24 Status":
+                        // Opens Chase Status Activity
+                        Intent intent = new Intent(MainActivity.this, ChaseStatusActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+                return true;
+            }
+        });
+
+        popupMenu.show();
+    }
+
+    // Opens Summary Popup
+    public void showSummary() {
         NumberPattern numberPattern = NumberPattern.COMMADOT;
         Currency currency = userPreferences.getSetting_Currency();
 
@@ -256,9 +287,9 @@ public class MainActivity extends BaseActivity_Main {
         }
 
         // Retrieves card summary data and saves to dialog fields
-        cardCount.setText(String.valueOf(cardDS.getAll(null).size()));
+        cardCount.setText(String.valueOf(cardDS.getAll(null,true).size()));
         cardNotifications.setText(String.valueOf(cardDS.getCardsWithNotifications().size()));
-        cardAF.setText(currency.numToString(cardDS.getAllCardsAnnualFees(), numberPattern));
+        cardAF.setText(currency.numToString(cardDS.getAllOpenCardsAnnualFees(), numberPattern));
         CreditCard card = cardDS.getNextAF();
         if (card != null){
             Date afDate = card.getAfDate();

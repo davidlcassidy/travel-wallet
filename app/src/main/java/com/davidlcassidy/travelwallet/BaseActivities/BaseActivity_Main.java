@@ -13,7 +13,7 @@ used to set the menu items on the toolbar.
 public abstract class BaseActivity_Main extends BaseActivity {
 
     public abstract void menuAboutClicked();
-    public abstract void menuSummaryClicked();
+    public abstract void menuExpandClicked();
     public abstract void menuSettingsClicked();
 
 	// Sets menu layout
@@ -38,8 +38,8 @@ public abstract class BaseActivity_Main extends BaseActivity {
                 return true;
 
             // Summary button click executes abstract menuSummaryClicked() method
-            case R.id.menu_summary:
-                menuSummaryClicked();
+            case R.id.menu_expand:
+                menuExpandClicked();
                 return true;
 
             // Settings button click executes abstract menuSettingsClicked() method

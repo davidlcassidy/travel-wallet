@@ -76,10 +76,10 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
-                    programDS.updateProgramNotificationStatus(program, NotificationStatus.OFF);
+                    programDS.changeProgramNotificationStatus(program, NotificationStatus.OFF);
                     notificationButton.setChecked(false);
                 } else {
-                    programDS.updateProgramNotificationStatus(program, NotificationStatus.UNMONITORED);
+                    programDS.changeProgramNotificationStatus(program, NotificationStatus.UNMONITORED);
                     notificationButton.setChecked(true);
                 }
             }

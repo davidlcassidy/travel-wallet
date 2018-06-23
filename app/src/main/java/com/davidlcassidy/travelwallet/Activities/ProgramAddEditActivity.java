@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -14,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,11 +46,8 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
     private ProgramDataSource programDS;
     private Integer programId;
 
-    private EditText typeField;
-    private EditText nameField;
-    private EditText accountNumberField;
-    private EditText pointsField;
-    private EditText lastActivityField;
+    private TextView typeField, nameField, lastActivityField;
+    private EditText accountNumberField, pointsField;
     private LinearLayout lastActivityLayout;
 
     @Override
@@ -66,11 +63,11 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         programId = Integer.parseInt(getIntent().getStringExtra("PROGRAM_ID"));
 
 		// Gets ProgramAddEdit activity fields
-        typeField = (EditText) findViewById(R.id.typeField);
-        nameField = (EditText) findViewById(R.id.nameField);
+        typeField = (TextView) findViewById(R.id.typeField);
+        nameField = (TextView) findViewById(R.id.nameField);
         accountNumberField = (EditText) findViewById(R.id.accountNumberField);
         pointsField = (EditText) findViewById(R.id.pointsField);
-        lastActivityField = (EditText) findViewById(R.id.lastActivityField);
+        lastActivityField = (TextView) findViewById(R.id.lastActivityField);
 
         setClickListeners();
 
@@ -295,100 +292,71 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 	// Sets all click listeners so all label clicks match actions of field clicks
     private void setClickListeners(){
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        final RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
 
-        TextView typeLabel = (TextView) findViewById(R.id.typeLabel);
-        typeLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout typeLayout = (LinearLayout) findViewById(R.id.typeLayout);
+        typeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                typeFieldClick();
-            }});
-
-        typeField.setInputType(InputType.TYPE_NULL);
-        typeField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                mainLayout.requestFocus();
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                typeFieldClick();}
-        });
-        typeField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(ProgramAddEditActivity.this);
-                    typeField.performClick();}
+                typeFieldClick();
             }
         });
 
-        TextView nameLabel = (TextView) findViewById(R.id.nameLabel);
-        nameLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
+        nameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 nameFieldClick();
-            }});
-
-        nameField.setInputType(InputType.TYPE_NULL);
-        nameField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(ProgramAddEditActivity.this);
-                nameFieldClick();}
-        });
-        nameField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(ProgramAddEditActivity.this);
-                    nameField.performClick();}
             }
         });
 
-        TextView accountNumberLabel = (TextView) findViewById(R.id.accountNumberLabel);
-        accountNumberLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout accountNumberLayout = (LinearLayout) findViewById(R.id.accountNumberLayout);
+        accountNumberLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                accountNumberField.performClick();
-                accountNumberField.requestFocus();
+                accountNumberField.requestFocusFromTouch();
                 imm.showSoftInput(accountNumberField, InputMethodManager.SHOW_IMPLICIT);
-            }});
-
-        TextView pointsLabel = (TextView) findViewById(R.id.pointsLabel);
-        pointsLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pointsField.performClick();
-                pointsField.requestFocus();
-                imm.showSoftInput(pointsField, InputMethodManager.SHOW_IMPLICIT);
-            }});
-
-        TextView lastActivityLabel = (TextView) findViewById(R.id.lastActivityLabel);
-        lastActivityLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lastActivityDateFieldClick();
-            }});
-
-        lastActivityField.setInputType(InputType.TYPE_NULL);
-        lastActivityField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(ProgramAddEditActivity.this);
-                lastActivityDateFieldClick();
             }
         });
-        lastActivityField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        accountNumberField.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(ProgramAddEditActivity.this);
-                    lastActivityField.performClick();
-                }
+            public void onClick(View v) {
+                accountNumberField.requestFocusFromTouch();
+                imm.showSoftInput(accountNumberField, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        LinearLayout pointsLayout = (LinearLayout) findViewById(R.id.pointsLayout);
+        pointsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pointsField.requestFocusFromTouch();
+                imm.showSoftInput(pointsField, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+        pointsField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pointsField.requestFocusFromTouch();
+                imm.showSoftInput(pointsField, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        LinearLayout lastActivityLayout = (LinearLayout) findViewById(R.id.lastActivityLayout);
+        lastActivityLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lastActivityDateFieldClick();
             }
         });
     };
 
-	// Hides keyboard input
+    // Hides keyboard input
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
+
 }

@@ -2,6 +2,7 @@ package com.davidlcassidy.travelwallet.Classes;
 
 import android.content.Context;
 
+import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
 
 import java.util.Date;

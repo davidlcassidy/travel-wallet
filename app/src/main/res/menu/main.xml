@@ -11,8 +11,8 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/menu_summary"
-        android:title="Summary"
+        android:id="@+id/menu_expand"
+        android:title="Expand"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:showAsAction="always"
         app:showAsAction="always"/>

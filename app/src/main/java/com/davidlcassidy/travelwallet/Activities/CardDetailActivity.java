@@ -15,6 +15,7 @@ import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Detail;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Adapters.DetailListAdapter;
+import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
@@ -27,6 +28,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+/*
+CardDetailActivity is use to display the details of an individual credit card.
+It is created by the selection of a card in the listview in CardListFragment
+(MainActivity) and provided with a Card_ID matching the unique card id
+number in the MainDatabase. This activity is primarily composed of a listview utilizing
+the DetailListAdapter.
+ */
 
 public class CardDetailActivity extends BaseActivity_EditDelete {
 
@@ -71,10 +80,10 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
-                    cardDS.updateCardNotificationStatus(card, NotificationStatus.OFF);
+                    cardDS.changeCardNotificationStatus(card, NotificationStatus.OFF);
                     notificationButton.setChecked(false);
                 } else {
-                    cardDS.updateCardNotificationStatus(card, NotificationStatus.UNMONITORED);
+                    cardDS.changeCardNotificationStatus(card, NotificationStatus.UNMONITORED);
                     notificationButton.setChecked(true);
                 }
             }
@@ -123,7 +132,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
             notificationButton.setChecked(false);
         }
         notificationButton.setVisibility(View.VISIBLE);
-        if (!hasAnnualFee) {
+        if (!hasAnnualFee || card.getStatus() == CardStatus.CLOSED) {
             notificationButton.setVisibility(View.GONE);
         }
     }

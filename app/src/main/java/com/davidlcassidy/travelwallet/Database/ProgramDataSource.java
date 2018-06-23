@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
@@ -29,26 +30,25 @@ access to the two Loyalty Program tables in MainDatabase and RefDatabase.
 
 public class ProgramDataSource {
 
-    public static ProgramDataSource instance;
+    private static ProgramDataSource instance;
+    private static Context context;
     private static UserPreferences userPreferences;
-    private static SQLiteDatabase dbMain;
-    private static SQLiteDatabase dbRef;
+    private static SQLiteDatabase dbMain, dbRef;
     private static MainDatabaseHelper dbHelperMain;
     private static RefDatabaseHelper dbHelperRef;
-    private static String tableNameMain;
-    private static String tableNameRef;
-    private static String[] tableColumnsMain;
-    private static String[] tableColumnsRef;
+    private static String tableNameMain, tableNameRef;
+    private static String[] tableColumnsMain, tableColumnsRef;
     private static SimpleDateFormat dbDateFormat = dbHelperMain.DATABASE_DATEFORMAT;
 
     public static ProgramDataSource getInstance(Context context) {
         if (instance == null) {
-            instance = new ProgramDataSource(context.getApplicationContext());
+            instance = new ProgramDataSource(context);
         }
         return instance;
     }
 
-    private ProgramDataSource(Context context) {
+    private ProgramDataSource(Context c) {
+        context = c;
         userPreferences = UserPreferences.getInstance(context);
         dbHelperMain = new MainDatabaseHelper(context);
         dbHelperRef = new RefDatabaseHelper(context);
@@ -290,7 +290,7 @@ public class ProgramDataSource {
     }
 
 	// Update programs notifications
-    public void updateProgramsNotifications(Context context){
+    public void updateProgramsNotifications(){
         NotificationStatus newStatus;
         NotificationStatus currentStatus;
 
@@ -318,30 +318,27 @@ public class ProgramDataSource {
             if (program != null){
                 currentStatus = program.getNotificationStatus();
                 Date expirationDate = program.getExpirationDate();
-                if (currentStatus != NotificationStatus.UNMONITORED) {
-					
-					// Turns off monitoring for programs with no expiration date
-                    if (program.hasExpirationDate() == false) {
-                        program.setNotificationStatus(NotificationStatus.UNMONITORED);
+                if (program.hasExpirationDate() == false || expirationDate == null) {
+                    if (currentStatus == NotificationStatus.ON) {
+                        program.setNotificationStatus(NotificationStatus.OFF);
                         update(program);
-						
-                    } else if (expirationDate != null) {
-                        Calendar programNotificationDate = Calendar.getInstance();
-                        programNotificationDate.add(Calendar.DATE, notificationDays);
-                        if (expirationDate.before(programNotificationDate.getTime()) && program.getPoints() > 0) {
-                            newStatus = NotificationStatus.ON;
-                        } else {
-                            newStatus = NotificationStatus.OFF;
-                        }
-						
-						// If status has changed, updates program and creates new notification
-                        if (newStatus != currentStatus) {
-                            program.setNotificationStatus(newStatus);
-                            update(program);
-                            if (newStatus == NotificationStatus.ON) {
-                                Notification notification = new Notification(program);
-                                notification.sendPhoneNotification(context);
-                            }
+                    }
+                } else if (currentStatus != NotificationStatus.UNMONITORED) {
+                    Calendar programNotificationDate = Calendar.getInstance();
+                    programNotificationDate.add(Calendar.DATE, notificationDays);
+                    if (expirationDate.before(programNotificationDate.getTime()) && program.getPoints() > 0) {
+                        newStatus = NotificationStatus.ON;
+                    } else {
+                        newStatus = NotificationStatus.OFF;
+                    }
+
+                    // If status has changed, updates program and creates new notification
+                    if (newStatus != currentStatus) {
+                        program.setNotificationStatus(newStatus);
+                        update(program);
+                        if (newStatus == NotificationStatus.ON) {
+                            Notification notification = new Notification(program);
+                            notification.sendPhoneNotification(context);
                         }
                     }
                 }
@@ -352,7 +349,7 @@ public class ProgramDataSource {
     }
 
 	// Updates notification status for an individual program
-    public void updateProgramNotificationStatus(LoyaltyProgram program, NotificationStatus newStatus){
+    public void changeProgramNotificationStatus(LoyaltyProgram program, NotificationStatus newStatus){
         NotificationStatus currentStatus = program.getNotificationStatus();
         if (newStatus != currentStatus) {
             program.setNotificationStatus(newStatus);

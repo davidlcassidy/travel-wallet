@@ -11,4 +11,7 @@
     <dimen name="standardPadding">15dp</dimen>
     <dimen name="header">17sp</dimen>
     <dimen name="text">15sp</dimen>
+
+    <dimen name="fab1_float">115dp</dimen>
+    <dimen name="fab2_float">65dp</dimen>
 </resources>

@@ -15,11 +15,13 @@ import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 /*
 CardDataSource is used to manage and access all local Credit Card data, via access
@@ -28,26 +30,25 @@ to the two Credit Card tables in MainDatabase and RefDatabase.
 
 public class CardDataSource {
 
-    public static CardDataSource instance;
+    private static CardDataSource instance;
+    private static Context context;
     private static UserPreferences userPreferences;
-    private static SQLiteDatabase dbMain;
-    private static SQLiteDatabase dbRef;
+    private static SQLiteDatabase dbMain, dbRef;
     private static MainDatabaseHelper dbHelperMain;
     private static RefDatabaseHelper dbHelperRef;
-    private static String tableNameMain;
-    private static String tableNameRef;
-    private static String[] tableColumnsMain;
-    private static String[] tableColumnsRef;
+    private static String tableNameMain, tableNameRef;
+    private static String[] tableColumnsMain, tableColumnsRef;
     private static SimpleDateFormat dbDateFormat = dbHelperMain.DATABASE_DATEFORMAT;
 
     public static CardDataSource getInstance(Context context) {
         if (instance == null) {
-            instance = new CardDataSource(context.getApplicationContext());
+            instance = new CardDataSource(context);
         }
         return instance;
     }
 
-    private CardDataSource(Context context) {
+    private CardDataSource(Context c) {
+        context = c;
         userPreferences = UserPreferences.getInstance(context);
         dbHelperMain = new MainDatabaseHelper(context);
         dbHelperRef = new RefDatabaseHelper(context);
@@ -123,13 +124,17 @@ public class CardDataSource {
     }
 
 	// Returns a list of all credit cards in database, sorted by sortField parameter
-    public ArrayList <CreditCard> getAll(ItemField sortField){
+    public ArrayList <CreditCard> getAll(ItemField sortField, boolean excludeClosed){
         ArrayList<CreditCard> cardList = new ArrayList<CreditCard>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             CreditCard card = cursorToCard(cursor);
             if (card != null) {
+                if (excludeClosed && card.getStatus() == CardStatus.CLOSED){
+                    cursor.moveToNext();
+                    continue;
+                }
                 cardList.add(card);
             }
             cursor.moveToNext();
@@ -204,9 +209,40 @@ public class CardDataSource {
         return cardList;
     }
 
+    // Returns a list of all credit cards in database that count towards Chase 5/24 status
+    public ArrayList <CreditCard> getChase524Cards(){
+        ArrayList<CreditCard> fullCardList = getAll(ItemField.OPENDATE, false);
+        ArrayList<CreditCard> recentCardList = new ArrayList<CreditCard>();
+
+        // Establish cutoff date 24 months before today
+        Calendar cutoffDate = Calendar.getInstance();
+        cutoffDate.add(Calendar.MONTH, -24);
+
+        // List of issuers whose business cards also count towards 5/24 status
+        List<String> businessCardsCreditCheck = Arrays.asList(new String[]{"Capital One", "Discover"});
+
+        for (CreditCard card : fullCardList) {
+            Date openDate = card.getOpenDate();
+
+            // Skips cards with no open date
+            if (openDate != null) {
+                Calendar openDateCal = Calendar.getInstance();
+                openDateCal.setTime(openDate);
+                if (openDateCal.after(cutoffDate)) {
+                    if (card.getType().equals("P")) {
+                        recentCardList.add(card);
+                    } else if (card.getType().equals("B") && businessCardsCreditCheck.contains(card.getBank())) {
+                        recentCardList.add(card);
+                    }
+                }
+            }
+        }
+        return recentCardList;
+    }
+
 	// Calculates sum total of all cards annual fees
-    public BigDecimal getAllCardsAnnualFees() {
-        ArrayList<CreditCard> cardList = getAll(null);
+    public BigDecimal getAllOpenCardsAnnualFees() {
+        ArrayList<CreditCard> cardList = getAll(null,true);
         BigDecimal totalAF = BigDecimal.valueOf(0);
         for (CreditCard cc : cardList) {
             totalAF = totalAF.add(cc.getAnnualFee());
@@ -284,7 +320,7 @@ public class CardDataSource {
     }
 
 	// Update cards notifications
-    public void updateCardsNotifications(Context context){
+    public void updateCardsNotifications(){
         NotificationStatus newStatus;
         NotificationStatus currentStatus;
 
@@ -312,31 +348,29 @@ public class CardDataSource {
             if (card != null) {
                 currentStatus = card.getNotificationStatus();
                 Date annualFeeDate = card.getAfDate();
-                if (currentStatus != NotificationStatus.UNMONITORED) {
-					
-					// Turns off monitoring for cards with no annual fee
-                    if (card.hasAnnualFee() == false) {
-                        card.setNotificationStatus(NotificationStatus.UNMONITORED);
+                if (card.getStatus() == CardStatus.CLOSED || card.hasAnnualFee() == false || annualFeeDate == null){
+                    if (currentStatus == NotificationStatus.ON){
+                        card.setNotificationStatus(NotificationStatus.OFF);
                         update(card);
-						
-                    } else if (annualFeeDate != null) {
-                        Calendar programNotificationDate = Calendar.getInstance();
-                        programNotificationDate.add(Calendar.DATE, notificationDays);
-                        Boolean hasAnnualFee = card.hasAnnualFee();
-                        if (annualFeeDate.before(programNotificationDate.getTime()) && hasAnnualFee) {
-                            newStatus = NotificationStatus.ON;
-                        } else {
-                            newStatus = NotificationStatus.OFF;
-                        }
-						
-						// If status has changed, updates card and creates new notification
-                        if (newStatus != currentStatus) {
-                            card.setNotificationStatus(newStatus);
-                            update(card);
-                            if (newStatus == NotificationStatus.ON) {
-                                Notification notification = new Notification(card);
-                                notification.sendPhoneNotification(context);
-                            }
+                    }
+                } else if (currentStatus != NotificationStatus.UNMONITORED) {
+                    Calendar programNotificationDate = Calendar.getInstance();
+                    programNotificationDate.add(Calendar.DATE, notificationDays);
+                    Boolean hasAnnualFee = card.hasAnnualFee();
+                    if (annualFeeDate.before(programNotificationDate.getTime()) && hasAnnualFee) {
+                        newStatus = NotificationStatus.ON;
+                    } else {
+                        newStatus = NotificationStatus.OFF;
+                    }
+
+                    // If status has changed, updates card and creates new notification
+                    if (newStatus != currentStatus) {
+                        card.setNotificationStatus(newStatus);
+                        update(card);
+                        if (newStatus == NotificationStatus.ON) {
+                            Notification notification = new Notification(card);
+                            notification.sendPhoneNotification(context);
+
                         }
                     }
                 }
@@ -347,7 +381,7 @@ public class CardDataSource {
     }
 
 	// Updates notification status for an individual card
-    public void updateCardNotificationStatus(CreditCard card, NotificationStatus newStatus){
+    public void changeCardNotificationStatus(CreditCard card, NotificationStatus newStatus){
         NotificationStatus currentStatus = card.getNotificationStatus();
         if (newStatus != currentStatus) {
             card.setNotificationStatus(newStatus);
@@ -357,7 +391,7 @@ public class CardDataSource {
 
 	// Returns card with the next upcoming annual fee
     public CreditCard getNextAF() {
-        ArrayList<CreditCard> cardList = getAll(ItemField.AFDATE);
+        ArrayList<CreditCard> cardList = getAll(ItemField.AFDATE, true);
         Date today = new Date();
         for (CreditCard card : cardList) {
 

@@ -3,6 +3,7 @@ package com.davidlcassidy.travelwallet.Classes;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
@@ -73,15 +74,15 @@ public class UserPreferences {
     // Gets instance of UserPreferences. Creates instance if it doesn't exist.
     public static UserPreferences getInstance(Context context) {
         if (instance == null) {
-            instance = new UserPreferences(context.getApplicationContext());
+            instance = new UserPreferences(context);
         }
         return instance;
     }
 
 
     // Private UserPreferences constructor called by getInstance method
-    private UserPreferences(Context c) {
-        sharedPref = c.getSharedPreferences(nUserPreferences, Context.MODE_PRIVATE);
+    private UserPreferences(Context context) {
+        sharedPref = context.getSharedPreferences(nUserPreferences, Context.MODE_PRIVATE);
         spEditor = sharedPref.edit();
     }
 

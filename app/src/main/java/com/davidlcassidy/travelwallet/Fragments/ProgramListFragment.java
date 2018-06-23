@@ -1,7 +1,6 @@
 package com.davidlcassidy.travelwallet.Fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
 import com.davidlcassidy.travelwallet.Adapters.ProgramListAdapter;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
@@ -36,29 +36,21 @@ directing users to add new programs with the "add" button.
 
 public class ProgramListFragment extends Fragment {
 
-    private View view;
-    private Context context;
     private Activity activity;
-
     private UserPreferences userPreferences;
     private ProgramDataSource programDS;
-    private ArrayList<LoyaltyProgram> fullProgramList;
-    private ArrayList<LoyaltyProgram> filteredProgramList;
-
+    private ArrayList<LoyaltyProgram> fullProgramList, filteredProgramList;
     private TextView emptyListText;
     private ListView lv;
-
-    private Spinner filter1;
-    private Spinner filter2;
+    private Spinner filter1, filter2;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_list, container, false);
-        context = view.getContext();
-        activity= getActivity();
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        activity = getActivity();
 
-        userPreferences = UserPreferences.getInstance(context);
-        programDS = ProgramDataSource.getInstance(activity);
+        userPreferences = UserPreferences.getInstance(getContext());
+        programDS = ProgramDataSource.getInstance(getContext());
 
 		// Sets the text used when loyalty program list is empty
         emptyListText = (TextView) view.findViewById(R.id.emptyListText);
@@ -71,7 +63,7 @@ public class ProgramListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String programID = filteredProgramList.get(position).getId().toString();
-                Intent intent = new Intent(context, ProgramDetailActivity.class);
+                Intent intent = new Intent(getContext(), ProgramDetailActivity.class);
                 intent.putExtra("PROGRAM_ID", programID);
                 startActivity(intent);
             }
@@ -96,12 +88,16 @@ public class ProgramListFragment extends Fragment {
         if (fullProgramList.size() == 0){
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
+            filter1.setVisibility(View.GONE);
+            filter2.setVisibility(View.GONE);
 
         } else {
 
 			// Add loyalty programs to list view
             emptyListText.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);
+            filter1.setVisibility(View.VISIBLE);
+            filter2.setVisibility(View.VISIBLE);
 
 			// Sets adaptor to list view
             ProgramListAdapter adapter = new ProgramListAdapter(activity, filteredProgramList);

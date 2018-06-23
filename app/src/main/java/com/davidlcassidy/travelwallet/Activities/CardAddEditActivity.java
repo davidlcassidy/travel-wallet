@@ -1,14 +1,11 @@
 package com.davidlcassidy.travelwallet.Activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -46,11 +43,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
     private CardDataSource cardDS;
     private Integer cardId;
 
-    private EditText bankField;
-    private EditText nameField;
-    private EditText statusField;
-    private EditText openDateField;
-    private EditText afDateField;
+    private TextView bankField, nameField, statusField, openDateField, afDateField;
     private LinearLayout afDateLayout;
 
     @Override
@@ -66,11 +59,11 @@ public class CardAddEditActivity extends BaseActivity_Save {
         cardId = Integer.parseInt(getIntent().getStringExtra("CARD_ID"));
 
 		// Gets CardAddEdit activity fields
-        bankField = (EditText) findViewById(R.id.bankField);
-        nameField = (EditText) findViewById(R.id.nameField);
-        statusField = (EditText) findViewById(R.id.statusField);
-        openDateField = (EditText) findViewById(R.id.openDateField);
-        afDateField = (EditText) findViewById(R.id.afDateField);
+        bankField = (TextView) findViewById(R.id.bankField);
+        nameField = (TextView) findViewById(R.id.nameField);
+        statusField = (TextView) findViewById(R.id.statusField);
+        openDateField = (TextView) findViewById(R.id.openDateField);
+        afDateField = (TextView) findViewById(R.id.afDateField);
 
         setClickListeners();
 
@@ -366,131 +359,46 @@ public class CardAddEditActivity extends BaseActivity_Save {
 	// Sets all click listeners so all label clicks match actions of field clicks
     private void setClickListeners(){
 
-        TextView bankLabel = (TextView) findViewById(R.id.bankLabel);
-        bankLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout bankLayout = (LinearLayout) findViewById(R.id.bankLayout);
+        bankLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bankFieldClick();
-            }});
-
-        bankField.setInputType(InputType.TYPE_NULL);
-        bankField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(CardAddEditActivity.this);
-                bankFieldClick();}
-        });
-        bankField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(CardAddEditActivity.this);
-                    bankField.performClick();}
             }
         });
 
-        TextView nameLabel = (TextView) findViewById(R.id.nameLabel);
-        nameLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
+        nameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 nameFieldClick();
-            }});
-
-        nameField.setInputType(InputType.TYPE_NULL);
-        nameField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(CardAddEditActivity.this);
-                nameFieldClick();}
-        });
-        nameField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(CardAddEditActivity.this);
-                    nameField.performClick();}
             }
         });
 
-        TextView statusLabel = (TextView) findViewById(R.id.statusLabel);
-        statusLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout statusLayout = (LinearLayout) findViewById(R.id.statusLayout);
+        statusLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 statusFieldClick();
-            }});
-
-        statusField.setInputType(InputType.TYPE_NULL);
-        statusField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(CardAddEditActivity.this);
-                statusFieldClick();}
-        });
-        statusField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(CardAddEditActivity.this);
-                    statusField.performClick();}
             }
         });
 
-        TextView openDateLabel = (TextView) findViewById(R.id.openDateLabel);
-        openDateLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout openDateLayout = (LinearLayout) findViewById(R.id.openDateLayout);
+        openDateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDateFieldClick();
-            }});
-
-        openDateField.setInputType(InputType.TYPE_NULL);
-        openDateField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(CardAddEditActivity.this);
-                openDateFieldClick();
-            }
-        });
-        openDateField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(CardAddEditActivity.this);
-                    openDateField.performClick();
-                }
             }
         });
 
-        TextView afDateLabel = (TextView) findViewById(R.id.afDateLabel);
-        afDateLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout afDateLayout = (LinearLayout) findViewById(R.id.afDateLayout);
+        afDateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 annualFeeDateFieldClick();
-            }});
-
-        afDateField.setInputType(InputType.TYPE_NULL);
-        afDateField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(CardAddEditActivity.this);
-                annualFeeDateFieldClick();
-            }
-        });
-        afDateField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(CardAddEditActivity.this);
-                    afDateField.performClick();
-                }
             }
         });
 
     };
-
-	// Hides keyboard input
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }
 
 }

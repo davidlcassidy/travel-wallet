@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 
+import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
@@ -37,9 +38,8 @@ public class NotificationTimerService extends Service {
 
     @Override
     public void onCreate() {
-		Context c = getApplicationContext();
-        programDS = ProgramDataSource.getInstance(c);
-        cardDS = CardDataSource.getInstance(c);
+        programDS = ProgramDataSource.getInstance(this);
+        cardDS = CardDataSource.getInstance(this);
 
         if (mTimer != null) {
             mTimer.cancel();
@@ -58,9 +58,8 @@ public class NotificationTimerService extends Service {
                 public void run() {
 					
 					// When timer service is run, update program and card notifications
-                    Context c = getApplicationContext();
-                    programDS.updateProgramsNotifications(c);
-                    cardDS.updateCardsNotifications(c);
+                    programDS.updateProgramsNotifications();
+                    cardDS.updateCardsNotifications();
 					
                 }
             });

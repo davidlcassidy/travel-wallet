@@ -1,7 +1,6 @@
 package com.davidlcassidy.travelwallet.Fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.Activities.CardDetailActivity;
+import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Adapters.CardListAdapter;
 import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
@@ -37,29 +37,21 @@ add new cards with the "add" button.
 
 public class CardListFragment extends Fragment {
 
-    private View view;
-    private Context context;
     private Activity activity;
-
     private UserPreferences userPreferences;
     private CardDataSource cardDS;
-    private ArrayList<CreditCard> fullCardList;
-    private ArrayList<CreditCard> filteredCardList;
-
+    private ArrayList<CreditCard> fullCardList, filteredCardList;
     private TextView emptyListText;
     private ListView lv;
-
-    private Spinner filter1;
-    private Spinner filter2;
+    private Spinner filter1, filter2;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_list, container, false);
-        context = view.getContext();
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
         activity= getActivity();
 
-        userPreferences = UserPreferences.getInstance(context);
-        cardDS = CardDataSource.getInstance(activity);
+        userPreferences = UserPreferences.getInstance(getContext());
+        cardDS = CardDataSource.getInstance(getContext());
 
 		// Sets the text used when credit card list is empty
         emptyListText = (TextView) view.findViewById(R.id.emptyListText);
@@ -72,7 +64,7 @@ public class CardListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String cardID = filteredCardList.get(position).getId().toString();
-                Intent intent = new Intent(context, CardDetailActivity.class);
+                Intent intent = new Intent(getContext(), CardDetailActivity.class);
                 intent.putExtra("CARD_ID", cardID);
                 startActivity(intent);
             }
@@ -90,19 +82,23 @@ public class CardListFragment extends Fragment {
 
 		// Gets all credit cards sorted by field defined in user preferences
         ItemField sortField = userPreferences.getSetting_CardSortField();
-        fullCardList = cardDS.getAll(sortField);
+        fullCardList = cardDS.getAll(sortField,false);
         filterCards();
 
 		// Hides list and shows empty list text if there are no credit cards
         if (fullCardList.size() == 0){
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
+            filter1.setVisibility(View.GONE);
+            filter2.setVisibility(View.GONE);
 
         } else {
 
 			// Add credit cards to list view
             emptyListText.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);
+            filter1.setVisibility(View.VISIBLE);
+            filter2.setVisibility(View.VISIBLE);
 
 			// Sets adaptor to list view
             CardListAdapter adapter = new CardListAdapter(activity, filteredCardList);

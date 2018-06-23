@@ -6,6 +6,7 @@
     android:padding="@dimen/standardPadding">
 
     <RelativeLayout
+        android:id="@+id/mainLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:descendantFocusability="beforeDescendants"
@@ -17,7 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/typeLabel"
@@ -30,12 +32,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/typeField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="textCapCharacters"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -51,7 +53,8 @@
             android:layout_below="@+id/typeLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/nameLabel"
@@ -64,12 +67,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/nameField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="textCapCharacters"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"
@@ -84,7 +87,8 @@
             android:layout_below="@+id/nameLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/accountNumberLabel"
@@ -117,7 +121,8 @@
             android:layout_below="@+id/accountNumberLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/pointsLabel"
@@ -150,7 +155,8 @@
             android:layout_below="@+id/pointsLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
-            android:background="@drawable/boarder">
+            android:background="@drawable/boarder"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/lastActivityLabel"
@@ -163,12 +169,12 @@
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/lastActivityField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:inputType="date"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:layout_gravity="left"
                 android:background="@android:color/transparent"

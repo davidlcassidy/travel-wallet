@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -40,17 +41,17 @@ public class SettingsActivity extends BaseActivity_Save {
 
     private UserPreferences userPreferences;
 
-    private EditText programNotificationField;
-    private EditText programPrimaryField;
-    private EditText programSortField;
-    private EditText cardNotificationField;
-    private EditText cardPrimaryField;
-    private EditText cardSortField;
-    private EditText initialSummaryField;
-    private EditText phoneNotificationsField;
-    private EditText languageField;
-    private EditText currencyField;
-    private EditText dateField;
+    private TextView programNotificationField;
+    private TextView programPrimaryField;
+    private TextView programSortField;
+    private TextView cardNotificationField;
+    private TextView cardPrimaryField;
+    private TextView cardSortField;
+    private TextView initialSummaryField;
+    private TextView phoneNotificationsField;
+    private TextView languageField;
+    private TextView currencyField;
+    private TextView dateField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +61,20 @@ public class SettingsActivity extends BaseActivity_Save {
 
 		// Gets Settings activity fields
         userPreferences = UserPreferences.getInstance(this);
-        programNotificationField = (EditText) findViewById(R.id.programNotificationField);
-        programPrimaryField = (EditText) findViewById(R.id.programPrimaryField);
-        programSortField = (EditText) findViewById(R.id.programSortField);
-        cardNotificationField = (EditText) findViewById(R.id.cardNotificationField);
-        cardPrimaryField = (EditText) findViewById(R.id.cardPrimaryField);
-        cardSortField = (EditText) findViewById(R.id.cardSortField);
-        initialSummaryField = (EditText) findViewById(R.id.initialSummaryField);
-        phoneNotificationsField = (EditText) findViewById(R.id.phoneNotificationsField);
-        languageField = (EditText) findViewById(R.id.languageField);
-        currencyField = (EditText) findViewById(R.id.currencyField);
-        dateField = (EditText) findViewById(R.id.dateField);
+        programNotificationField = (TextView) findViewById(R.id.programNotificationField);
+        programPrimaryField = (TextView) findViewById(R.id.programPrimaryField);
+        programSortField = (TextView) findViewById(R.id.programSortField);
+        cardNotificationField = (TextView) findViewById(R.id.cardNotificationField);
+        cardPrimaryField = (TextView) findViewById(R.id.cardPrimaryField);
+        cardSortField = (TextView) findViewById(R.id.cardSortField);
+        initialSummaryField = (TextView) findViewById(R.id.initialSummaryField);
+        phoneNotificationsField = (TextView) findViewById(R.id.phoneNotificationsField);
+        languageField = (TextView) findViewById(R.id.languageField);
+        currencyField = (TextView) findViewById(R.id.currencyField);
+        dateField = (TextView) findViewById(R.id.dateField);
 
-		// Sets activity label/field click listeners
-        setupLabelsClickListeners();
-        setupFieldsClickListeners();
+		// Sets activity click listeners
+        setClickListeners();
 
     }
 
@@ -455,270 +455,84 @@ public class SettingsActivity extends BaseActivity_Save {
         return fieldValueArray[0] + " " + fieldValueArray[1];
     }
 
-	// Sets label click listeners so they match actions of field clicks
-    private void setupLabelsClickListeners (){
-        TextView programNotificationLabel = (TextView) findViewById(R.id.programNotificationLabel);
-        programNotificationLabel.setOnClickListener(new View.OnClickListener() {
+	// Sets layout click listeners
+    private void setClickListeners (){
+
+        LinearLayout programNotificationLayout = (LinearLayout) findViewById(R.id.programNotificationLayout);
+        programNotificationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 programNotificationFieldClick();
             }});
 
-        TextView programPrimaryLabel = (TextView) findViewById(R.id.programPrimaryLabel);
-        programPrimaryLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout programPrimaryLayout = (LinearLayout) findViewById(R.id.programPrimaryLayout);
+        programPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 programPrimaryFieldClick();
             }});
 
-        TextView programSortLabel = (TextView) findViewById(R.id.programSortLabel);
-        programSortLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout programSortLayout = (LinearLayout) findViewById(R.id.programSortLayout);
+        programSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 programSortFieldClick();
             }});
 
-        TextView cardNotificationLabel = (TextView) findViewById(R.id.cardNotificationLabel);
-        cardNotificationLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout cardNotificationLayout = (LinearLayout) findViewById(R.id.cardNotificationLayout);
+        cardNotificationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardNotificationFieldClick();
             }});
 
-        TextView cardPrimaryLabel = (TextView) findViewById(R.id.cardPrimaryLabel);
-        cardPrimaryLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout cardPrimaryLayout = (LinearLayout) findViewById(R.id.cardPrimaryLayout);
+        cardPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardPrimaryFieldClick();
             }});
 
-        TextView cardSortLabel = (TextView) findViewById(R.id.cardSortLabel);
-        cardSortLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout cardSortLayout = (LinearLayout) findViewById(R.id.cardSortLayout);
+        cardSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardSortFieldClick();
             }});
 
-        TextView initialSummaryLabel = (TextView) findViewById(R.id.initialSummaryLabel);
-        initialSummaryLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout initialSummaryLayout = (LinearLayout) findViewById(R.id.initialSummaryLayout);
+        initialSummaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 initialSummaryFieldClick();
             }});
 
-        TextView phoneNotificationsLabel = (TextView) findViewById(R.id.phoneNotificationsLabel);
-        phoneNotificationsLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout phoneNotificationsLayout = (LinearLayout) findViewById(R.id.phoneNotificationsLayout);
+        phoneNotificationsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 phoneNotificationsFieldClick();
             }});
 
-        TextView languageLabel = (TextView) findViewById(R.id.languageLabel);
-        languageLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout languageLayout = (LinearLayout) findViewById(R.id.languageLayout);
+        languageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 languageFieldClick();
             }});
 
-        TextView currencyLabel = (TextView) findViewById(R.id.currencyLabel);
-        currencyLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout currencyLayout = (LinearLayout) findViewById(R.id.currencyLayout);
+        currencyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 currencyFieldClick();
             }});
 
-        TextView dateLabel = (TextView) findViewById(R.id.dateLabel);
-        dateLabel.setOnClickListener(new View.OnClickListener() {
+        LinearLayout dateLayout = (LinearLayout) findViewById(R.id.dateLayout);
+        dateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dateFieldClick();
             }});
     }
-
-	// Sets field click listeners
-    private void setupFieldsClickListeners () {
-        programNotificationField.setInputType(InputType.TYPE_NULL);
-        programNotificationField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                programNotificationFieldClick();}
-        });
-        programNotificationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    programNotificationField.performClick();}
-            }
-        });
-
-        programPrimaryField.setInputType(InputType.TYPE_NULL);
-        programPrimaryField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                programPrimaryFieldClick();}
-        });
-        programPrimaryField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    programPrimaryField.performClick();}
-            }
-        });
-
-        programSortField.setInputType(InputType.TYPE_NULL);
-        programSortField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                programSortFieldClick();}
-        });
-        programSortField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    programSortField.performClick();}
-            }
-        });
-
-        cardNotificationField.setInputType(InputType.TYPE_NULL);
-        cardNotificationField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                cardNotificationFieldClick();}
-        });
-        cardNotificationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    cardNotificationField.performClick();}
-            }
-        });
-
-        cardPrimaryField.setInputType(InputType.TYPE_NULL);
-        cardPrimaryField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                cardPrimaryFieldClick();}
-        });
-        cardPrimaryField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    cardPrimaryField.performClick();}
-            }
-        });
-
-        cardSortField.setInputType(InputType.TYPE_NULL);
-        cardSortField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                cardSortFieldClick();}
-        });
-        cardSortField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    cardSortField.performClick();}
-            }
-        });
-
-        initialSummaryField.setInputType(InputType.TYPE_NULL);
-        initialSummaryField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                initialSummaryFieldClick();}
-        });
-        initialSummaryField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    initialSummaryField.performClick();}
-            }
-        });
-
-        phoneNotificationsField.setInputType(InputType.TYPE_NULL);
-        phoneNotificationsField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                phoneNotificationsFieldClick();}
-        });
-        phoneNotificationsField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    phoneNotificationsField.performClick();}
-            }
-        });
-
-        languageField.setInputType(InputType.TYPE_NULL);
-        languageField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                languageFieldClick();}
-        });
-        languageField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    languageField.performClick();}
-            }
-        });
-
-        currencyField.setInputType(InputType.TYPE_NULL);
-        currencyField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                currencyFieldClick();}
-        });
-        currencyField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    currencyField.performClick();}
-            }
-        });
-
-        dateField.setInputType(InputType.TYPE_NULL);
-        dateField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard(SettingsActivity.this);
-                dateFieldClick();}
-        });
-        dateField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    hideSoftKeyboard(SettingsActivity.this);
-                    dateField.performClick();}
-            }
-        });
-
-    }
-
-	// Hides keyboard input
-    private static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }
-
 }
