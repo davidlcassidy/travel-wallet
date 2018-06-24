@@ -73,6 +73,7 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
                 Date expirationDate = program.getExpirationDate();
                 String expirationOverride = program.getExpirationOverride();
                 String message = null;
+
 				// Uses expiration override value if there is no expiration date
                 if (program.hasExpirationDate() == false && expirationOverride != null){
                     message = expirationOverride;
@@ -80,6 +81,14 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
                     message = dateFormat.format(expirationDate);
                 }
                 messageField.setText(message);
+                break;
+            case "Notes":
+
+                // Gets the first 25 characters of the first notes line
+                String notes = program.getNotes();
+                messageField.setText(notes
+                        .split("\\r?\\n")[0]
+                        .substring(0, Math.min(notes.length(), 25)));
                 break;
         }
         return convertView;

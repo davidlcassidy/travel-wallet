@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
+import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
@@ -31,6 +31,7 @@ access to the two Loyalty Program tables in MainDatabase and RefDatabase.
 public class ProgramDataSource {
 
     private static ProgramDataSource instance;
+    private static OwnerDataSource ownerDS;
     private static Context context;
     private static UserPreferences userPreferences;
     private static SQLiteDatabase dbMain, dbRef;
@@ -63,6 +64,8 @@ public class ProgramDataSource {
         Cursor dbCursor2 = dbRef.query(tableNameRef, null, null, null, null, null, null);
         tableColumnsRef = dbCursor2.getColumnNames();
         dbCursor1.close(); dbCursor2.close();
+
+        ownerDS = OwnerDataSource.getInstance(context);
     }
 
 	// Check and update local database version if necessary
@@ -83,9 +86,12 @@ public class ProgramDataSource {
     }
 
 	// Creates new user created loyalty program and inserts program into main database
-    public LoyaltyProgram create(int programRefId, String number, int points, Date lastActivity, String notes) {
+    public LoyaltyProgram create(Integer programRefId, Owner owner, String number, int points, Date lastActivity, String notes) {
         ContentValues values = new ContentValues();
         values.put(dbHelperMain.COLUMN_LP_REFID, programRefId);
+        if (owner != null){
+            values.put(dbHelperMain.COLUMN_CC_OWNERID, owner.getId());
+        }
         values.put(dbHelperMain.COLUMN_LP_ACCOUNTNUMBER, number);
         values.put(dbHelperMain.COLUMN_LP_POINTS, points);
         if (lastActivity != null){
@@ -119,16 +125,25 @@ public class ProgramDataSource {
     }
 
 	// Returns a list of all loyalty programs in database, sorted by sortField parameter
-    public ArrayList <LoyaltyProgram> getAll(ItemField sortField){
+    public ArrayList <LoyaltyProgram> getAll(Owner owner, ItemField sortField, boolean onlyWithNotifications){
         ArrayList<LoyaltyProgram> programList = new ArrayList<LoyaltyProgram>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             LoyaltyProgram program = cursorToProgram(cursor);
+            Owner programOwner = program.getOwner();
             if (program != null) {
-                programList.add(program);
+                if (owner != null && (programOwner == null || programOwner.getId() != owner.getId()) ) {
+                    cursor.moveToNext();
+                    continue;
+                } else if (onlyWithNotifications && program.getNotificationStatus() != NotificationStatus.ON){
+                    cursor.moveToNext();
+                    continue;
+                } else {
+                    programList.add(program);
+                    cursor.moveToNext();
+                }
             }
-            cursor.moveToNext();
         }
         cursor.close();
 
@@ -210,16 +225,6 @@ public class ProgramDataSource {
         return programList;
     }
 
-	// Calculates sum total value of all loyalty programs
-    public BigDecimal getAllProgramsValue() {
-        ArrayList<LoyaltyProgram> programs = getAll(null);
-        BigDecimal total = BigDecimal.valueOf(0);
-        for (LoyaltyProgram p : programs) {
-            total = total.add(p.getTotalValue());
-        }
-        return total;
-    }
-
 	// Returns a single loyalty program by program ID
     public LoyaltyProgram getSingle(int id) {
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_LP_ID + " = " + id, null, null, null, null);
@@ -270,22 +275,6 @@ public class ProgramDataSource {
 		// Sort alphabetically
         Collections.sort(programList);
 		
-        return programList;
-    }
-
-	// Returns list of programs with notifications
-    public ArrayList<LoyaltyProgram> getProgramsWithNotifications() {
-        ArrayList<LoyaltyProgram> programList = new ArrayList<LoyaltyProgram>();
-        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            LoyaltyProgram program = cursorToProgram(cursor);
-            if (program != null && program.getNotificationStatus() == NotificationStatus.ON) {
-                programList.add(program);
-            }
-            cursor.moveToNext();
-        }
-        cursor.close();
         return programList;
     }
 
@@ -357,32 +346,11 @@ public class ProgramDataSource {
         }
     }
 
-	// Returns program with the next upcoming expiration date
-    public LoyaltyProgram getNextExpire(){
-        ArrayList<LoyaltyProgram> programList = getAll(ItemField.EXPIRATIONDATE);
-        Date today = new Date();
-        for (LoyaltyProgram program : programList) {
-
-            // Checks if program monitoring is on and has an expiration date
-            NotificationStatus notificationStatus = program.getNotificationStatus();
-            Date expDate = program.getExpirationDate();
-            boolean hasExpirationDate = program.hasExpirationDate() && expDate != null;
-            if (notificationStatus != NotificationStatus.UNMONITORED && hasExpirationDate){
-
-                // Checks program if expiration date is in future and program has points
-                int points = program.getPoints();
-                if (expDate.compareTo(today) > 0 && points > 0) {
-                    return program;
-                }
-			}
-        }
-        return null;
-    }
-
-	// Update all fields for an individual program in main the database
+	// Update all fields for an individual program in the main database
     public int update(LoyaltyProgram program)  {
         Integer ID = program.getId();
         Integer programRefId = program.getProgramId();
+        Owner owner = program.getOwner();
         String number = program.getAccountNumber();
         Integer points = program.getPoints();
         Date lastActivity = program.getLastActivityDate();
@@ -391,6 +359,11 @@ public class ProgramDataSource {
 
         ContentValues values = new ContentValues();
         values.put(dbHelperMain.COLUMN_LP_REFID, programRefId);
+        if (owner != null) {
+            values.put(dbHelperMain.COLUMN_LP_OWNERID, owner.getId());
+        } else {
+            values.put(dbHelperMain.COLUMN_LP_OWNERID, "");
+        }
         values.put(dbHelperMain.COLUMN_LP_ACCOUNTNUMBER, number);
         values.put(dbHelperMain.COLUMN_LP_POINTS, points);
         if (lastActivity != null){
@@ -403,11 +376,48 @@ public class ProgramDataSource {
         return numOfRows;
     }
 
+    // Look up program reference ID by program name
+    public Integer getProgramRefId(String programName) {
+        Cursor cursor = dbRef.query(tableNameRef, new String[] {"_id", "name"}, null, null, null, null, null);
+        cursor.moveToFirst();
+        Integer programRefId = null;
+        while (!cursor.isAfterLast()) {
+            Integer id = cursor.getInt(0);
+            String name = cursor.getString(1);
+            if (name.equals(programName)){
+                programRefId = id;
+                break;
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return programRefId;
+    }
+
+    // Look up inactivity expiration by program name
+    public Integer getProgramInactivityExpiration(String programName) {
+        Cursor cursor = dbRef.query(tableNameRef, new String[] {"name", "inactivityExpiration"}, null, null, null, null, null);
+        cursor.moveToFirst();
+        Integer programInactivityExpiration = null;
+        while (!cursor.isAfterLast()) {
+            String name = cursor.getString(0);
+            Integer inactivityExpiration = cursor.getInt(1);
+            if (name.equals(programName)){
+                programInactivityExpiration = inactivityExpiration;
+                break;
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return programInactivityExpiration;
+    }
+
 	// Converts database cursor to loyalty program
     private LoyaltyProgram cursorToProgram(Cursor cursor)  {
         Integer id = cursor.getInt(0);
         Integer programId = cursor.getInt(1);
-        String owner = cursor.getString(2);
+        Integer ownerId = cursor.getInt(2);
+        Owner owner = ownerDS.getSingle(ownerId, null, null);
         String number = cursor.getString(3);
         Integer points = cursor.getInt(4);
         Date lastActivity = null;
@@ -434,44 +444,9 @@ public class ProgramDataSource {
             String expirationOverride = cursorRef.getString(5);
 
             cursorRef.close();
-            LoyaltyProgram program = new LoyaltyProgram(id, programId, type, name, number, points, pointValue, inactivityExpiration, expirationOverride, lastActivity, notificationStatus, notes);
+            LoyaltyProgram program = new LoyaltyProgram(id, programId, owner, type, name, number, points, pointValue, inactivityExpiration, expirationOverride, lastActivity, notificationStatus, notes);
             return program;
         }
     }
 
-	// Look up program reference ID by card name
-    public Integer getProgramRefId(String programName) {
-        Cursor cursor = dbRef.query(tableNameRef, new String[] {"_id", "name"}, null, null, null, null, null);
-        cursor.moveToFirst();
-        Integer programRefId = null;
-        while (!cursor.isAfterLast()) {
-            Integer id = cursor.getInt(0);
-            String name = cursor.getString(1);
-            if (name.equals(programName)){
-                programRefId = id;
-                break;
-            }
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return programRefId;
-    }
-
-	// Look up inactivity expiration by program name
-    public Integer getProgramInactivityExpiration(String programName) {
-        Cursor cursor = dbRef.query(tableNameRef, new String[] {"name", "inactivityExpiration"}, null, null, null, null, null);
-        cursor.moveToFirst();
-        Integer programInactivityExpiration = null;
-        while (!cursor.isAfterLast()) {
-            String name = cursor.getString(0);
-            Integer inactivityExpiration = cursor.getInt(1);
-            if (name.equals(programName)){
-                programInactivityExpiration = inactivityExpiration;
-                break;
-            }
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return programInactivityExpiration;
-    }
 }

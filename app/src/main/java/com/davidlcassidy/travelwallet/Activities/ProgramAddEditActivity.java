@@ -19,8 +19,10 @@ import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
+import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
+import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
 import com.davidlcassidy.travelwallet.R;
 
 import java.text.ParseException;
@@ -44,11 +46,12 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
     private UserPreferences userPreferences;
     private SimpleDateFormat dateFormat;
     private ProgramDataSource programDS;
+    private OwnerDataSource ownerDS;
     private Integer programId;
 
-    private TextView typeField, nameField, lastActivityField;
-    private EditText accountNumberField, pointsField;
-    private LinearLayout lastActivityLayout;
+    private TextView ownerField, typeField, nameField, lastActivityField;
+    private EditText accountNumberField, pointsField, notesField;
+    private LinearLayout ownerLayout,lastActivityLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,21 +61,32 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         userPreferences = UserPreferences.getInstance(this);
         dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         programDS = ProgramDataSource.getInstance(this);
+        ownerDS = OwnerDataSource.getInstance(this);
 		
 		// Gets program ID from intent. Program ID of -1 means add new program
         programId = Integer.parseInt(getIntent().getStringExtra("PROGRAM_ID"));
 
 		// Gets ProgramAddEdit activity fields
+        ownerField = (TextView) findViewById(R.id.ownerField);
         typeField = (TextView) findViewById(R.id.typeField);
         nameField = (TextView) findViewById(R.id.nameField);
         accountNumberField = (EditText) findViewById(R.id.accountNumberField);
         pointsField = (EditText) findViewById(R.id.pointsField);
         lastActivityField = (TextView) findViewById(R.id.lastActivityField);
+        notesField = (EditText) findViewById(R.id.notesField);
 
         setClickListeners();
 
         lastActivityLayout = (LinearLayout) findViewById(R.id.lastActivityLayout);
         lastActivityLayout.setVisibility(View.GONE);
+
+        ownerLayout = (LinearLayout) findViewById(R.id.ownerLayout);
+        int numberOfOwners = ownerDS.getAll(null, null, null).size();
+        if (numberOfOwners > 0){
+            ownerLayout.setVisibility(View.VISIBLE);
+        } else {
+            ownerLayout.setVisibility(View.GONE);
+        }
     }
 
     protected void onResume() {
@@ -84,16 +98,21 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             setTitle("Edit Loyalty Program");
 
 			// Sets activity fields
+            Owner pOwner = program.getOwner();
             String pType = program.getType();
             String pName = program.getName();
             String pAccountNumber = program.getAccountNumber();
             Integer pPoints = program.getPoints();
             Date pLastActivityDate = program.getLastActivityDate();
+            String pNotes = program.getNotes();
+            if (pOwner != null) {ownerField.setText(pOwner.getName());}
             if (pType != null) {typeField.setText(pType);}
             if (pName != null) {nameField.setText(pName);}
             if (pAccountNumber != null) {accountNumberField.setText(pAccountNumber);}
             if (pPoints != null) {pointsField.setText(String.valueOf(pPoints));}
             if (pLastActivityDate != null) {lastActivityField.setText(dateFormat.format(pLastActivityDate));}
+            if (pNotes != null) {notesField.setText(pNotes);}
+
 
             updateLastActivityFieldVisibility();
 
@@ -121,6 +140,9 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 	// Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
+        String ownerName = ownerField.getText().toString();
+        Owner owner = ownerDS.getSingle(ownerName, null, null);
+
         String programName = nameField.getText().toString();
         Integer programRefId = programDS.getProgramRefId(programName);
         String accountNumber = accountNumberField.getText().toString();
@@ -138,13 +160,15 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             lastActivityDate = null;
         }
 
-		// Checks that loyalty program is selected
-        if(programName.equals("")){
+        String notes = notesField.getText().toString();
+
+        // Checks that loyalty program is selected
+        if (programName.equals("")) {
             Toast.makeText(ProgramAddEditActivity.this, "Please select a loyalty program.", Toast.LENGTH_LONG).show();
 			
 		// Creates program if new
-        } else if (programId == -1){
-            programDS.create(programRefId, accountNumber, points, lastActivityDate, "");
+        } else if (programId == -1) {
+            programDS.create(programRefId, owner, accountNumber, points, lastActivityDate, notes);
             finish(); //Closes activity
             Toast.makeText(ProgramAddEditActivity.this, programName + " program added.", Toast.LENGTH_SHORT).show();
 			
@@ -152,16 +176,25 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         } else {
             LoyaltyProgram program = programDS.getSingle(programId);
             program.setProgramId(programRefId);
+            program.setOwner(owner);
             program.setAccountNumber(accountNumber);
             program.setPoints(points);
             program.setLastActivityDate(lastActivityDate);
+            program.setNotes(notes);
             programDS.update(program);
             finish(); //Closes activity
             Toast.makeText(ProgramAddEditActivity.this, programName + " program updated.", Toast.LENGTH_SHORT).show();
         }
     }
 
-	// Displays list of program types for user selection
+    // Displays list of owners for user selection
+    private void ownerFieldClick () {
+        String title = "Select Owner";
+        ArrayList<String> types = ownerDS.getAllNames();
+        fieldSelectDialog(title, types, "owner");
+    }
+
+    // Displays list of program types for user selection
     private void typeFieldClick () {
         String title = "Select Program Type";
         ArrayList<String> types = programDS.getAvailableTypes(true);
@@ -256,6 +289,9 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 					// Sets field text to selected value
                     String selectedItem = itemsArray[selected];
                     switch (saveField) {
+                        case "owner":
+                            ownerField.setText(selectedItem);
+                            break;
                         case "type":
                             String currentType = typeField.getText().toString();
                             if (!currentType.equals(selectedItem)) {
@@ -294,6 +330,16 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         final RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
 
+        LinearLayout ownerLayout = (LinearLayout) findViewById(R.id.ownerLayout);
+        ownerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainLayout.requestFocus();
+                hideSoftKeyboard(ProgramAddEditActivity.this);
+                ownerFieldClick();
+            }
+        });
+
         LinearLayout typeLayout = (LinearLayout) findViewById(R.id.typeLayout);
         typeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,6 +354,8 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         nameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainLayout.requestFocus();
+                hideSoftKeyboard(ProgramAddEditActivity.this);
                 nameFieldClick();
             }
         });
@@ -348,6 +396,8 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         lastActivityLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainLayout.requestFocus();
+                hideSoftKeyboard(ProgramAddEditActivity.this);
                 lastActivityDateFieldClick();
             }
         });

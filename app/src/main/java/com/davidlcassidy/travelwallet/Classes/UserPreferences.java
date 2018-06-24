@@ -3,7 +3,6 @@ package com.davidlcassidy.travelwallet.Classes;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
@@ -26,10 +25,11 @@ public class UserPreferences {
     private static String nUserPreferences = "UserPreferences";
     private static String nAppType = "AppType";
 
+    private static String nFilter_ProgramOwner = "Filter_ProgramOwner";
     private static String nFilter_ProgramType = "Filter_ProgramType";
-    private static String nFilter_ProgramPoints = "Filter_ProgramValue";
+    private static String nFilter_CardOwner = "Filter_CardOwner";
     private static String nFilter_CardStatus = "Filter_CardStatus";
-    private static String nFilter_CardAF = "Filter_CardAF";
+
 
     private static String nSetting_ProgramNotificationPeriod = "Setting_ProgramNotificationPeriod";
     private static String nSetting_ProgramPrimaryField = "Setting_ProgramPrimaryField";
@@ -37,6 +37,8 @@ public class UserPreferences {
     private static String nSetting_CardNotificationPeriod = "Setting_CardNotificationPeriod";
     private static String nSetting_CardPrimaryField = "Setting_CardPrimaryField";
     private static String nSetting_CardSortField = "Setting_CardSortField";
+    private static String nSetting_OwnerPrimaryField = "Setting_OwnerPrimaryField";
+    private static String nSetting_OwnerSortField = "Setting_OwnerSortField";
     private static String nSetting_InitialSummary = "Setting_InitialSummary";
     private static String nSetting_PhoneNotifications = "Setting_PhoneNotifications";
     private static String nSetting_Language = "Setting_Language";
@@ -50,10 +52,10 @@ public class UserPreferences {
     // Sets user preference default values
     private static AppType dAppType = AppType.Lite;
 
-    private static String dFilter_ProgramType = "Filter Off";
-    private static String dFilter_ProgramPoints = "Filter Off";
-    private static String dFilter_CardStatus = "Filter Off";
-    private static String dFilter_CardAF = "Filter Off";
+    private static String dFilter_ProgramOwner = "All Owners";
+    private static String dFilter_ProgramType = "All Types";
+    private static String dFilter_CardOwner = "All Owners";
+    private static String dFilter_CardStatus = "All Statuses";
 
     private static String dSetting_ProgramNotificationPeriod = "4 W";
     private static ItemField dSetting_ProgramPrimaryField = ItemField.ACCOUNTNUMBER;
@@ -61,6 +63,8 @@ public class UserPreferences {
     private static String dSetting_CardNotificationPeriod = "4 W";
     private static ItemField dSetting_CardPrimaryField = ItemField.OPENDATE;
     private static ItemField dSetting_CardSortField = ItemField.CARDNAME;
+    private static ItemField dSetting_OwnerPrimaryField = ItemField.ITEMCOUNTS;
+    private static ItemField dSetting_OwnerSortField = ItemField.OWNERNAME;
     private static boolean dSetting_InitialSummary = false;
     private static boolean dSetting_PhoneNotifications = true;
     private static Language dSetting_Language = Language.ENGLISH;
@@ -91,8 +95,16 @@ public class UserPreferences {
         return dAppType;
     }
 
-
     // Filter UserPreferences setters/getters
+    public String getFilter_ProgramOwner() {
+        return sharedPref.getString(nFilter_ProgramOwner, dFilter_ProgramOwner);
+    }
+
+    public void setFilter_ProgramOwner(String programOwner) {
+        spEditor.putString(nFilter_ProgramOwner, programOwner);
+        spEditor.commit();
+    }
+
     public String getFilter_ProgramType() {
         return sharedPref.getString(nFilter_ProgramType, dFilter_ProgramType);
     }
@@ -102,12 +114,12 @@ public class UserPreferences {
         spEditor.commit();
     }
 
-    public String getFilter_ProgramPoints() {
-        return sharedPref.getString(nFilter_ProgramPoints, dFilter_ProgramPoints);
+    public String getFilter_CardOwner() {
+        return sharedPref.getString(nFilter_CardOwner, dFilter_CardOwner);
     }
 
-    public void setFilter_ProgramPoints(String programPoints) {
-        spEditor.putString(nFilter_ProgramPoints, programPoints);
+    public void setFilter_CardOwner(String cardOwner) {
+        spEditor.putString(nFilter_CardOwner, cardOwner);
         spEditor.commit();
     }
 
@@ -119,16 +131,6 @@ public class UserPreferences {
         spEditor.putString(nFilter_CardStatus, cardStatus);
         spEditor.commit();
     }
-
-    public String getFilter_CardAF() {
-        return sharedPref.getString(nFilter_CardAF, dFilter_CardAF);
-    }
-
-    public void setFilter_CardAF(String cardAF) {
-        spEditor.putString(nFilter_CardAF, cardAF);
-        spEditor.commit();
-    }
-
 
     // Setting UserPreferences setters/getters
     public String getSetting_ProgramNotificationPeriod() {
@@ -210,6 +212,38 @@ public class UserPreferences {
 
     public void setSetting_CardSortField(ItemField cardSortField) {
         spEditor.putInt(nSetting_CardSortField, cardSortField.getId());
+        spEditor.commit();
+    }
+
+    public ItemField getSetting_OwnerPrimaryField() {
+        int id = sharedPref.getInt(nSetting_OwnerPrimaryField, dSetting_OwnerPrimaryField.getId());
+        ItemField itemField = ItemField.fromId(id);
+        if (itemField != null){
+            return itemField;
+        } else {
+            spEditor.putInt(nSetting_OwnerPrimaryField, dSetting_OwnerPrimaryField.getId());
+            return dSetting_OwnerPrimaryField;
+        }
+    }
+
+    public void setSetting_OwnerPrimaryField(ItemField ownerPrimaryField) {
+        spEditor.putInt(nSetting_OwnerPrimaryField, ownerPrimaryField.getId());
+        spEditor.commit();
+    }
+
+    public ItemField getSetting_OwnerSortField() {
+        int id = sharedPref.getInt(nSetting_OwnerSortField, dSetting_OwnerSortField.getId());
+        ItemField itemField = ItemField.fromId(id);
+        if (itemField != null){
+            return itemField;
+        } else {
+            spEditor.putInt(nSetting_OwnerSortField, dSetting_OwnerSortField.getId());
+            return dSetting_OwnerSortField;
+        }
+    }
+
+    public void setSetting_OwnerSortField(ItemField OwnerSortField) {
+        spEditor.putInt(nSetting_OwnerSortField, OwnerSortField.getId());
         spEditor.commit();
     }
 

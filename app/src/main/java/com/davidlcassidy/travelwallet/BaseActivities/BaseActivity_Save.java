@@ -7,8 +7,8 @@ import com.davidlcassidy.travelwallet.R;
 
 /*
 BaseActivity_Save is an abstract activity that is extended by ProgramAddEditActivity,
-CardAddEditActivity and Settings Activity. It is used to set the menu items on the
-toolbar.
+CardAddEditActivity, OwnerAddEditActivity, and Settings Activity. It is used to set
+the menu items on the toolbar.
  */
 
 public abstract class BaseActivity_Save extends BaseActivity {

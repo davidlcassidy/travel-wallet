@@ -15,12 +15,21 @@ public enum ItemField {
     POINTS(3, ItemType.LOYALTY_PROGRAM, "Points"),
     VALUE(4, ItemType.LOYALTY_PROGRAM, "Value"),
     EXPIRATIONDATE(5, ItemType.LOYALTY_PROGRAM, "Expiration Date"),
+    PROGRAMNOTES(6, ItemType.LOYALTY_PROGRAM, "Notes"),
 	
 	BANK(21, ItemType.CREDIT_CARD, "Bank"),
     CARDNAME(22, ItemType.CREDIT_CARD, "Card Name"),
     OPENDATE(23, ItemType.CREDIT_CARD, "Open Date"),
     AFDATE(24, ItemType.CREDIT_CARD, "Annual Fee Date"),
-    ANNUALFEE(25, ItemType.CREDIT_CARD, "Annual Fee");
+    ANNUALFEE(25, ItemType.CREDIT_CARD, "Annual Fee"),
+    CARDNOTES(26, ItemType.CREDIT_CARD, "Notes"),
+
+    OWNERNAME(31, ItemType.OWNER, "Owner Name"),
+    ITEMCOUNTS(32, ItemType.OWNER, "Item Counts"),
+    PROGRAMSVALUE(33, ItemType.OWNER, "Programs Value"),
+    CREDITLIMIT(34, ItemType.OWNER, "Credit Limit"),
+    CHASESTATUS(35, ItemType.OWNER, "Chase 5/24 Status"),
+    OWNERNOTES(36, ItemType.OWNER, "Notes");
 
 	private final int id;
     private final String name;

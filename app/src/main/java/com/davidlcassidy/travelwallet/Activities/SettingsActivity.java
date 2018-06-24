@@ -1,15 +1,12 @@
 package com.davidlcassidy.travelwallet.Activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -47,6 +44,8 @@ public class SettingsActivity extends BaseActivity_Save {
     private TextView cardNotificationField;
     private TextView cardPrimaryField;
     private TextView cardSortField;
+    private TextView ownerPrimaryField;
+    private TextView ownerSortField;
     private TextView initialSummaryField;
     private TextView phoneNotificationsField;
     private TextView languageField;
@@ -67,6 +66,8 @@ public class SettingsActivity extends BaseActivity_Save {
         cardNotificationField = (TextView) findViewById(R.id.cardNotificationField);
         cardPrimaryField = (TextView) findViewById(R.id.cardPrimaryField);
         cardSortField = (TextView) findViewById(R.id.cardSortField);
+        ownerPrimaryField = (TextView) findViewById(R.id.ownerPrimaryField);
+        ownerSortField = (TextView) findViewById(R.id.ownerSortField);
         initialSummaryField = (TextView) findViewById(R.id.initialSummaryField);
         phoneNotificationsField = (TextView) findViewById(R.id.phoneNotificationsField);
         languageField = (TextView) findViewById(R.id.languageField);
@@ -88,6 +89,8 @@ public class SettingsActivity extends BaseActivity_Save {
         String cardNotificationPeriod = userPreferences.getSetting_CardNotificationPeriod();
         ItemField cardPrimary = userPreferences.getSetting_CardPrimaryField();
         ItemField cardSort = userPreferences.getSetting_CardSortField();
+        ItemField ownerPrimary = userPreferences.getSetting_OwnerPrimaryField();
+        ItemField ownerSort = userPreferences.getSetting_OwnerSortField();
         String initialSummary = userPreferences.getSetting_InitialSummary() ? "Yes" : "No";
         String phoneNotifications = userPreferences.getSetting_PhoneNotifications() ? "Yes" : "No";
         Language language = userPreferences.getSetting_Language();
@@ -101,6 +104,8 @@ public class SettingsActivity extends BaseActivity_Save {
         setNotificationField(ItemType.CREDIT_CARD, cardNotificationPeriod);
         cardPrimaryField.setText(cardPrimary.getName());
         cardSortField.setText(cardSort.getName());
+        ownerPrimaryField.setText(ownerPrimary.getName());
+        ownerSortField.setText(ownerSort.getName());
         initialSummaryField.setText(initialSummary);
         phoneNotificationsField.setText(phoneNotifications);
         languageField.setText(language.getName());
@@ -117,6 +122,8 @@ public class SettingsActivity extends BaseActivity_Save {
         String programSort = programSortField.getText().toString();
         String cardPrimary = cardPrimaryField.getText().toString();
         String cardSort = cardSortField.getText().toString();
+        String ownerPrimary = ownerPrimaryField.getText().toString();
+        String ownerSort = ownerSortField.getText().toString();
         String initialSummary = initialSummaryField.getText().toString();
         String phoneNotifications = phoneNotificationsField.getText().toString();
         String language = languageField.getText().toString();
@@ -130,6 +137,8 @@ public class SettingsActivity extends BaseActivity_Save {
         userPreferences.setSetting_CardNotificationPeriod(getNotificationField(ItemType.CREDIT_CARD));
         userPreferences.setSetting_CardPrimaryField(ItemField.fromName(cardPrimary));
         userPreferences.setSetting_CardSortField(ItemField.fromName(cardSort));
+        userPreferences.setSetting_OwnerPrimaryField(ItemField.fromName(ownerPrimary));
+        userPreferences.setSetting_OwnerSortField(ItemField.fromName(ownerSort));
         userPreferences.setSetting_InitialSummary(initialSummary.equals("Yes"));
         userPreferences.setSetting_PhoneNotifications(phoneNotifications.equals("Yes"));
         userPreferences.setSetting_Language(Language.fromName(language));
@@ -154,7 +163,8 @@ public class SettingsActivity extends BaseActivity_Save {
                 ItemField.ACCOUNTNUMBER.getName(),
                 ItemField.POINTS.getName(),
                 ItemField.VALUE.getName(),
-                ItemField.EXPIRATIONDATE.getName());
+                ItemField.EXPIRATIONDATE.getName(),
+                ItemField.PROGRAMNOTES.getName());
         fieldSelectDialog(title, types, "programPrimary");
     }
 
@@ -181,7 +191,8 @@ public class SettingsActivity extends BaseActivity_Save {
         List<String> types = Arrays.asList(
                 ItemField.ANNUALFEE.getName(),
                 ItemField.OPENDATE.getName(),
-                ItemField.AFDATE.getName());
+                ItemField.AFDATE.getName(),
+                ItemField.CARDNOTES.getName());
         fieldSelectDialog(title, types, "cardPrimary");
     }
 
@@ -195,6 +206,27 @@ public class SettingsActivity extends BaseActivity_Save {
                 ItemField.OPENDATE.getName(),
                 ItemField.AFDATE.getName());
         fieldSelectDialog(title, types, "cardSort");
+    }
+
+    // Displays list of owner fields for user selection
+    private void ownerPrimaryFieldClick () {
+        String title = "Select Owner Primary Detail";
+        List<String> types = Arrays.asList(
+                ItemField.ITEMCOUNTS.getName(),
+                ItemField.PROGRAMSVALUE.getName(),
+                ItemField.CREDITLIMIT.getName(),
+                ItemField.CHASESTATUS.getName());
+        fieldSelectDialog(title, types, "ownerPrimary");
+    }
+
+    // Displays list of owner fields for user selection
+    private void ownerSortFieldClick () {
+        String title = "Select Owner Sort Detail";
+        List<String> types = Arrays.asList(
+                ItemField.OWNERNAME.getName(),
+                ItemField.PROGRAMSVALUE.getName(),
+                ItemField.CREDITLIMIT.getName());
+        fieldSelectDialog(title, types, "ownerSort");
     }
 
 	// Displays yes/no option list for user selection
@@ -275,6 +307,12 @@ public class SettingsActivity extends BaseActivity_Save {
                             break;
                         case "cardSort":
                             cardSortField.setText(selectedItem);
+                            break;
+                        case "ownerPrimary":
+                            ownerPrimaryField.setText(selectedItem);
+                            break;
+                        case "ownerSort":
+                            ownerSortField.setText(selectedItem);
                             break;
                         case "language":
                             languageField.setText(selectedItem);
@@ -500,12 +538,27 @@ public class SettingsActivity extends BaseActivity_Save {
                 cardSortFieldClick();
             }});
 
+        LinearLayout ownerPrimaryLayout = (LinearLayout) findViewById(R.id.ownerPrimaryLayout);
+        ownerPrimaryLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ownerPrimaryFieldClick();
+            }});
+
+        LinearLayout ownerSortLayout = (LinearLayout) findViewById(R.id.ownerSortLayout);
+        ownerSortLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ownerSortFieldClick();
+            }});
+
         LinearLayout initialSummaryLayout = (LinearLayout) findViewById(R.id.initialSummaryLayout);
         initialSummaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 initialSummaryFieldClick();
             }});
+
 
         LinearLayout phoneNotificationsLayout = (LinearLayout) findViewById(R.id.phoneNotificationsLayout);
         phoneNotificationsLayout.setOnClickListener(new View.OnClickListener() {

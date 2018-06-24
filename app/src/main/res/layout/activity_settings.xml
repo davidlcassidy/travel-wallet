@@ -240,11 +240,92 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/OwnerSettingsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Owner Settings"
+            android:layout_below="@+id/cardSortLayout"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:paddingTop="25dp"
+            android:paddingBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/header"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ownerPrimaryLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/OwnerSettingsText"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/ownerPrimaryLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Primary Field"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/ownerPrimaryField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ownerSortLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ownerPrimaryLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/ownerSortLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Sort Field"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/ownerSortField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <TextView
             android:id="@+id/generalSettingsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="General Settings"
-            android:layout_below="@+id/cardSortLayout"
+            android:layout_below="@+id/ownerSortLayout"
             android:gravity="center"
             android:textStyle="bold"
             android:paddingTop="25dp"

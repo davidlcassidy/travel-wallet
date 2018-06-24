@@ -3,10 +3,8 @@ package com.davidlcassidy.travelwallet.BaseActivities;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.davidlcassidy.travelwallet.R;
-
 /*
-BaseActivity_BackOnly is an abstract activity that is extended by ChaseStatusActivity.
+BaseActivity_BackOnly is an abstract activity that is extended by OwnerListActivity.
 It is used to set the back menu item on the toolbar.
  */
 

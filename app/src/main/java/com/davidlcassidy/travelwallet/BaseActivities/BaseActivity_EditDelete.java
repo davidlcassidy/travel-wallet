@@ -7,8 +7,8 @@ import com.davidlcassidy.travelwallet.R;
 
 /*
 BaseActivity_EditDelete is an abstract activity that is extended by
-ProgramDetailActivity and CardDetailActivity. It is used to set the menu items on
-the toolbar.
+ProgramDetailActivity, CardDetailActivity, and OwnerDetailActivity.
+It is used to set the menu items on the toolbar.
  */
 
 public abstract class BaseActivity_EditDelete extends BaseActivity {

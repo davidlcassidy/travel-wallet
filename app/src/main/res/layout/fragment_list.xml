@@ -27,8 +27,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/custom_spinner_background"
             android:spinnerMode="dropdown"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1"/>
 
         <Spinner
             android:id="@+id/spinner2"
@@ -38,8 +37,8 @@
             android:layout_margin="10dp"
             android:background="@drawable/custom_spinner_background"
             android:spinnerMode="dropdown"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1"/>
+
     </LinearLayout>
 
     <ListView

@@ -13,9 +13,43 @@
         android:focusableInTouchMode="true">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ownerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/ownerLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Owner"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/ownerField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/typeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ownerLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:background="@drawable/boarder"
@@ -181,6 +215,19 @@
                 android:textSize="@dimen/text"/>
 
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/notesField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lastActivityLayout"
+            android:layout_weight="1"
+            android:hint="Notes"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="2000"
+            android:maxLines="3"
+            android:background="@drawable/boarder"
+            android:textSize="@dimen/text"/>
 
     </RelativeLayout>
 

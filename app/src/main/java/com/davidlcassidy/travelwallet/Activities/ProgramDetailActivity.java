@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.davidlcassidy.travelwallet.Adapters.DetailListAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
 import com.davidlcassidy.travelwallet.Classes.Detail;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
+import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
@@ -44,6 +46,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
 
     private ListView lv;
     private ImageView logo;
+    private TextView notesField;
     private ToggleButton notificationButton;
 
     @Override
@@ -68,22 +71,24 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
 
 		// Sets text for notification button
         notificationButton = (ToggleButton) footer.findViewById(R.id.notificationButton);
-        notificationButton.setTextOn("Monitoring : OFF");
-        notificationButton.setTextOff("Monitoring : ON");
-		
+        notificationButton.setTextOn("Monitoring : ON");
+        notificationButton.setTextOff("Monitoring : OFF");
+
 		// Sets click listener for notification button. When clicked, the program's notification status
 		// will be updated and notification button text will change to reflect.
         notificationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
                     programDS.changeProgramNotificationStatus(program, NotificationStatus.OFF);
-                    notificationButton.setChecked(false);
+                    notificationButton.setChecked(true);
                 } else {
                     programDS.changeProgramNotificationStatus(program, NotificationStatus.UNMONITORED);
-                    notificationButton.setChecked(true);
+                    notificationButton.setChecked(false);
                 }
             }
         });
+
+        notesField = (TextView) footer.findViewById(R.id.notesField);
     }
 
     protected void onResume() {
@@ -105,6 +110,12 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
 
 		// Creates list of loyalty program field/value pairs
         detailList.clear();
+
+        Owner owner = program.getOwner();
+        if (owner != null){
+            detailList.add(new Detail("Owner", owner.getName()));
+        }
+
         detailList.add(new Detail("Name", program.getName()));
         detailList.add(new Detail("Type", program.getType()));
         detailList.add(new Detail("Account Number", program.getAccountNumber()));
@@ -116,9 +127,9 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         lv.setAdapter(adapter);
 
         if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
-            notificationButton.setChecked(true);
-        } else {
             notificationButton.setChecked(false);
+        } else {
+            notificationButton.setChecked(true);
         }
 		
 		// Updates notification button test and visability
@@ -134,6 +145,14 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         } else if (expirationDate != null && lastActivityDate != null) {
             detailList.add(new Detail("Last Activity", dateFormat.format(lastActivityDate)));
             detailList.add(new Detail("Expiration", dateFormat.format(expirationDate)));
+        }
+
+        String notes = program.getNotes();
+        if (notes == null || notes.equals("")) {
+            notesField.setVisibility(View.GONE);
+        } else {
+            notesField.setVisibility(View.VISIBLE);
+            notesField.setText(notes);
         }
     }
 
@@ -177,6 +196,4 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-
 }

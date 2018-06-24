@@ -24,6 +24,7 @@ import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Activities.ProgramDetailActivity;
 import com.davidlcassidy.travelwallet.R;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -106,8 +107,8 @@ public class NotificationsListFragment extends Fragment {
         cardDS.updateCardsNotifications();
 		
 		// Hides list and shows empty list text if there are no notifications
-        ArrayList<LoyaltyProgram> programsWithNotifications = programDS.getProgramsWithNotifications();
-        ArrayList<CreditCard> cardsWithNotifications = cardDS.getCardsWithNotifications();
+        ArrayList<LoyaltyProgram> programsWithNotifications = programDS.getAll(null,null,true);
+        ArrayList<CreditCard> cardsWithNotifications = cardDS.getAll(null,null,true,true);
         if (programsWithNotifications.size() + cardsWithNotifications.size() == 0){
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
@@ -159,13 +160,13 @@ public class NotificationsListFragment extends Fragment {
             for (String pName : programDS.getAvailablePrograms(type, false)) {
                 Integer refID = programDS.getProgramRefId(pName);
                 Double pointValue = Math.random() * 100000;
-                programDS.create(refID, "ABC", pointValue.intValue(), new Date(), "");
+                programDS.create(refID, null, "ABC123", pointValue.intValue(), new Date(), "");
             }
         }
         for (String bank : cardDS.getAvailableBanks(false)) {
             for (String cName : cardDS.getAvailableCards(bank, false)) {
                 Integer refID = cardDS.getCardRefId(cName);
-                cardDS.create(refID, CardStatus.OPEN, new Date(), new Date(), null, "");
+                cardDS.create(refID, null, CardStatus.OPEN, new BigDecimal("0.0"), new Date(), new Date(), null, "");
             }
         }
     }

@@ -72,6 +72,14 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
                     messageField.setText(dateFormat.format(annualFeeDate));
                 }
                 break;
+            case "Notes":
+
+                // Gets the first 25 characters of the first notes line
+                String notes = card.getNotes();
+                messageField.setText(notes
+                        .split("\\r?\\n")[0]
+                        .substring(0, Math.min(notes.length(), 25)));
+                break;
         }
 
         return convertView;

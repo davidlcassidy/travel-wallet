@@ -15,7 +15,9 @@ public class CreditCard {
 
     private Integer id;
     private Integer cardId;
+    private Owner owner;
     private CardStatus status;
+    private BigDecimal creditLimit;
     private String bank;
     private Integer bankId;
     private String name;
@@ -30,12 +32,14 @@ public class CreditCard {
     private String logoIcon;
     private String notes;
 
-    public CreditCard(Integer id, Integer cardId, CardStatus status, String bank, Integer bankId, String name, String type, BigDecimal annualFee, Boolean annualFeeWaived, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer cardId, Owner owner, CardStatus status,  Integer bankId, String bank, String name, String type, BigDecimal creditLimit,BigDecimal annualFee, Boolean annualFeeWaived, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.cardId = cardId;
+        this.owner = owner;
         this.status = status;
-        this.bank = bank;
+        this.creditLimit = creditLimit;
         this.bankId = bankId;
+        this.bank = bank;
         this.name = name;
         this.type = type;
         this.annualFee = annualFee;
@@ -73,12 +77,28 @@ public class CreditCard {
         this.cardId = cardId;
     }
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
     public CardStatus getStatus() {
         return status;
     }
 
     public void setStatus(CardStatus status) {
         this.status = status;
+    }
+
+    public BigDecimal getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(BigDecimal creditLimit) {
+        this.creditLimit = creditLimit;
     }
 
     public String getBank() {

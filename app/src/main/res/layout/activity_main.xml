@@ -32,6 +32,6 @@
         android:layout_margin="18dp"
         android:src="@drawable/ic_plus"
         app:layout_anchor="@+id/mainView"
-        app:layout_anchorGravity="bottom|right" />
+        app:layout_anchorGravity="bottom|right"/>
 
 </android.support.design.widget.CoordinatorLayout>

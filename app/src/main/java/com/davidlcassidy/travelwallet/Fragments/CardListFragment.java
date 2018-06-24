@@ -11,28 +11,29 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.Activities.CardDetailActivity;
-import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Adapters.CardListAdapter;
 import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
+import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
+import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.R;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
 CardListFragment is the third and final fragment within MainActivity that displays a
 summary of the user added credit cards. It is primarily composed of a listview
-utilizing the CardListAdapter. It also contains a floating "add" button which creates
-CardAddEditActivity to allow new cards to be added. Finally, there a textview that
-is only visible to the user when there are no cards (empty listview), directing users to
-add new cards with the "add" button.
+utilizing the CardListAdapter. It also contains two spinners for filtering over the
+listview and a floating "add" button which creates CardAddEditActivity to allow new
+cards to be added. Finally, there a textview that is only visible to the user when
+there are no cards (empty listview), directing users to add new cards with the "add" button.
  */
 
 public class CardListFragment extends Fragment {
@@ -40,10 +41,12 @@ public class CardListFragment extends Fragment {
     private Activity activity;
     private UserPreferences userPreferences;
     private CardDataSource cardDS;
+    private OwnerDataSource ownerDS;
     private ArrayList<CreditCard> fullCardList, filteredCardList;
     private TextView emptyListText;
     private ListView lv;
     private Spinner filter1, filter2;
+    private Integer filterOwnerCount;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -52,6 +55,7 @@ public class CardListFragment extends Fragment {
 
         userPreferences = UserPreferences.getInstance(getContext());
         cardDS = CardDataSource.getInstance(getContext());
+        ownerDS = OwnerDataSource.getInstance(getContext());
 
 		// Sets the text used when credit card list is empty
         emptyListText = (TextView) view.findViewById(R.id.emptyListText);
@@ -72,7 +76,7 @@ public class CardListFragment extends Fragment {
 
         filter1 = (Spinner) view.findViewById(R.id.spinner1);
         filter2 = (Spinner) view.findViewById(R.id.spinner2);
-        setFilters();
+        setFilters(false);
 
         return view;
     }
@@ -82,7 +86,11 @@ public class CardListFragment extends Fragment {
 
 		// Gets all credit cards sorted by field defined in user preferences
         ItemField sortField = userPreferences.getSetting_CardSortField();
-        fullCardList = cardDS.getAll(sortField,false);
+        fullCardList = cardDS.getAll(null, sortField,false, false);
+
+        if (filterOwnerCount != ownerDS.getAll(null, null, null).size()) {
+            setFilters(true);
+        }
         filterCards();
 
 		// Hides list and shows empty list text if there are no credit cards
@@ -104,22 +112,28 @@ public class CardListFragment extends Fragment {
             CardListAdapter adapter = new CardListAdapter(activity, filteredCardList);
             lv.setAdapter(adapter);
         }
-
     }
 
-    private void setFilters(){
+    private void setFilters(boolean onlySetOwnerFilter){
 
-        // Creates card status filter with values
-        ArrayList<String> cardStatuses = new ArrayList<String>();
-        cardStatuses.add("Filter Off");
-        cardStatuses.add(CardStatus.OPEN.getName());
-        cardStatuses.add(CardStatus.CLOSED.getName());
-        FilterSpinnerAdapter cardStatusSpinnerAdapter =new FilterSpinnerAdapter(activity,cardStatuses);
-        filter1.setAdapter(cardStatusSpinnerAdapter);
+        // Creates card owner filter with values
+        ArrayList<String> owners = ownerDS.getAllNames();
+        filterOwnerCount = owners.size();
+        if (owners.size() == 0) {
+            owners.add(0, "No Owners Added");
+            filter1.setEnabled(false);
+            filter1.setClickable(false);
+        } else {
+            owners.add(0, "All Owners");
+            filter1.setEnabled(true);
+            filter1.setClickable(true);
+        }
+        FilterSpinnerAdapter ownersSpinnerAdapter =new FilterSpinnerAdapter(activity, owners);
+        filter1.setAdapter(ownersSpinnerAdapter);
         filter1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                userPreferences.setFilter_CardStatus(parent.getItemAtPosition(position).toString());
+                userPreferences.setFilter_CardOwner(parent.getItemAtPosition(position).toString());
                 onResume();
             }
 
@@ -129,63 +143,67 @@ public class CardListFragment extends Fragment {
             }
         });
 
-        // Sets card status filter to value in user preferences
-        String filter1value = userPreferences.getFilter_CardStatus();
-        int filter1Position= cardStatuses.indexOf(filter1value);
-        if (filter1Position == -1){
+
+        // Sets card owner filter to value in user preferences
+        String filter1value = userPreferences.getFilter_CardOwner();
+        int filter1Position = owners.indexOf(filter1value);
+        if (filter1Position == -1) {
             filter1.setSelection(0);
         } else {
             filter1.setSelection(filter1Position);
         }
 
-        // Creates card af filter with values
-        ArrayList<String> cardAF = new ArrayList<String>();
-        cardAF.add("Filter Off");
-        cardAF.add("Annual Fee");
-        cardAF.add("No Annual Fee");
-        FilterSpinnerAdapter afStatusSpinnerAdapter =new FilterSpinnerAdapter(activity,cardAF);
-        filter2.setAdapter(afStatusSpinnerAdapter);
-        filter2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                userPreferences.setFilter_CardAF(parent.getItemAtPosition(position).toString());
-                onResume();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+        if (!onlySetOwnerFilter) {
 
-        // Sets card af filter to value in user preferences
-        String filter2value = userPreferences.getFilter_CardAF();
-        int filter2Position= cardAF.indexOf(filter2value);
-        if (filter2Position == -1){
-            filter2.setSelection(0);
-        } else {
-            filter2.setSelection(filter2Position);
+            // Creates card status filter with values
+            ArrayList<String> cardStatuses = new ArrayList<String>();
+            cardStatuses.add("All Statuses");
+            cardStatuses.add(CardStatus.OPEN.getName());
+            cardStatuses.add(CardStatus.CLOSED.getName());
+            FilterSpinnerAdapter cardStatusSpinnerAdapter = new FilterSpinnerAdapter(activity, cardStatuses);
+            filter2.setAdapter(cardStatusSpinnerAdapter);
+            filter2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    userPreferences.setFilter_CardStatus(parent.getItemAtPosition(position).toString());
+                    onResume();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            // Sets card status filter to value in user preferences
+            String filter2value = userPreferences.getFilter_CardStatus();
+            int filter2Position = cardStatuses.indexOf(filter2value);
+            if (filter2Position == -1) {
+                filter2.setSelection(0);
+            } else {
+                filter2.setSelection(filter2Position);
+            }
         }
     }
 
     private void filterCards(){
         filteredCardList = new ArrayList<CreditCard>();
 
-        String filter1value = userPreferences.getFilter_CardStatus();
-        String filter2value = userPreferences.getFilter_CardAF();
+        String filter1value = userPreferences.getFilter_CardOwner();
+        String filter2value = userPreferences.getFilter_CardStatus();
         for (CreditCard card : fullCardList) {
-            if (filter1value.equals("Open")) {
-                if (card.getStatus() != CardStatus.OPEN) {
-                    continue;
-                }
-            } else if (filter1value.equals("Closed")) {
-                if (card.getStatus() != CardStatus.CLOSED) {
+            if (!Arrays.asList("All Owners", "No Owners Added").contains(filter1value)) {
+                Owner owner = card.getOwner();
+                if (owner == null || !owner.getName().equals(filter1value)) {
                     continue;
                 }
             }
-            if (filter2value.equals("Annual Fee")) {
-                if (!card.hasAnnualFee()) {
+            if (filter2value.equals("Open")) {
+                if (card.getStatus() != CardStatus.OPEN) {
                     continue;
                 }
-            } else if (filter2value.equals("No Annual Fee")) {
-                if (card.hasAnnualFee()) {
+            } else if (filter2value.equals("Closed")) {
+                if (card.getStatus() != CardStatus.CLOSED) {
                     continue;
                 }
             }

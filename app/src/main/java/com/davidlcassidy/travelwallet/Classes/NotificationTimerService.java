@@ -1,13 +1,10 @@
 package com.davidlcassidy.travelwallet.Classes;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 
-import com.davidlcassidy.travelwallet.Activities.MainActivity;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 

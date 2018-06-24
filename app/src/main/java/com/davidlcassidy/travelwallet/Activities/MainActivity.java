@@ -3,6 +3,7 @@ package com.davidlcassidy.travelwallet.Activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -25,6 +26,8 @@ import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
+import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
+import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.Fragments.CardListFragment;
 import com.davidlcassidy.travelwallet.Fragments.NotificationsListFragment;
@@ -34,6 +37,7 @@ import com.davidlcassidy.travelwallet.R;
 import com.davidlcassidy.travelwallet.Classes.NotificationTimerService;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -173,54 +177,20 @@ public class MainActivity extends BaseActivity_Main {
         }
     }
 
-    // Runs when about button is clicked
+    // Runs when owners button is clicked
     @Override
-    public void menuAboutClicked() {
-        // Gets dialog layout
-        LayoutInflater inflater1 = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-        View v1 = inflater1.inflate(R.layout.dialog_about, null);
-
-        // Creates dialog
-        final AlertDialog diag1 = new AlertDialog.Builder(this).setView(v1).create();
-
-        // Sets title in dialog toolbar on top
-        Toolbar toolBar1 = (Toolbar) v1.findViewById(R.id.toolbar);
-        toolBar1.setTitle("App Info");
-
-        // Sets text in dialog
-        TextView mainText = (TextView) v1.findViewById(R.id.text);
-        String text =
-                "Travel Wallet v1.2\n\n" +
-                        "I hope you are able to find some value out of this app. If you have any feature requests, " +
-                        "bug reports, or any other feedback, please feel free to shoot me an email. " +
-                        "I love hearing back about my projects! \n\n" +
-                        "Email:  travelwallet@davidlcassidy.com\nWebsite:  www.DavidLCassidy.com";
-        mainText.setText(text);
-        Linkify.addLinks(mainText, Linkify.ALL);
-
-        // Runs with "Close" button is clicked
-        Button closeButton = (Button) v1.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Dialog is destroyed
-                diag1.dismiss();
-            }
-        });
-
-        // Displays dialog
-        diag1.show();
-
-        // Dims background while dialog is active
-        diag1.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    public void menuOwnersClicked() {
+        // Opens OwnerListActivity
+        Intent intent2 = new Intent(MainActivity.this, OwnerListActivity.class);
+        startActivity(intent2);
     }
 
-    // Runs when expand button is clicked
+    // Runs when dropdown button is clicked
     @Override
-    public void menuExpandClicked() {
-        View menuView = findViewById(R.id.menu_expand);
+    public void menuDropdownClicked() {
+        View menuView = findViewById(R.id.menu_dropdown);
         PopupMenu popupMenu = new PopupMenu(this, menuView);
-        popupMenu.inflate(R.menu.mainpopup);
+        popupMenu.inflate(R.menu.dropdown_main);
 
         // Sets menu click listeners
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -228,14 +198,18 @@ public class MainActivity extends BaseActivity_Main {
                 String selectedItemName = (String) item.getTitle();
 
                 switch (selectedItemName) {
+                    case "Settings":
+                        // Opens Settings Activity
+                        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                        startActivity(intent);
+                        break;
                     case "Summary":
                         // Opens Summary Popup
                         showSummary();
                         break;
-                    case "Chase 5/24 Status":
-                        // Opens Chase Status Activity
-                        Intent intent = new Intent(MainActivity.this, ChaseStatusActivity.class);
-                        startActivity(intent);
+                    case "About":
+                        // Opens About Popup
+                        showAbout();
                         break;
                 }
                 return true;
@@ -252,75 +226,147 @@ public class MainActivity extends BaseActivity_Main {
 
         ProgramDataSource programDS = ProgramDataSource.getInstance(this);
         CardDataSource cardDS = CardDataSource.getInstance(this);
+        Date today = new Date();
 
         // Gets dialog layout
-        LayoutInflater inflater2 = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-        View v2 = inflater2.inflate(R.layout.dialog_summary, null);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_summary, null);
 
         // Creates dialog
-        final AlertDialog diag2 = new AlertDialog.Builder(this).setView(v2).create();
+        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
 
         // Gets summary layout fields
-        TextView programCount = (TextView) v2.findViewById(R.id.programCountField);
-        TextView programNotifications = (TextView) v2.findViewById(R.id.programNotificationsField);
-        TextView programValue = (TextView) v2.findViewById(R.id.programValueField);
-        TextView cardCount = (TextView) v2.findViewById(R.id.cardCountField);
-        TextView cardNotifications = (TextView) v2.findViewById(R.id.cardNotificationsField);
-        TextView cardAF = (TextView) v2.findViewById(R.id.cardAFField);
+        TextView programCount = (TextView) v.findViewById(R.id.programCountField);
+        TextView programNotifications = (TextView) v.findViewById(R.id.programNotificationsField);
+        TextView programValue = (TextView) v.findViewById(R.id.programValueField);
+        TextView cardCount = (TextView) v.findViewById(R.id.cardCountField);
+        TextView cardNotifications = (TextView) v.findViewById(R.id.cardNotificationsField);
+        TextView cardAF = (TextView) v.findViewById(R.id.cardAFField);
 
         // Sets title in dialog toolbar on top
-        Toolbar toolBar2 = (Toolbar) v2.findViewById(R.id.toolbar);
+        Toolbar toolBar2 = (Toolbar) v.findViewById(R.id.toolbar);
         toolBar2.setTitle("Summary");
 
-        // Retrieves program summary data and saves to dialog fields
+        // Retrieves programs total value data and saves to summary dialog fields
         SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
-        programCount.setText(String.valueOf(programDS.getAll(null).size()));
-        programNotifications.setText(String.valueOf(programDS.getProgramsWithNotifications().size()));
-        programValue.setText(currency.numToString(programDS.getAllProgramsValue(), numberPattern));
-        LoyaltyProgram program = programDS.getNextExpire();
-        if (program != null){
-            Date expirationDate = program.getExpirationDate();
-            if (expirationDate != null){
-                TextView  programNextExpire = (TextView) v2.findViewById(R.id.programNextExpireField);
-                programNextExpire.setText(dateFormat.format(expirationDate));
+        programCount.setText(String.valueOf(programDS.getAll(null, null, false).size()));
+        programNotifications.setText(String.valueOf(programDS.getAll(null,null,true).size()));
+        ArrayList<LoyaltyProgram> programs = programDS.getAll(null, null, false);
+        BigDecimal total = BigDecimal.valueOf(0);
+        for (LoyaltyProgram p : programs) {
+            total = total.add(p.getTotalValue());
+        }
+        programValue.setText(currency.numToString(total, numberPattern));
+
+        // Retrieves programs next expiration data and saves to summary dialog fields
+        for (LoyaltyProgram program : programDS.getAll(null, ItemField.EXPIRATIONDATE, false)) {
+
+            // Checks if program monitoring is on and has an expiration date
+            NotificationStatus notificationStatus = program.getNotificationStatus();
+            Date expDate = program.getExpirationDate();
+            boolean hasExpirationDate = program.hasExpirationDate() && expDate != null;
+            if (notificationStatus != NotificationStatus.UNMONITORED && hasExpirationDate){
+
+                // Checks program if expiration date is in future and program has points
+                int points = program.getPoints();
+                if (expDate.compareTo(today) > 0 && points > 0) {
+                    TextView  programNextExpire = (TextView) v.findViewById(R.id.programNextExpireField);
+                    programNextExpire.setText(dateFormat.format(program.getExpirationDate()));
+                }
             }
         }
 
-        // Retrieves card summary data and saves to dialog fields
-        cardCount.setText(String.valueOf(cardDS.getAll(null,true).size()));
-        cardNotifications.setText(String.valueOf(cardDS.getCardsWithNotifications().size()));
-        cardAF.setText(currency.numToString(cardDS.getAllOpenCardsAnnualFees(), numberPattern));
-        CreditCard card = cardDS.getNextAF();
-        if (card != null){
-            Date afDate = card.getAfDate();
-            if (afDate != null){
-                TextView  programNextExpire = (TextView) v2.findViewById(R.id.cardNextAFField);
-                programNextExpire.setText(dateFormat.format(afDate));
+        // Retrieves cards total AF data and saves to summary dialog field
+        cardCount.setText(String.valueOf(cardDS.getAll(null, null, false,true).size()));
+        cardNotifications.setText(String.valueOf(cardDS.getAll(null, null, true, true).size()));
+        ArrayList<CreditCard> cardList = cardDS.getAll(null, null, false, true);
+        BigDecimal totalAF = BigDecimal.valueOf(0);
+        for (CreditCard cc : cardList) {
+            totalAF = totalAF.add(cc.getAnnualFee());
+        }
+        cardAF.setText(currency.numToString(totalAF, numberPattern));
+
+        // Retrieves cards next AF data and saves to summary dialog field
+        for (CreditCard card : cardDS.getAll(null, ItemField.AFDATE, false, true)) {
+
+            // Checks if card monitoring is on and has an annual fee
+            NotificationStatus notificationStatus = card.getNotificationStatus();
+            Date annualFeeDate = card.getAfDate();
+            boolean hasAnnualFee = card.hasAnnualFee() && annualFeeDate != null;
+            if (notificationStatus != NotificationStatus.UNMONITORED && hasAnnualFee){
+
+                // Checks program if annual fee date is in future
+                if (annualFeeDate.compareTo(today) > 0) {
+                    TextView  cardNextAF = (TextView) v.findViewById(R.id.cardNextAFField);
+                    cardNextAF.setText(dateFormat.format(card.getAfDate()));
+                }
             }
         }
 
         // Runs with "Close" button is clicked
-        Button closeButton2 = (Button) v2.findViewById(R.id.closeButton);
+        Button closeButton2 = (Button) v.findViewById(R.id.closeButton);
         closeButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Dialog is destroyed
-                diag2.dismiss();
+                diag.dismiss();
             }
         });
 
         // Displays dialog
-        diag2.show();
+        diag.show();
 
         // Dims background while dialog is active
-        diag2.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-    // Runs when settings button is clicked
-    @Override
-    public void menuSettingsClicked() {
-        // Opens Settings Activity
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+    // Opens About Popup
+    public void showAbout() {
+        // Gets dialog layout
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_about, null);
+
+        // Creates dialog
+        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
+
+        // Sets title in dialog toolbar on top
+        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
+        toolBar1.setTitle("About");
+
+        // Sets text in dialog
+        TextView mainText = (TextView) v.findViewById(R.id.text);
+        String appVersion = "";
+
+        // Get app version
+        try {
+            appVersion = "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String text =
+                "Travel Wallet " + appVersion + "\n\n" +
+                        "I hope you are able to find some value out of this app. If you have any feature requests, " +
+                        "bug reports, or any other feedback, please feel free to shoot me an email. " +
+                        "I love hearing back about my projects! \n\n" +
+                        "Email:  travelwallet@davidlcassidy.com\nWebsite:  www.DavidLCassidy.com";
+        mainText.setText(text);
+        Linkify.addLinks(mainText, Linkify.ALL);
+
+        // Runs with "Close" button is clicked
+        Button closeButton = (Button) v.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Dialog is destroyed
+                diag.dismiss();
+            }
+        });
+
+        // Displays dialog
+        diag.show();
+
+        // Dims background while dialog is active
+        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 }

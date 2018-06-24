@@ -12,9 +12,8 @@ used to set the menu items on the toolbar.
 
 public abstract class BaseActivity_Main extends BaseActivity {
 
-    public abstract void menuAboutClicked();
-    public abstract void menuExpandClicked();
-    public abstract void menuSettingsClicked();
+    public abstract void menuOwnersClicked();
+    public abstract void menuDropdownClicked();
 
 	// Sets menu layout
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -32,19 +31,14 @@ public abstract class BaseActivity_Main extends BaseActivity {
                 finish();
                 return true;
 
-            // About button click executes abstract menuAboutClicked() method
-            case R.id.menu_about:
-                menuAboutClicked();
-                return true;
-
             // Summary button click executes abstract menuSummaryClicked() method
-            case R.id.menu_expand:
-                menuExpandClicked();
+            case R.id.menu_users:
+                menuOwnersClicked();
                 return true;
 
             // Settings button click executes abstract menuSettingsClicked() method
-            case R.id.menu_settings:
-                menuSettingsClicked();
+            case R.id.menu_dropdown:
+                menuDropdownClicked();
                 return true;
 				
             default:

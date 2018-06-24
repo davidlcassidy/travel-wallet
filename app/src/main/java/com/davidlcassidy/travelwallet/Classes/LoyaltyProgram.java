@@ -15,6 +15,7 @@ public class LoyaltyProgram {
 
     private Integer id;
     private Integer programId;
+    private Owner owner;
     private String type;
     private String name;
     private String accountNumber;
@@ -30,9 +31,10 @@ public class LoyaltyProgram {
     private String logoIcon;
     private String notes;
 
-    public LoyaltyProgram(Integer id, Integer programId, String type, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
+    public LoyaltyProgram(Integer id, Integer programId, Owner owner, String type, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.programId = programId;
+        this.owner = owner;
         this.type = type;
         this.name = name;
         this.accountNumber = accountNumber;
@@ -90,6 +92,14 @@ public class LoyaltyProgram {
 
     public void setProgramId(Integer programId) {
         this.programId = programId;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     public String getType() {

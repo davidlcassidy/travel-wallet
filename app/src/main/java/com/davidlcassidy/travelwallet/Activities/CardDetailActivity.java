@@ -13,6 +13,7 @@ import android.widget.ToggleButton;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Detail;
+import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Adapters.DetailListAdapter;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
@@ -47,6 +48,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
     private ListView lv;
     private ImageView logo;
     private TextView logoText;
+    private TextView notesField;
     private ToggleButton notificationButton;
 
     @Override
@@ -72,8 +74,8 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
 
 		// Sets text for notification button
         notificationButton = (ToggleButton) footer.findViewById(R.id.notificationButton);
-        notificationButton.setTextOn("Monitoring : OFF");
-        notificationButton.setTextOff("Monitoring : ON");
+        notificationButton.setTextOn("Monitoring : ON");
+        notificationButton.setTextOff("Monitoring : OFF");
 		
 		// Sets click listener for notification button. When clicked, the card's notification status
 		// will be updated and notification button text will change to reflect.
@@ -81,13 +83,15 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
             public void onClick(View arg0) {
                 if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
                     cardDS.changeCardNotificationStatus(card, NotificationStatus.OFF);
-                    notificationButton.setChecked(false);
+                    notificationButton.setChecked(true);
                 } else {
                     cardDS.changeCardNotificationStatus(card, NotificationStatus.UNMONITORED);
-                    notificationButton.setChecked(true);
+                    notificationButton.setChecked(false);
                 }
             }
         });
+
+        notesField = (TextView) footer.findViewById(R.id.notesField);
     }
 
     protected void onResume() {
@@ -103,6 +107,10 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         BigDecimal cardAF = card.getAnnualFee();
         String cardAFString = currency.numToString(cardAF, numberPattern);
 
+        // Get card credit limit and formats as currency string
+        BigDecimal creditlimit = card.getCreditLimit();
+        String creditLimitString = currency.numToString(creditlimit, numberPattern);
+
 		// Sets card image and card name text for list header
         int logoNum = this.getResources().getIdentifier("card_000_image", "drawable", this.getPackageName());
         logo.setImageResource(logoNum);
@@ -110,16 +118,21 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
 
 		// Creates list of credit card field/value pairs
         detailList.clear();
+        Owner owner = card.getOwner();
+        if (owner != null){
+            detailList.add(new Detail("Owner", owner.getName()));
+        }
         detailList.add(new Detail("Name", card.getName()));
         detailList.add(new Detail("Bank", card.getBank()));
         detailList.add(new Detail("Status", card.getStatus().getName()));
+        if (creditlimit.compareTo(BigDecimal.ZERO)!=0){detailList.add(new Detail("Credit Limit", creditLimitString));}
         detailList.add(new Detail("Annual Fee", cardAFString));
-        detailList.add(new Detail("Foreign Fee", decimalFormat.format(card.getForeignTransactionFee()) + " %"));
 		Date openDate = card.getOpenDate();
-        if (openDate != null) {detailList.add(new Detail("Open Date", dateFormat.format(openDate))); }
+        if (openDate != null) {detailList.add(new Detail("Open Date", dateFormat.format(openDate)));}
         boolean hasAnnualFee = card.hasAnnualFee();
         Date afDate = card.getAfDate();
         if (afDate != null && hasAnnualFee) {detailList.add(new Detail("Annual Fee Date", dateFormat.format(afDate)));}
+        detailList.add(new Detail("Foreign Fee", decimalFormat.format(card.getForeignTransactionFee()) + " %"));
 
 		// Creates adapter using card details list and sets to list
         DetailListAdapter adapter = new DetailListAdapter(this, detailList);
@@ -127,13 +140,21 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
 
 		// Updates notification button test and visability
         if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
-            notificationButton.setChecked(true);
-        } else {
             notificationButton.setChecked(false);
+        } else {
+            notificationButton.setChecked(true);
         }
         notificationButton.setVisibility(View.VISIBLE);
         if (!hasAnnualFee || card.getStatus() == CardStatus.CLOSED) {
             notificationButton.setVisibility(View.GONE);
+        }
+
+        String notes = card.getNotes();
+        if (notes == null || notes.equals("")) {
+            notesField.setVisibility(View.GONE);
+        } else {
+            notesField.setVisibility(View.VISIBLE);
+            notesField.setText(notes);
         }
     }
 

@@ -27,10 +27,15 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.CardAddEditActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.OwnerListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.OwnerDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.OwnerAddEditActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activities.SettingsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.ChaseStatusActivity"
-            android:screenOrientation="portrait"/>
+
         <service android:name=".Classes.NotificationTimerService"/>
     </application>
 </manifest>

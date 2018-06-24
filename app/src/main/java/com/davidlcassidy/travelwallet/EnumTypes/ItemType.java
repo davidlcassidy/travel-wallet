@@ -11,7 +11,8 @@ public enum ItemType {
 	
 	// Enum members
     LOYALTY_PROGRAM(1, "Loyalty Program"),
-    CREDIT_CARD(2, "Credit Card");
+    CREDIT_CARD(2, "Credit Card"),
+    OWNER(3, "Owner");
 
     private final int id;
     private final String name;

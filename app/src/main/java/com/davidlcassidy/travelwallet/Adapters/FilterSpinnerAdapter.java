@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.R;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ public class FilterSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         this.items=items;
         this.activity = activity;
     }
-
-
 
     public int getCount()
     {
@@ -40,8 +37,6 @@ public class FilterSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
     {
         return (long)i;
     }
-
-
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -59,8 +54,11 @@ public class FilterSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         txt.setGravity(Gravity.CENTER);
         txt.setPadding(16, 16, 16, 16);
         txt.setTextSize(16);
-        txt.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_down, 0);
+        if (getCount() > 1) {
+            txt.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_down, 0);
+        }
         txt.setText(items.get(i));
+        txt.setMaxLines(1);
         txt.setTextColor(Color.parseColor("#000000"));
         return  txt;
     }
