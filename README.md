@@ -16,6 +16,8 @@ Features:
 - Works offline
 - Point expiration notifications
 - Annual fee notifications
+- Chase 5/24 status
+- Supports multiple card/program owners
 - Supports 40+ loyalty programs, 130+ credit cards
 
 
@@ -37,11 +39,9 @@ Travel Wallet consist of three interfaces, each with its own tab and display win
 - Loyalty Program Interface - Provides users the ability add, view, edit, and delete loyalty programs
 - Credit Card Interface - Provides users the ability add, view, edit, and delete credit cards
 
-Along with these three interfaces, there are three buttons on the top of the main screen.
-
-- Info - Displays generic app information
-- Summary - Provides a summary report user's loyalty programs and credit cards
-- Settings - Location where user preferences can be edited
+Along with these three interfaces, there are two buttons located on the top of the main screen. The first is the 
+Owners button allowing the user to manage multiple program/card owners. The second is a dropdown menu 
+where the user can modify settings, create a summary report, and view app details. 
 
 ### Notifications Interface
 
@@ -115,14 +115,7 @@ Pull requests and GitHub issues are welcome!
 If you would like to do a pull request, please get in touch with me before you start writing code so we 
 can avoid duplicated effort or unnecessary work.
 
-## License
+## Copyright
 
-Copyright (C) 2018 David Cassidy.
-
-This project is open source and licensed under the GNU AGPLv3 license, Version 3.0 - see the [LICENSE](LICENSE) 
-file distributed with this project for additional information. You may not use this project or its associated 
-files except in compliance with the License. 
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is 
-distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-See the License for the specific language governing permissions and limitations under the License.
+Travel Wallet Android App
+Copyright (C) 2018 David L Cassidy. All rights reserved.
