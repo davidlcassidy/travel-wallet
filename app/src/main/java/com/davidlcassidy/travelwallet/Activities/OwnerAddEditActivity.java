@@ -74,10 +74,10 @@ public class OwnerAddEditActivity extends BaseActivity_Save {
 	// Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
-        String ownerName = nameField.getText().toString();
+        String ownerName = nameField.getText().toString().trim();
         String notes = notesField.getText().toString();
 
-        if (ownerName.replaceAll("\\s+","").equals("")){
+        if (ownerName.equals("")){
             Toast.makeText(OwnerAddEditActivity.this, "Please type a name.", Toast.LENGTH_LONG).show();
         }
 		else if (ownerId == -1){

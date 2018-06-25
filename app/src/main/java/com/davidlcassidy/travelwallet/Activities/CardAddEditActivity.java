@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,9 +58,10 @@ public class CardAddEditActivity extends BaseActivity_Save {
     private OwnerDataSource ownerDS;
     private Integer cardId;
 
-    private TextView ownerField, bankField, nameField, statusField, openDateField, afDateField;
+    private TextView ownerField, bankField, nameField, statusField, openDateField,
+            afDateField, closeDateField;
     private EditText creditLimitField, notesField;
-    private LinearLayout ownerLayout, afDateLayout;
+    private LinearLayout ownerLayout, afDateLayout, closeDateLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +84,17 @@ public class CardAddEditActivity extends BaseActivity_Save {
         creditLimitField = (EditText) findViewById(R.id.creditLimitField);
         openDateField = (TextView) findViewById(R.id.openDateField);
         afDateField = (TextView) findViewById(R.id.afDateField);
+        closeDateField = (TextView) findViewById(R.id.closeDateField);
         notesField = (EditText) findViewById(R.id.notesField);
 
         setClickListeners();
 
+        // Dynamically set layout visibility
         afDateLayout = (LinearLayout) findViewById(R.id.afDateLayout);
         afDateLayout.setVisibility(View.GONE);
+
+        closeDateLayout = (LinearLayout) findViewById(R.id.closeDateLayout);
+        closeDateLayout.setVisibility(View.GONE);
 
         ownerLayout = (LinearLayout) findViewById(R.id.ownerLayout);
         int numberOfOwners = ownerDS.getAll(null, null, null).size();
@@ -114,6 +121,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             BigDecimal cCreditLimit = card.getCreditLimit();
             Date cOpenDate = card.getOpenDate();
             Date cAFDate = card.getAfDate();
+            Date cCloseDate = card.getCloseDate();
             String cNotes = card.getNotes();
             if (cOwner != null) {ownerField.setText(cOwner.getName());}
             if (cBank != null) {bankField.setText(cBank);}
@@ -122,13 +130,26 @@ public class CardAddEditActivity extends BaseActivity_Save {
             if (cCreditLimit != null) {creditLimitField.setText(String.valueOf(cCreditLimit));}
             if (cOpenDate != null) {openDateField.setText(dateFormat.format(cOpenDate));}
             if (cAFDate != null) {afDateField.setText(dateFormat.format(cAFDate));}
+            if (cCloseDate != null) {closeDateField.setText(dateFormat.format(cCloseDate));}
             if (cNotes != null) {notesField.setText(cNotes);}
 
             updateAnnualFeeDateFieldVisibility();
+            updateCloseDateFieldVisibility();
 
         } else {
             setTitle("Add Credit Card");
             statusField.setText(CardStatus.OPEN.getName());
+        }
+
+    }
+
+    // Hides close date field when card status is Open
+    private void updateCloseDateFieldVisibility() {
+        CardStatus cardStatus = CardStatus.fromName(statusField.getText().toString());
+        if (cardStatus == CardStatus.OPEN) {
+            closeDateLayout.setVisibility(View.GONE);
+        } else {
+            closeDateLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -171,16 +192,17 @@ public class CardAddEditActivity extends BaseActivity_Save {
         } catch (ParseException e) {
             openDate = null;
         }
-        try {
-            openDate = dateFormat.parse(openDateField.getText().toString());
-        } catch (ParseException e) {
-            openDate = null;
-        }
         Date afDate;
         try {
             afDate = dateFormat.parse(afDateField.getText().toString());
         } catch (ParseException e) {
             afDate = null;
+        }
+        Date closeDate;
+        try {
+            closeDate = dateFormat.parse(closeDateField.getText().toString());
+        } catch (ParseException e) {
+            closeDate = null;
         }
         String notes = notesField.getText().toString();
 
@@ -192,8 +214,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
 			
 		// Creates card if new
         } else if (cardId == -1) {
-            // TODO: Implement Close Date
-            cardDS.create(cardRefId, owner, cardStatus, creditLimit, openDate, afDate, null, notes);
+            cardDS.create(cardRefId, owner, cardStatus, creditLimit, openDate, afDate, closeDate, notes);
             finish(); //Closes activity
             Toast.makeText(CardAddEditActivity.this, cardName + " card added.", Toast.LENGTH_SHORT).show();
 			
@@ -207,6 +228,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             card.setCreditLimit(creditLimit);
             card.setOpenDate(openDate);
             card.setAfDate(afDate);
+            card.setCloseDate(closeDate);
             card.setNotes(notes);
             cardDS.update(card);
             finish(); //Closes activity
@@ -250,6 +272,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
         } else if (currentValue == CardStatus.CLOSED){
             statusField.setText(CardStatus.OPEN.getName());
         }
+        updateCloseDateFieldVisibility();
     }
 
 
@@ -314,17 +337,17 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
         // Sets currently selected date in dialog to the date in the field
         Calendar cal = Calendar.getInstance();
-        Date lastActivityDate = null;
+        Date annualFeeDate = null;
         try {
-            lastActivityDate = dateFormat.parse(afDateField.getText().toString());
+            annualFeeDate = dateFormat.parse(afDateField.getText().toString());
         } catch (ParseException e) {
             if (cardId != -1) {
                 CreditCard card = cardDS.getSingle(cardId);
-                lastActivityDate = card.getAfDate();
+                annualFeeDate = card.getAfDate();
             }
         }
-        if (lastActivityDate != null){
-            cal.setTime(lastActivityDate);
+        if (annualFeeDate != null){
+            cal.setTime(annualFeeDate);
         }
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
@@ -344,6 +367,54 @@ public class CardAddEditActivity extends BaseActivity_Save {
                         cal.set(Calendar.YEAR, year);
                         Date pickedDate = cal.getTime();
                         afDateField.setText(dateFormat.format(pickedDate));
+                    }
+                }, year, month, day); // set date picker to current date
+
+        datePicker.show();
+
+        datePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(final DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    // Displays date picker dialog for user selection of card close date
+    private void closeDateFieldClick(){
+
+        // Sets currently selected date in dialog to the date in the field
+        Calendar cal = Calendar.getInstance();
+        Date closeDate = null;
+        try {
+            closeDate = dateFormat.parse(closeDateField.getText().toString());
+        } catch (ParseException e) {
+            if (cardId != -1) {
+                CreditCard card = cardDS.getSingle(cardId);
+                closeDate = card.getCloseDate();
+            }
+        }
+        if (closeDate != null){
+            cal.setTime(closeDate);
+        }
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // Create date picker
+        DatePickerDialog datePicker =
+                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+                    // Save date to card field
+                    @Override
+                    public void onDateSet(final DatePicker view, final int year, final int month,
+                                          final int dayOfMonth) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        cal.set(Calendar.MONTH, month);
+                        cal.set(Calendar.YEAR, year);
+                        Date pickedDate = cal.getTime();
+                        closeDateField.setText(dateFormat.format(pickedDate));
                     }
                 }, year, month, day); // set date picker to current date
 
@@ -496,6 +567,16 @@ public class CardAddEditActivity extends BaseActivity_Save {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(CardAddEditActivity.this);
                 annualFeeDateFieldClick();
+            }
+        });
+
+        LinearLayout closeDateLayout = (LinearLayout) findViewById(R.id.closeDateLayout);
+        closeDateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainLayout.requestFocus();
+                hideSoftKeyboard(CardAddEditActivity.this);
+                closeDateFieldClick();
             }
         });
     };

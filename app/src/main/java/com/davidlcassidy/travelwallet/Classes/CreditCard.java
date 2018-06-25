@@ -38,7 +38,7 @@ public class CreditCard {
     private String logoIcon;
     private String notes;
 
-    public CreditCard(Integer id, Integer cardId, Owner owner, CardStatus status,  Integer bankId, String bank, String name, String type, BigDecimal creditLimit,BigDecimal annualFee, Boolean annualFeeWaived, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer cardId, Owner owner, CardStatus status,  Integer bankId, String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, Boolean annualFeeWaived, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.cardId = cardId;
         this.owner = owner;

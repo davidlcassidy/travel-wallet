@@ -11,6 +11,8 @@ Owner class is created by OwnerDataSource and contains the data for a owner
 from the MainDatabase.
  */
 
+import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class Owner {
     private Integer programCount;
     private Integer cardCount;
     private BigDecimal totalProgramValue;
+    private BigDecimal totalAF;
     private BigDecimal creditLimit;
     private String chase524Status;
     private String chase524StatusEligibilityDate;
@@ -49,11 +52,16 @@ public class Owner {
         }
         this.totalProgramValue =totalProgramValue;
 
-        // Set credit limit
+        // Set total AF and credit limit
+        BigDecimal totalAF = BigDecimal.valueOf(0);
         BigDecimal totalCL = BigDecimal.valueOf(0);
         for (CreditCard cc : userCards) {
-            totalCL = totalCL.add(cc.getCreditLimit());
+            if (cc.getStatus() == CardStatus.OPEN) {
+                totalAF = totalAF.add(cc.getAnnualFee());
+                totalCL = totalCL.add(cc.getCreditLimit());
+            }
         }
+        this.totalAF = totalAF;
         this.creditLimit = totalCL;
 
         // Set Chase 5/24 status
@@ -110,6 +118,14 @@ public class Owner {
 
     public void setTotalProgramValue(BigDecimal totalProgramValue) {
         this.totalProgramValue = totalProgramValue;
+    }
+
+    public BigDecimal getTotalAF() {
+        return totalAF;
+    }
+
+    public void setTotalAF(BigDecimal totalAF) {
+        this.totalAF = totalAF;
     }
 
     public BigDecimal getCreditLimit() {

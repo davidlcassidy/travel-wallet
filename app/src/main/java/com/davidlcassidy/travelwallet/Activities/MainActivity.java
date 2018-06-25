@@ -204,14 +204,14 @@ public class MainActivity extends BaseActivity_Main {
                 String selectedItemName = (String) item.getTitle();
 
                 switch (selectedItemName) {
+                    case "Summary Report":
+                        // Opens Summary Popup
+                        showSummary();
+                        break;
                     case "Settings":
                         // Opens Settings Activity
                         Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(intent);
-                        break;
-                    case "Summary":
-                        // Opens Summary Popup
-                        showSummary();
                         break;
                     case "About":
                         // Opens About Popup
@@ -251,7 +251,7 @@ public class MainActivity extends BaseActivity_Main {
 
         // Sets title in dialog toolbar on top
         Toolbar toolBar2 = (Toolbar) v.findViewById(R.id.toolbar);
-        toolBar2.setTitle("Summary");
+        toolBar2.setTitle("Summary Report");
 
         // Retrieves programs total value data and saves to summary dialog fields
         SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
@@ -283,7 +283,7 @@ public class MainActivity extends BaseActivity_Main {
         }
 
         // Retrieves cards total AF data and saves to summary dialog field
-        cardCount.setText(String.valueOf(cardDS.getAll(null, null, false,true).size()));
+        cardCount.setText(String.valueOf(cardDS.getAll(null, null, false,false).size()));
         cardNotifications.setText(String.valueOf(cardDS.getAll(null, null, true, true).size()));
         ArrayList<CreditCard> cardList = cardDS.getAll(null, null, false, true);
         BigDecimal totalAF = BigDecimal.valueOf(0);

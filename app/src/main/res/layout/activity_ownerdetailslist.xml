@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Travel Wallet Android App
+  ~ Copyright (C) 2018 David L Cassidy. All rights reserved.
+  ~ Last modified 6/24/18 2:17 PM
+  -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textSize="45dp"
+            android:maxLines = "1"
+            android:gravity="center"
+            android:paddingTop="35dp"
+            android:paddingBottom="10dp"
+            android:textColor="@color/black"
+            app:fontFamily="@font/annie_use_your_telescope"/>
+
+        <TextView
+            android:id="@+id/notesField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nameText"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:maxLines="3"
+            android:textSize="@dimen/text"/>
+
+        <TextView
+            android:id="@+id/programsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/notesField"
+            android:text="Loyalty Programs"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:paddingTop="30dp"
+            android:paddingBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/header"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/programCountLayout"
+            android:layout_below="@+id/programsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/programCountName"
+                android:text="Count"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/programCountField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/programValueLayout"
+            android:layout_below="@+id/programCountLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/programValueName"
+                android:text="Total Value"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/programValueField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/cardTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/programValueLayout"
+            android:text="Loyalty Programs"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:paddingTop="30dp"
+            android:paddingBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/header"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardCountLayout"
+            android:layout_below="@+id/cardTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/cardCountName"
+                android:text="Count"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/cardCountField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardAFLayout"
+            android:layout_below="@+id/cardCountLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/cardAFName"
+                android:text="Total Annual Fee"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/cardAFField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardCreditLimitLayout"
+            android:layout_below="@+id/cardAFLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/cardCreditLimitName"
+                android:text="Credit Limit"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/cardCreditLimitField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardChaseStatusLayout"
+            android:layout_below="@+id/cardCreditLimitLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/cardChaseStatusName"
+                android:text="Chase 5/24 Status"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/cardChaseStatusField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardChaseStatusDateLayout"
+            android:layout_below="@+id/cardChaseStatusLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/cardChaseStatusDateName"
+                android:text="Chase 5/24 Elgibility Date"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/cardChaseStatusDateField"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

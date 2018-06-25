@@ -130,14 +130,25 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         }
         detailList.add(new Detail("Name", card.getName()));
         detailList.add(new Detail("Bank", card.getBank()));
-        detailList.add(new Detail("Status", card.getStatus().getName()));
-        if (creditlimit.compareTo(BigDecimal.ZERO)!=0){detailList.add(new Detail("Credit Limit", creditLimitString));}
+        CardStatus status = card.getStatus();
+        detailList.add(new Detail("Status", status.getName()));
+        if (creditlimit.compareTo(BigDecimal.ZERO)!=0) {
+            detailList.add(new Detail("Credit Limit", creditLimitString));
+        }
         detailList.add(new Detail("Annual Fee", cardAFString));
 		Date openDate = card.getOpenDate();
-        if (openDate != null) {detailList.add(new Detail("Open Date", dateFormat.format(openDate)));}
+        if (openDate != null) {
+            detailList.add(new Detail("Open Date", dateFormat.format(openDate)));
+        }
         boolean hasAnnualFee = card.hasAnnualFee();
         Date afDate = card.getAfDate();
-        if (afDate != null && hasAnnualFee) {detailList.add(new Detail("Annual Fee Date", dateFormat.format(afDate)));}
+        if (afDate != null && hasAnnualFee) {
+            detailList.add(new Detail("Annual Fee Date", dateFormat.format(afDate)));
+        }
+        Date closeDate = card.getCloseDate();
+        if (closeDate != null && status == CardStatus.CLOSED) {
+            detailList.add(new Detail("Close Date", dateFormat.format(closeDate)));
+        }
         detailList.add(new Detail("Foreign Fee", decimalFormat.format(card.getForeignTransactionFee()) + " %"));
 
 		// Creates adapter using card details list and sets to list

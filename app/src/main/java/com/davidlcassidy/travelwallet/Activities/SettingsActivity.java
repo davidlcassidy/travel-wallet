@@ -221,7 +221,8 @@ public class SettingsActivity extends BaseActivity_Save {
                 ItemField.ITEMCOUNTS.getName(),
                 ItemField.PROGRAMSVALUE.getName(),
                 ItemField.CREDITLIMIT.getName(),
-                ItemField.CHASESTATUS.getName());
+                ItemField.CHASESTATUS.getName(),
+                ItemField.OWNERNOTES.getName());
         fieldSelectDialog(title, types, "ownerPrimary");
     }
 

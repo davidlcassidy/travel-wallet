@@ -118,4 +118,5 @@ can avoid duplicated effort or unnecessary work.
 ## Copyright
 
 Travel Wallet Android App
+
 Copyright (C) 2018 David L Cassidy. All rights reserved.
