@@ -116,7 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/programValueLayout"
-            android:text="Loyalty Programs"
+            android:text="Credit Cards"
             android:gravity="center"
             android:textStyle="bold"
             android:paddingTop="30dp"
