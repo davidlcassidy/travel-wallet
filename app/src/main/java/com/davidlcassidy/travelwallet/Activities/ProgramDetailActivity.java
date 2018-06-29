@@ -123,7 +123,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         }
 
         detailList.add(new Detail("Name", program.getName()));
-        detailList.add(new Detail("Type", program.getType()));
+        detailList.add(new Detail("Type", program.getType().getName()));
         detailList.add(new Detail("Account Number", program.getAccountNumber()));
         detailList.add(new Detail("Points", numberFormat.format(program.getPoints())));
         detailList.add(new Detail("Value", programValueString));;

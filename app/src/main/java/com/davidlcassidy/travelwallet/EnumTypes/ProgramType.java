@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 6/29/18 1:58 AM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
@@ -15,50 +15,54 @@ app instability within current app installs
 
 import java.util.ArrayList;
 
-public enum CardStatus {
+public enum ProgramType {
 
 	// Enum members
-    OPEN(1, "Open"),
-    CLOSED(2, "Closed");
+    AIRLINE(1, "Airline"),
+    CREDITCARD(2, "Credit Card"),
+    HOTEL(3, "Hotel"),
+    RAILWAY(4, "Railway"),
+    RENTALCAR(5, "Rental Car"),
+    STORE(6, "Store");
 
 	private final int id;
     private final String name;
 
-    private CardStatus(int id, String name) {
+    private ProgramType(int id, String name) {
 		this.id = id;
         this.name = name;
     }
 	
-	// Returns card status ID
+	// Returns program type ID
     public int getId() {
         return id;
     }
 
-    // Returns card status name
+    // Returns program type name
     public String getName() {
         return name;
     }
 
-	// Returns card status from ID
-    public static CardStatus fromId(int id) {
-        for (CardStatus cs : CardStatus.values()) {
+	// Returns program type from ID
+    public static ProgramType fromId(int id) {
+        for (ProgramType cs : ProgramType.values()) {
             if (cs.getId() == id) {return cs;}
         }
         return null;
     }
 
-    // Returns card status from name
-    public static CardStatus fromName(String name) {
-        for (CardStatus cs : CardStatus.values()) {
+    // Returns program type from name
+    public static ProgramType fromName(String name) {
+        for (ProgramType cs : ProgramType.values()) {
             if (cs.getName().equals(name)) {return cs;}
         }
         return null;
     }
 
-    // Returns the names of every card status
+    // Returns the names of every program type
     public static ArrayList<String> getAllNames() {
         ArrayList<String> list = new ArrayList <String>();
-        for (CardStatus cs : CardStatus.values()) {
+        for (ProgramType cs : ProgramType.values()) {
             list.add(cs.getName());
         }
         return list;

@@ -7,6 +7,7 @@
 package com.davidlcassidy.travelwallet.Classes;
 
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
+import com.davidlcassidy.travelwallet.EnumTypes.ProgramType;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -20,9 +21,9 @@ loyalty program from both the MainDatabase and the RefDatabase.
 public class LoyaltyProgram {
 
     private Integer id;
-    private Integer programId;
+    private Integer refId;
     private Owner owner;
-    private String type;
+    private ProgramType type;
     private String name;
     private String accountNumber;
     private Integer points;
@@ -37,9 +38,9 @@ public class LoyaltyProgram {
     private String logoIcon;
     private String notes;
 
-    public LoyaltyProgram(Integer id, Integer programId, Owner owner, String type, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
+    public LoyaltyProgram(Integer id, Integer refId, Owner owner, ProgramType type, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
-        this.programId = programId;
+        this.refId = refId;
         this.owner = owner;
         this.type = type;
         this.name = name;
@@ -75,7 +76,7 @@ public class LoyaltyProgram {
 
 	// Generates standard icon and header image names from program ID
     private void setLogos() {
-        String programIdString = String.format("%03d", this.programId);
+        String programIdString = String.format("%03d", this.refId);
         this.logoImage = new StringBuilder("program_").append(programIdString).append("_image").toString();
         this.logoIcon = new StringBuilder("program_").append(programIdString).append("_icon").toString();
     }
@@ -92,12 +93,12 @@ public class LoyaltyProgram {
         this.id = id;
     }
 
-    public Integer getProgramId() {
-        return programId;
+    public Integer getRefId() {
+        return refId;
     }
 
-    public void setProgramId(Integer programId) {
-        this.programId = programId;
+    public void setRefId(Integer refId) {
+        this.refId = refId;
     }
 
     public Owner getOwner() {
@@ -108,11 +109,11 @@ public class LoyaltyProgram {
         this.owner = owner;
     }
 
-    public String getType() {
+    public ProgramType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ProgramType type) {
         this.type = type;
     }
 

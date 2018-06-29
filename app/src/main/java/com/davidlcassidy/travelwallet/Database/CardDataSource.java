@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.EnumTypes.Bank;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
@@ -132,9 +133,9 @@ public class CardDataSource {
         delete(id);
     }
 
-	// Deletes specific credit card, based on card ID
-    public void delete(int cardID) {
-        dbMain.delete(tableNameMain, dbHelperMain.COLUMN_CC_ID + " = " + cardID, null);
+	// Deletes specific credit card, based on ref ID
+    public void delete(int refID) {
+        dbMain.delete(tableNameMain, dbHelperMain.COLUMN_CC_ID + " = " + refID, null);
     }
 
 	// Returns a list of all credit cards in database, sorted by sortField parameter
@@ -144,8 +145,8 @@ public class CardDataSource {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             CreditCard card = cursorToCard(cursor);
-            Owner cardOwner = card.getOwner();
             if (card != null) {
+                Owner cardOwner = card.getOwner();
                 if (owner != null && (cardOwner == null || cardOwner.getId() != owner.getId()) ) {
                     cursor.moveToNext();
                     continue;
@@ -185,7 +186,7 @@ public class CardDataSource {
                         c = c1.getName().compareTo(c2.getName());
                         break;
                     case "Bank":
-                        c = c1.getBank().compareTo(c2.getBank());
+                        c = c1.getBank().getName().compareTo(c2.getBank().getName());
                         if (c == 0) {
                             c = c1.getName().compareTo(c2.getName());
                         }
@@ -253,7 +254,7 @@ public class CardDataSource {
                 if (openDateCal.after(cutoffDate)) {
                     if (card.getType().equals("P")) {
                         recentCardList.add(card);
-                    } else if (card.getType().equals("B") && businessCardsCreditCheck.contains(card.getBank())) {
+                    } else if (card.getType().equals("B") && businessCardsCreditCheck.contains(card.getBank().getName())) {
                         recentCardList.add(card);
                     }
                 }
@@ -274,13 +275,17 @@ public class CardDataSource {
 	// Returns list of banks with option to ignore depreciated cards
     public ArrayList<String> getAvailableBanks(boolean ignoreDeprecated) {
         ArrayList<String> bankList = new ArrayList<>();
-        Cursor cursor = dbRef.query(tableNameRef, new String[] {"bank", "depreciated"}, null, null, null, null, null);
+        Cursor cursor = dbRef.query(tableNameRef, new String[]
+                {dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                null, null, null, null, null);
         cursor.moveToFirst();
+        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
-            String bank = cursor.getString(0);
-            Boolean depreciated = cursor.getInt(1) == 1;
+            Bank bank = Bank.fromId(cursor.getInt(refIndex_bankId));
+            Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
             if ( !(ignoreDeprecated && depreciated) ) {
-                bankList.add(bank);
+                bankList.add(bank.getName());
             }
             cursor.moveToNext();
         }
@@ -296,13 +301,19 @@ public class CardDataSource {
 	// Returns list of cards with option to ignore depreciated cards
     public ArrayList<String> getAvailableCards(String bank, boolean ignoreDeprecated) {
         ArrayList<String> cardList = new ArrayList<>();
-        Cursor cursor = dbRef.query(tableNameRef, new String[] {"bank", "name", "depreciated"}, null, null, null, null, null);
+        Cursor cursor = dbRef.query(tableNameRef, new String[]
+                {dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                null, null, null, null, null);
+
         cursor.moveToFirst();
+        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
+        int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
-            String cardBank = cursor.getString(0);
-            String cardName = cursor.getString(1);
-            Boolean depreciated = cursor.getInt(2) == 1;
-            if (cardBank.equals(bank) && !(ignoreDeprecated && depreciated) ) {
+            Bank cardBank = Bank.fromId(cursor.getInt(refIndex_bankId));
+            String cardName = cursor.getString(refIndex_name);
+            Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
+            if (bank.equals(cardBank.getName()) && !(ignoreDeprecated && depreciated) ) {
                 cardList.add(cardName);
             }
             cursor.moveToNext();
@@ -388,7 +399,7 @@ public class CardDataSource {
 	// Update all fields for an individual card in the main database
     public int update(CreditCard card)  {
         Integer ID = card.getId();
-        Integer cardRefId = card.getCardId();
+        Integer refId = card.getRefId();
         Owner owner = card.getOwner();
         CardStatus status = card.getStatus();
         BigDecimal creditLimit = card.getCreditLimit();
@@ -399,7 +410,7 @@ public class CardDataSource {
         String notes = card.getNotes();
 
         ContentValues values = new ContentValues();
-        values.put(dbHelperMain.COLUMN_CC_REFID, cardRefId);
+        values.put(dbHelperMain.COLUMN_CC_REFID, refId);
         if (owner != null) {
             values.put(dbHelperMain.COLUMN_CC_OWNERID, owner.getId());
         } else {
@@ -423,74 +434,22 @@ public class CardDataSource {
         return numOfRows;
     }
 
-	// Converts database cursor to credit card
-    private CreditCard cursorToCard(Cursor cursor)  {
-        Integer id = cursor.getInt(0);
-        Integer cardId = cursor.getInt(1);
-        Integer ownerId = cursor.getInt(2);
-        Owner owner = ownerDS.getSingle(ownerId, null, null);
-        CardStatus status = CardStatus.fromId(cursor.getInt(3));
-        Integer cardNumber = cursor.getInt(4);
-        Date openDate = null;
-        try {
-            openDate = dbDateFormat.parse(cursor.getString(5));
-        } catch (Exception e) {
-            openDate = null;
-        }
-        Date afDate = null;
-        try {
-            afDate = dbDateFormat.parse(cursor.getString(6));
-        } catch (Exception e) {
-            afDate = null;
-        }
-        Date closeDate = null;
-        try {
-            closeDate = dbDateFormat.parse(cursor.getString(7));
-        } catch (Exception e) {
-            closeDate = null;
-        }
-        NotificationStatus notificationStatus = NotificationStatus.fromId(cursor.getInt(8));
-        String notes = cursor.getString(9);
-
-        String creditLimitCursor = cursor.getString(10);
-        BigDecimal creditLimit = null;
-        if (creditLimitCursor != null) {
-            creditLimit = new BigDecimal(creditLimitCursor);
-        } else {
-            creditLimit = new BigDecimal("0");
-        }
-
-        Cursor cursorRef = dbRef.query(tableNameRef, tableColumnsRef, "_id = " + cardId, null, null, null, null);
-        if (cursorRef.getCount() != 1){
-            delete(cardId);
-            cursorRef.close();
-            return null;
-        } else {
-            cursorRef.moveToFirst();
-
-            String bank = cursorRef.getString(1);
-            Integer bankId = cursorRef.getInt(2);
-            String name = cursorRef.getString(3);
-            String type = cursorRef.getString(4);
-            BigDecimal annualFee = BigDecimal.valueOf(cursorRef.getDouble(5));
-            Boolean annualFeeWaived = cursorRef.getInt(6) == 1;
-            BigDecimal foreignTransactionFee = BigDecimal.valueOf(cursorRef.getDouble(7));
-
-            cursorRef.close();
-            CreditCard card = new CreditCard(id, cardId, owner, status, bankId, bank,  name, type, creditLimit, annualFee, annualFeeWaived, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
-            return card;
-        }
-    }
-
 	// Look up card reference ID by card name
-    public Integer getCardRefId(String cardName) {
-        Cursor cursor = dbRef.query(tableNameRef, new String[] {"_id", "name"}, null, null, null, null, null);
+    public Integer getCardRefId(String cardBank, String cardName) {
+        Cursor cursor = dbRef.query(tableNameRef, new String[]
+                {dbHelperRef.COLUMN_CC_ID, dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_NAME},
+                null, null, null, null, null);
+
         cursor.moveToFirst();
+        int refIndex_id = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_ID);
+        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
         Integer cardRefId = null;
         while (!cursor.isAfterLast()) {
-            Integer id = cursor.getInt(0);
-            String name = cursor.getString(1);
-            if (name.equals(cardName)){
+            Integer id = cursor.getInt(refIndex_id);
+            Bank bank = Bank.fromId(cursor.getInt(refIndex_bankId));
+            String name = cursor.getString(refIndex_name);
+            if (cardBank.equals(bank.getName()) && cardName.equals(name)){
                 cardRefId = id;
                 break;
             }
@@ -501,14 +460,21 @@ public class CardDataSource {
     }
 
 	// Look up card annual by card name
-    public Double getCardAnnualFee(String cardName) {
-        Cursor cursor = dbRef.query(tableNameRef, new String[] {"name", "annualFee"}, null, null, null, null, null);
+    public BigDecimal getCardAnnualFee(String cardBank, String cardName) {
+        Cursor cursor = dbRef.query(tableNameRef, new String[]
+                {dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_AF},
+                null, null, null, null, null);
+
         cursor.moveToFirst();
-        Double cardAnnualFee = null;
+        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
+        int refIndex_af = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
+        BigDecimal cardAnnualFee = null;
         while (!cursor.isAfterLast()) {
-            String name = cursor.getString(0);
-            Double annualFee = cursor.getDouble(1);
-            if (name.equals(cardName)){
+            Bank bank = Bank.fromId(cursor.getInt(refIndex_bankId));
+            String name = cursor.getString(refIndex_name);
+            BigDecimal annualFee = new BigDecimal(cursor.getString(refIndex_af));
+            if (cardBank.equals(bank.getName()) && cardName.equals(name)){
                 cardAnnualFee = annualFee;
                 break;
             }
@@ -516,5 +482,80 @@ public class CardDataSource {
         }
         cursor.close();
         return cardAnnualFee;
+    }
+
+    // Converts database cursor to credit card
+    private CreditCard cursorToCard(Cursor cursor)  {
+        int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_ID);
+        int mainIndex_refId = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_REFID);
+        int mainIndex_ownerId = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_OWNERID);
+        int mainIndex_status = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_STATUS);
+        int mainIndex_number = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_NUMBER);
+        int mainIndex_creditLimit = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_CREDITLIMIT);
+        int mainIndex_openDate = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_OPENDATE);
+        int mainIndex_afDate = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_AFDATE);
+        int mainIndex_closeDate = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_CLOSEDATE);
+        int mainIndex_notificationStatus = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_NOTIFICATIONSTATUS);
+        int mainIndex_notes = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_NOTES);
+
+        Integer id = cursor.getInt(mainIndex_id);
+        Integer refId = cursor.getInt(mainIndex_refId);
+        Owner owner = ownerDS.getSingle(cursor.getInt(mainIndex_ownerId), null, null);
+        CardStatus status = CardStatus.fromId(cursor.getInt(mainIndex_status));
+        Integer cardNumber = cursor.getInt(mainIndex_number);
+
+        String creditLimitCursor = cursor.getString(mainIndex_creditLimit);
+        BigDecimal creditLimit = null;
+        if (creditLimitCursor != null) {
+            creditLimit = new BigDecimal(creditLimitCursor);
+        } else {
+            creditLimit = BigDecimal.ZERO;
+        }
+
+        Date openDate = null;
+        try {
+            openDate = dbDateFormat.parse(cursor.getString(mainIndex_openDate));
+        } catch (Exception e) {
+            openDate = null;
+        }
+        Date afDate = null;
+        try {
+            afDate = dbDateFormat.parse(cursor.getString(mainIndex_afDate));
+        } catch (Exception e) {
+            afDate = null;
+        }
+        Date closeDate = null;
+        try {
+            closeDate = dbDateFormat.parse(cursor.getString(mainIndex_closeDate));
+        } catch (Exception e) {
+            closeDate = null;
+        }
+        NotificationStatus notificationStatus = NotificationStatus.fromId(cursor.getInt(mainIndex_notificationStatus));
+        String notes = cursor.getString(mainIndex_notes);
+
+
+        Cursor cursorRef = dbRef.query(tableNameRef, tableColumnsRef, "_id = " + refId, null, null, null, null);
+        if (cursorRef.getCount() != 1){
+            delete(id);
+            cursorRef.close();
+            return null;
+        } else {
+            cursorRef.moveToFirst();
+            int refIndex_bankId = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+            int refIndex_name = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
+            int refIndex_type = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_TYPE);
+            int refIndex_af = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
+            int refIndex_ftf = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_FTF);
+
+            Bank bank = Bank.fromId(cursorRef.getInt(refIndex_bankId));
+            String name = cursorRef.getString(refIndex_name);
+            String type = cursorRef.getString(refIndex_type);
+            BigDecimal annualFee = new BigDecimal(cursorRef.getString(refIndex_af));
+            BigDecimal foreignTransactionFee = new BigDecimal(cursorRef.getString(refIndex_ftf));
+
+            cursorRef.close();
+            CreditCard card = new CreditCard(id, refId, owner, status, bank,  name, type, creditLimit, annualFee, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
+            return card;
+        }
     }
 }

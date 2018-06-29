@@ -129,7 +129,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
             detailList.add(new Detail("Owner", owner.getName()));
         }
         detailList.add(new Detail("Name", card.getName()));
-        detailList.add(new Detail("Bank", card.getBank()));
+        detailList.add(new Detail("Bank", card.getBank().getName()));
         CardStatus status = card.getStatus();
         detailList.add(new Detail("Status", status.getName()));
         if (creditlimit.compareTo(BigDecimal.ZERO)!=0) {

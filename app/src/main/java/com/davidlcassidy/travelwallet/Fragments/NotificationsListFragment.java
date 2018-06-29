@@ -162,16 +162,16 @@ public class NotificationsListFragment extends Fragment {
     private void addAllCardsAndPrograms(){
         programDS.deleteAll();
         cardDS.deleteAll();
-        for (String type : programDS.getAvailableTypes(false)) {
-            for (String pName : programDS.getAvailablePrograms(type, false)) {
-                Integer refID = programDS.getProgramRefId(pName);
+        for (String pType : programDS.getAvailableTypes(false)) {
+            for (String pName : programDS.getAvailablePrograms(pType, false)) {
+                Integer refID = programDS.getProgramRefId(pType, pName);
                 Double pointValue = Math.random() * 100000;
                 programDS.create(refID, null, "ABC123", pointValue.intValue(), new Date(), "");
             }
         }
-        for (String bank : cardDS.getAvailableBanks(false)) {
-            for (String cName : cardDS.getAvailableCards(bank, false)) {
-                Integer refID = cardDS.getCardRefId(cName);
+        for (String cBank : cardDS.getAvailableBanks(false)) {
+            for (String cName : cardDS.getAvailableCards(cBank, false)) {
+                Integer refID = cardDS.getCardRefId(cBank, cName);
                 cardDS.create(refID, null, CardStatus.OPEN, new BigDecimal("0.0"), new Date(), new Date(), null, "");
             }
         }

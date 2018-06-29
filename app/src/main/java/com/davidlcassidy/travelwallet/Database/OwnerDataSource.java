@@ -20,12 +20,8 @@ import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-
-import static java.util.Calendar.MONTH;
 
 /*
 OwnerDataSource is used to manage and access all local Owner data, via access
@@ -197,11 +193,15 @@ public class OwnerDataSource {
     // Look up single owner by owner name
     public Owner getSingle(String userName, ProgramDataSource programDS, CardDataSource cardDS) {
         Integer userId = null;
-        Cursor cursor = dbMain.query(tableNameMain, new String[] {"_id", "name"}, null, null, null, null, null);
+        Cursor cursor = dbMain.query(tableNameMain, new String[]
+                {dbHelperMain.COLUMN_O_ID, dbHelperMain.COLUMN_O_NAME},
+                null, null, null, null, null);
         if (cursor.moveToFirst()) {
+            int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_O_ID);
+            int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_O_NAME);
             while (!cursor.isAfterLast()) {
-                Integer id = cursor.getInt(0);
-                String name = cursor.getString(1);
+                Integer id = cursor.getInt(mainIndex_id);
+                String name = cursor.getString(mainIndex_name);
                 if (name.equals(userName)) {
                     userId = id;
                     break;
@@ -230,12 +230,15 @@ public class OwnerDataSource {
 
     // Converts database cursor to owner
     private Owner cursorToUser(Cursor cursor)  {
-        Integer id = cursor.getInt(0);
-        String name = cursor.getString(1);
-        String notes = cursor.getString(2);
+        int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_O_ID);
+        int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_O_NAME);
+        int mainIndex_notes = cursor.getColumnIndex(dbHelperMain.COLUMN_O_NOTES);
 
-        Owner owner = new Owner(id, name, notes);
-        return owner;
+        Integer id = cursor.getInt(mainIndex_id);
+        String name = cursor.getString(mainIndex_name);
+        String notes = cursor.getString(mainIndex_notes);
+
+        return new Owner(id, name, notes);
     }
 
 }

@@ -29,6 +29,7 @@ import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
+import com.davidlcassidy.travelwallet.EnumTypes.ProgramType;
 import com.davidlcassidy.travelwallet.R;
 
 import java.text.ParseException;
@@ -105,14 +106,14 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
 			// Sets activity fields
             Owner pOwner = program.getOwner();
-            String pType = program.getType();
+            ProgramType pType = program.getType();
             String pName = program.getName();
             String pAccountNumber = program.getAccountNumber();
             Integer pPoints = program.getPoints();
             Date pLastActivityDate = program.getLastActivityDate();
             String pNotes = program.getNotes();
             if (pOwner != null) {ownerField.setText(pOwner.getName());}
-            if (pType != null) {typeField.setText(pType);}
+            if (pType != null) {typeField.setText(pType.getName());}
             if (pName != null) {nameField.setText(pName);}
             if (pAccountNumber != null) {accountNumberField.setText(pAccountNumber);}
             if (pPoints != null) {pointsField.setText(String.valueOf(pPoints));}
@@ -130,11 +131,12 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
 	// Hides last activity date field for programs with no expiration date or when no program is selected
     private void updateLastActivityFieldVisibility() {
+        String programType = typeField.getText().toString();
         String programName = nameField.getText().toString();
         if (programName.equals("")) {
             lastActivityLayout.setVisibility(View.GONE);
         } else {
-            Integer inactivityExpiration = programDS.getProgramInactivityExpiration(programName);
+            Integer inactivityExpiration = programDS.getProgramInactivityExpiration(programType, programName);
             if (inactivityExpiration != 999) {
                 lastActivityLayout.setVisibility(View.VISIBLE);
             } else {
@@ -150,7 +152,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         Owner owner = ownerDS.getSingle(ownerName, null, null);
 
         String programName = nameField.getText().toString();
-        Integer programRefId = programDS.getProgramRefId(programName);
+        Integer programRefId = programDS.getProgramRefId(String.valueOf(typeField.getText()), programName);
         String accountNumber = accountNumberField.getText().toString();
 
         int points = 0;
@@ -181,7 +183,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 		// Updates program if existing with new values from fields
         } else {
             LoyaltyProgram program = programDS.getSingle(programId);
-            program.setProgramId(programRefId);
+            program.setRefId(programRefId);
             program.setOwner(owner);
             program.setAccountNumber(accountNumber);
             program.setPoints(points);

@@ -54,7 +54,7 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
 
 		// Gets logo resource from name
         Context context = logo.getContext();
-        int logoNum = context.getResources().getIdentifier(card.getLogoIcon(), "drawable", context.getPackageName());
+        int logoNum = context.getResources().getIdentifier(card.getBank().getLogoIcon(), "drawable", context.getPackageName());
         logo.setImageResource(logoNum);
 
 		// Sets field values, based on user preferences

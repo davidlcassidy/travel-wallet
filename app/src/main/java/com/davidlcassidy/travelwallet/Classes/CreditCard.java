@@ -6,6 +6,7 @@
 
 package com.davidlcassidy.travelwallet.Classes;
 
+import com.davidlcassidy.travelwallet.EnumTypes.Bank;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 
@@ -20,46 +21,36 @@ card from both the MainDatabase and the RefDatabase.
 public class CreditCard {
 
     private Integer id;
-    private Integer cardId;
+    private Integer refId;
     private Owner owner;
     private CardStatus status;
-    private BigDecimal creditLimit;
-    private String bank;
-    private Integer bankId;
+    private Bank bank;
     private String name;
     private String type;
+    private BigDecimal creditLimit;
     private BigDecimal annualFee;
-    private Boolean annualFeeWaived;
     private BigDecimal foreignTransactionFee;
     private Date openDate;
     private Date afDate;
     private Date closeDate;
     private NotificationStatus notificationStatus;
-    private String logoIcon;
     private String notes;
 
-    public CreditCard(Integer id, Integer cardId, Owner owner, CardStatus status,  Integer bankId, String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, Boolean annualFeeWaived, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer refId, Owner owner, CardStatus status,  Bank bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
-        this.cardId = cardId;
+        this.refId = refId;
         this.owner = owner;
         this.status = status;
-        this.creditLimit = creditLimit;
-        this.bankId = bankId;
         this.bank = bank;
         this.name = name;
         this.type = type;
+        this.creditLimit = creditLimit;
         this.annualFee = annualFee;
-        this.annualFeeWaived = annualFeeWaived;
         this.foreignTransactionFee = foreignTransactionFee;
         this.openDate = openDate;
         this.afDate = AFDate;
         this.closeDate = closeDate;
         this.notificationStatus = notificationStatus;
-
-		// Generates standard icon name from card ID
-        String bankIdString = String.format("%03d", this.bankId);
-        this.logoIcon = new StringBuilder("bank_").append(bankIdString).append("_icon").toString();
-
         this.notes = notes;
     }
 
@@ -75,12 +66,12 @@ public class CreditCard {
         this.id = id;
     }
 
-    public Integer getCardId() {
-        return cardId;
+    public Integer getRefId() {
+        return refId;
     }
 
-    public void setCardId(Integer cardId) {
-        this.cardId = cardId;
+    public void setRefId(Integer refId) {
+        this.refId = refId;
     }
 
     public Owner getOwner() {
@@ -99,19 +90,11 @@ public class CreditCard {
         this.status = status;
     }
 
-    public BigDecimal getCreditLimit() {
-        return creditLimit;
-    }
-
-    public void setCreditLimit(BigDecimal creditLimit) {
-        this.creditLimit = creditLimit;
-    }
-
-    public String getBank() {
+    public Bank getBank() {
         return bank;
     }
 
-    public void setBank(String bank) {
+    public void setBank(Bank bank) {
         this.bank = bank;
     }
 
@@ -131,20 +114,20 @@ public class CreditCard {
         this.type = type;
     }
 
+    public BigDecimal getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(BigDecimal creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+
     public BigDecimal getAnnualFee() {
         return annualFee;
     }
 
     public void setAnnualFee(BigDecimal annualFee) {
         this.annualFee = annualFee;
-    }
-
-    public Boolean getAnnualFeeWaived() {
-        return annualFeeWaived;
-    }
-
-    public void setAnnualFeeWaived(Boolean annualFeeWaived) {
-        this.annualFeeWaived = annualFeeWaived;
     }
 
     public BigDecimal getForeignTransactionFee() {
@@ -185,14 +168,6 @@ public class CreditCard {
 
     public void setNotificationStatus(NotificationStatus notificationStatus) {
         this.notificationStatus = notificationStatus;
-    }
-
-    public String getLogoIcon() {
-        return logoIcon;
-    }
-
-    public void setLogoIcon(String logoIcon) {
-        this.logoIcon = logoIcon;
     }
 
     public String getNotes() {

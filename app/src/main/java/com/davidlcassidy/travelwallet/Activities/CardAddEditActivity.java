@@ -29,6 +29,7 @@ import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
+import com.davidlcassidy.travelwallet.EnumTypes.Bank;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.R;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
@@ -115,7 +116,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
 			// Sets activity fields
             Owner cOwner = card.getOwner();
-            String cBank = card.getBank();
+            Bank cBank = card.getBank();
             String cName = card.getName();
             CardStatus cStatus = card.getStatus();
             BigDecimal cCreditLimit = card.getCreditLimit();
@@ -124,7 +125,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             Date cCloseDate = card.getCloseDate();
             String cNotes = card.getNotes();
             if (cOwner != null) {ownerField.setText(cOwner.getName());}
-            if (cBank != null) {bankField.setText(cBank);}
+            if (cBank != null) {bankField.setText(cBank.getName());}
             if (cName != null) {nameField.setText(cName);}
             if (cStatus != null) {statusField.setText(cStatus.getName());}
             if (cCreditLimit != null) {creditLimitField.setText(String.valueOf(cCreditLimit));}
@@ -155,15 +156,16 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
 	// Hides annual fee date field for cards with no annual fee or when no card is selected
     private void updateAnnualFeeDateFieldVisibility() {
+        String bankName = bankField.getText().toString();
         String cardName = nameField.getText().toString();
         if (cardName.equals("")) {
             afDateLayout.setVisibility(View.GONE);
         } else {
-            Double annualFee = cardDS.getCardAnnualFee(cardName);
-            if (annualFee > 0) {
-                afDateLayout.setVisibility(View.VISIBLE);
-            } else {
+            BigDecimal annualFee = cardDS.getCardAnnualFee(bankName, cardName);
+            if (annualFee.compareTo(BigDecimal.ZERO) == 0) {
                 afDateLayout.setVisibility(View.GONE);
+            } else {
+                afDateLayout.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -206,7 +208,8 @@ public class CardAddEditActivity extends BaseActivity_Save {
         }
         String notes = notesField.getText().toString();
 
-        Integer cardRefId = cardDS.getCardRefId(cardName);
+        String bankString = String.valueOf(bankField.getText());
+        Integer cardRefId = cardDS.getCardRefId(bankString, cardName);
 
         // Checks that credit card is selected
         if(cardName.equals("")) {
@@ -221,7 +224,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
 		// Updates card if existing with new values from fields
         } else {
             CreditCard card = cardDS.getSingle(cardId);
-            card.setCardId(cardRefId);
+            card.setRefId(cardRefId);
             card.setOwner(owner);
             card.setName(cardName);
             card.setStatus(cardStatus);

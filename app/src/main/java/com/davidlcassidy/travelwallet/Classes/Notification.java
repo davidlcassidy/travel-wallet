@@ -58,7 +58,7 @@ public class Notification {
     public Notification(CreditCard card) {
         this.itemType = ItemType.CREDIT_CARD;
         this.id = card.getId();
-        this.icon = card.getLogoIcon();
+        this.icon = card.getBank().getLogoIcon();
         this.date = card.getAfDate();
         this.header = card.getName() + " Card";
 
