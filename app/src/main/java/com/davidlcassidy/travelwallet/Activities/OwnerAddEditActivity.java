@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
 import com.davidlcassidy.travelwallet.R;
 
@@ -31,6 +32,7 @@ comprised of several owner attribute fields and a handful of value selection dia
 
 public class OwnerAddEditActivity extends BaseActivity_Save {
 
+    private UserPreferences userPreferences;
     private OwnerDataSource ownerDS;
     private Integer ownerId;
 
@@ -40,6 +42,7 @@ public class OwnerAddEditActivity extends BaseActivity_Save {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owneraddedit);
+        userPreferences = UserPreferences.getInstance(this);
 
 		// Gets owner ID from intent. Owner ID of -1 means add new card
         ownerDS = OwnerDataSource.getInstance(this);
@@ -82,6 +85,7 @@ public class OwnerAddEditActivity extends BaseActivity_Save {
         }
 		else if (ownerId == -1){
             ownerDS.create(ownerName, notes);
+            userPreferences.setFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(OwnerAddEditActivity.this, ownerName + " owner added.", Toast.LENGTH_SHORT).show();
 			
@@ -91,6 +95,7 @@ public class OwnerAddEditActivity extends BaseActivity_Save {
             owner.setName(ownerName);
             owner.setNotes(notes);
             ownerDS.update(owner);
+            userPreferences.setFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(OwnerAddEditActivity.this, ownerName + " owner updated.", Toast.LENGTH_SHORT).show();
         }

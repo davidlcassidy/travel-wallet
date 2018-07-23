@@ -1,3 +1,11 @@
+v1.3.3 : 2018-07-22
+Feature Release
+
+ - Fixed bug with program type filter
+ - Added ability to toggle filters on/off in settings
+ - Updated notification button to change color when clicked
+ - Reorganized settings items
+
 v1.3.2 : 2018-06-29
 Feature Release
 
@@ -21,7 +29,7 @@ Minor Release
 v1.2 : 2018-06-15
 Patch Release
 
- - Fixed a bug with popup date picker dialog causing stability issues
+ - Fixed bug with popup date picker dialog causing stability issues
  
 v1.1 : 2018-06-14
 Patch Release

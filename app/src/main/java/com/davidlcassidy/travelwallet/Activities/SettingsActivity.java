@@ -44,14 +44,16 @@ public class SettingsActivity extends BaseActivity_Save {
 
     private UserPreferences userPreferences;
 
-    private TextView programNotificationField;
-    private TextView programPrimaryField;
-    private TextView programSortField;
-    private TextView cardNotificationField;
-    private TextView cardPrimaryField;
-    private TextView cardSortField;
     private TextView ownerPrimaryField;
     private TextView ownerSortField;
+    private TextView programPrimaryField;
+    private TextView programSortField;
+    private TextView programNotificationField;
+    private TextView programFiltersField;
+    private TextView cardPrimaryField;
+    private TextView cardSortField;
+    private TextView cardNotificationField;
+    private TextView cardFiltersField;
     private TextView initialSummaryField;
     private TextView phoneNotificationsField;
     private TextView languageField;
@@ -66,14 +68,16 @@ public class SettingsActivity extends BaseActivity_Save {
 
 		// Gets Settings activity fields
         userPreferences = UserPreferences.getInstance(this);
-        programNotificationField = (TextView) findViewById(R.id.programNotificationField);
-        programPrimaryField = (TextView) findViewById(R.id.programPrimaryField);
-        programSortField = (TextView) findViewById(R.id.programSortField);
-        cardNotificationField = (TextView) findViewById(R.id.cardNotificationField);
-        cardPrimaryField = (TextView) findViewById(R.id.cardPrimaryField);
-        cardSortField = (TextView) findViewById(R.id.cardSortField);
         ownerPrimaryField = (TextView) findViewById(R.id.ownerPrimaryField);
         ownerSortField = (TextView) findViewById(R.id.ownerSortField);
+        programPrimaryField = (TextView) findViewById(R.id.programPrimaryField);
+        programSortField = (TextView) findViewById(R.id.programSortField);
+        programNotificationField = (TextView) findViewById(R.id.programNotificationField);
+        programFiltersField = (TextView) findViewById(R.id.programFiltersField);
+        cardPrimaryField = (TextView) findViewById(R.id.cardPrimaryField);
+        cardSortField = (TextView) findViewById(R.id.cardSortField);
+        cardNotificationField = (TextView) findViewById(R.id.cardNotificationField);
+        cardFiltersField = (TextView) findViewById(R.id.cardFiltersField);
         initialSummaryField = (TextView) findViewById(R.id.initialSummaryField);
         phoneNotificationsField = (TextView) findViewById(R.id.phoneNotificationsField);
         languageField = (TextView) findViewById(R.id.languageField);
@@ -89,29 +93,33 @@ public class SettingsActivity extends BaseActivity_Save {
         super.onResume();
 
 		// Gets values from user preferences
-        String programNotificationPeriod = userPreferences.getSetting_ProgramNotificationPeriod();
-        ItemField programPrimary = userPreferences.getSetting_ProgramPrimaryField();
-        ItemField programSort = userPreferences.getSetting_ProgramSortField();
-        String cardNotificationPeriod = userPreferences.getSetting_CardNotificationPeriod();
-        ItemField cardPrimary = userPreferences.getSetting_CardPrimaryField();
-        ItemField cardSort = userPreferences.getSetting_CardSortField();
         ItemField ownerPrimary = userPreferences.getSetting_OwnerPrimaryField();
         ItemField ownerSort = userPreferences.getSetting_OwnerSortField();
-        String initialSummary = userPreferences.getSetting_InitialSummary() ? "Yes" : "No";
-        String phoneNotifications = userPreferences.getSetting_PhoneNotifications() ? "Yes" : "No";
+        ItemField programPrimary = userPreferences.getSetting_ProgramPrimaryField();
+        ItemField programSort = userPreferences.getSetting_ProgramSortField();
+        String programNotificationPeriod = userPreferences.getSetting_ProgramNotificationPeriod();
+        String programFilters = userPreferences.getSetting_ProgramFilters() ? "ON" : "OFF";
+        ItemField cardPrimary = userPreferences.getSetting_CardPrimaryField();
+        ItemField cardSort = userPreferences.getSetting_CardSortField();
+        String cardNotificationPeriod = userPreferences.getSetting_CardNotificationPeriod();
+        String cardFilters = userPreferences.getSetting_CardFilters() ? "ON" : "OFF";
+        String initialSummary = userPreferences.getSetting_InitialSummary() ? "ON" : "OFF";
+        String phoneNotifications = userPreferences.getSetting_PhoneNotifications() ? "ON" : "OFF";
         Language language = userPreferences.getSetting_Language();
         Currency currency = userPreferences.getSetting_Currency();
         DatePattern datePattern = userPreferences.getSetting_DatePattern();
 
 		// Sets activity fields to values from user preferences
-        setNotificationField(ItemType.LOYALTY_PROGRAM, programNotificationPeriod);
-        programPrimaryField.setText(programPrimary.getName());
-        programSortField.setText(programSort.getName());
-        setNotificationField(ItemType.CREDIT_CARD, cardNotificationPeriod);
-        cardPrimaryField.setText(cardPrimary.getName());
-        cardSortField.setText(cardSort.getName());
         ownerPrimaryField.setText(ownerPrimary.getName());
         ownerSortField.setText(ownerSort.getName());
+        programPrimaryField.setText(programPrimary.getName());
+        programSortField.setText(programSort.getName());
+        setNotificationField(ItemType.LOYALTY_PROGRAM, programNotificationPeriod);
+        programFiltersField.setText(programFilters);
+        cardPrimaryField.setText(cardPrimary.getName());
+        cardSortField.setText(cardSort.getName());
+        setNotificationField(ItemType.CREDIT_CARD, cardNotificationPeriod);
+        cardFiltersField.setText(cardFilters);
         initialSummaryField.setText(initialSummary);
         phoneNotificationsField.setText(phoneNotifications);
         languageField.setText(language.getName());
@@ -124,12 +132,14 @@ public class SettingsActivity extends BaseActivity_Save {
     public void menuSaveClicked() {
 
 		// Gets values from activity fields
-        String programPrimary = programPrimaryField.getText().toString();
-        String programSort = programSortField.getText().toString();
-        String cardPrimary = cardPrimaryField.getText().toString();
-        String cardSort = cardSortField.getText().toString();
         String ownerPrimary = ownerPrimaryField.getText().toString();
         String ownerSort = ownerSortField.getText().toString();
+        String programPrimary = programPrimaryField.getText().toString();
+        String programSort = programSortField.getText().toString();
+        String programFilters = programFiltersField.getText().toString();
+        String cardPrimary = cardPrimaryField.getText().toString();
+        String cardSort = cardSortField.getText().toString();
+        String cardFilters = cardFiltersField.getText().toString();
         String initialSummary = initialSummaryField.getText().toString();
         String phoneNotifications = phoneNotificationsField.getText().toString();
         String language = languageField.getText().toString();
@@ -137,29 +147,49 @@ public class SettingsActivity extends BaseActivity_Save {
         String currency = currencyField.getText().toString();
 
 		// Saves values from activity fields to user preferences
-        userPreferences.setSetting_ProgramNotificationPeriod(getNotificationField(ItemType.LOYALTY_PROGRAM));
-        userPreferences.setSetting_ProgramPrimaryField(ItemField.fromName(programPrimary));
-        userPreferences.setSetting_ProgramSortField(ItemField.fromName(programSort));
-        userPreferences.setSetting_CardNotificationPeriod(getNotificationField(ItemType.CREDIT_CARD));
-        userPreferences.setSetting_CardPrimaryField(ItemField.fromName(cardPrimary));
-        userPreferences.setSetting_CardSortField(ItemField.fromName(cardSort));
         userPreferences.setSetting_OwnerPrimaryField(ItemField.fromName(ownerPrimary));
         userPreferences.setSetting_OwnerSortField(ItemField.fromName(ownerSort));
-        userPreferences.setSetting_InitialSummary(initialSummary.equals("Yes"));
-        userPreferences.setSetting_PhoneNotifications(phoneNotifications.equals("Yes"));
+        userPreferences.setSetting_ProgramPrimaryField(ItemField.fromName(programPrimary));
+        userPreferences.setSetting_ProgramSortField(ItemField.fromName(programSort));
+        userPreferences.setSetting_ProgramNotificationPeriod(getNotificationField(ItemType.LOYALTY_PROGRAM));
+        userPreferences.setSetting_ProgramFilters(programFilters.equals("ON"));
+        userPreferences.setSetting_CardPrimaryField(ItemField.fromName(cardPrimary));
+        userPreferences.setSetting_CardSortField(ItemField.fromName(cardSort));
+        userPreferences.setSetting_CardNotificationPeriod(getNotificationField(ItemType.CREDIT_CARD));
+        userPreferences.setSetting_CardFilters(cardFilters.equals("ON"));
+        userPreferences.setSetting_InitialSummary(initialSummary.equals("ON"));
+        userPreferences.setSetting_PhoneNotifications(phoneNotifications.equals("ON"));
         userPreferences.setSetting_Language(Language.fromName(language));
         userPreferences.setSetting_Currency(Currency.fromName(currency));
         userPreferences.setSetting_DatePattern(DatePattern.fromSampleDate(date));
+
+        userPreferences.setFiltersUpdateRequired(true);
 
 		//Closes activity and sends success message to user
         finish();
         Toast.makeText(SettingsActivity.this, "Settings updated.", Toast.LENGTH_SHORT).show();
     }
 
-	// Displays time period spinner dialog for user selection
-    private void programNotificationFieldClick(){
-        String title = "Select Program Expiration Notice";
-        spinnerDialog(title, ItemType.LOYALTY_PROGRAM);
+    // Displays list of owner fields for user selection
+    private void ownerPrimaryFieldClick () {
+        String title = "Select Owner Primary Detail";
+        List<String> types = Arrays.asList(
+                ItemField.ITEMCOUNTS.getName(),
+                ItemField.PROGRAMSVALUE.getName(),
+                ItemField.CREDITLIMIT.getName(),
+                ItemField.CHASESTATUS.getName(),
+                ItemField.OWNERNOTES.getName());
+        fieldSelectDialog(title, types, "ownerPrimary");
+    }
+
+    // Displays list of owner fields for user selection
+    private void ownerSortFieldClick () {
+        String title = "Select Owner Sort Detail";
+        List<String> types = Arrays.asList(
+                ItemField.OWNERNAME.getName(),
+                ItemField.PROGRAMSVALUE.getName(),
+                ItemField.CREDITLIMIT.getName());
+        fieldSelectDialog(title, types, "ownerSort");
     }
 
 	// Displays list of program fields for user selection
@@ -185,10 +215,20 @@ public class SettingsActivity extends BaseActivity_Save {
         fieldSelectDialog(title, types, "programSort");
     }
 
-	// Displays time period spinner dialog for user selection
-    private void cardNotificationFieldClick(){
-        String title = "Select Card Expiration Notice";
-        spinnerDialog(title, ItemType.CREDIT_CARD);
+    // Displays time period spinner dialog for user selection
+    private void programNotificationFieldClick(){
+        String title = "Select Program Expiration Notice";
+        spinnerDialog(title, ItemType.LOYALTY_PROGRAM);
+    }
+
+    // Toggles program filters on/off
+    private void programFiltersFieldClick () {
+        String currentValue = programFiltersField.getText().toString();
+        if (currentValue.equals("ON")){
+            programFiltersField.setText("OFF");
+        } else if (currentValue.equals("OFF")){
+            programFiltersField.setText("ON");
+        }
     }
 
 	// Displays list of card fields for user selection
@@ -214,45 +254,39 @@ public class SettingsActivity extends BaseActivity_Save {
         fieldSelectDialog(title, types, "cardSort");
     }
 
-    // Displays list of owner fields for user selection
-    private void ownerPrimaryFieldClick () {
-        String title = "Select Owner Primary Detail";
-        List<String> types = Arrays.asList(
-                ItemField.ITEMCOUNTS.getName(),
-                ItemField.PROGRAMSVALUE.getName(),
-                ItemField.CREDITLIMIT.getName(),
-                ItemField.CHASESTATUS.getName(),
-                ItemField.OWNERNOTES.getName());
-        fieldSelectDialog(title, types, "ownerPrimary");
+    // Displays time period spinner dialog for user selection
+    private void cardNotificationFieldClick(){
+        String title = "Select Card Expiration Notice";
+        spinnerDialog(title, ItemType.CREDIT_CARD);
     }
 
-    // Displays list of owner fields for user selection
-    private void ownerSortFieldClick () {
-        String title = "Select Owner Sort Detail";
-        List<String> types = Arrays.asList(
-                ItemField.OWNERNAME.getName(),
-                ItemField.PROGRAMSVALUE.getName(),
-                ItemField.CREDITLIMIT.getName());
-        fieldSelectDialog(title, types, "ownerSort");
-    }
-
-	// Displays yes/no option list for user selection
-    private void initialSummaryFieldClick () {
-        String currentValue = initialSummaryField.getText().toString();
-        if (currentValue.equals("Yes")){
-            initialSummaryField.setText("No");
-        } else if (currentValue.equals("No")){
-            initialSummaryField.setText("Yes");
+    // Toggles card filters on/off
+    private void cardFiltersFieldClick () {
+        String currentValue = cardFiltersField.getText().toString();
+        if (currentValue.equals("ON")){
+            cardFiltersField.setText("OFF");
+        } else if (currentValue.equals("OFF")){
+            cardFiltersField.setText("ON");
         }
     }
 
-	// Displays yes/no option list for user selection
+	// Toggles initial summary on/off
+    private void initialSummaryFieldClick () {
+        String currentValue = initialSummaryField.getText().toString();
+        if (currentValue.equals("ON")){
+            initialSummaryField.setText("OFF");
+        } else if (currentValue.equals("OFF")){
+            initialSummaryField.setText("ON");
+        }
+    }
+
+    // Toggles phone notifications on/off
     private void phoneNotificationsFieldClick () {
         String currentValue = phoneNotificationsField.getText().toString();
-        if (currentValue.equals("Yes")){
-            phoneNotificationsField.setText("No");
-        } else if (currentValue.equals("No")){
-            phoneNotificationsField.setText("Yes");
+        if (currentValue.equals("ON")){
+            phoneNotificationsField.setText("OFF");
+        } else if (currentValue.equals("OFF")){
+            phoneNotificationsField.setText("ON");
         }
     }
 
@@ -303,6 +337,12 @@ public class SettingsActivity extends BaseActivity_Save {
 					// Sets field text to selected value
                     String selectedItem = itemsArray[selected];
                     switch (saveField) {
+                        case "ownerPrimary":
+                            ownerPrimaryField.setText(selectedItem);
+                            break;
+                        case "ownerSort":
+                            ownerSortField.setText(selectedItem);
+                            break;
                         case "programPrimary":
                             programPrimaryField.setText(selectedItem);
                             break;
@@ -314,12 +354,6 @@ public class SettingsActivity extends BaseActivity_Save {
                             break;
                         case "cardSort":
                             cardSortField.setText(selectedItem);
-                            break;
-                        case "ownerPrimary":
-                            ownerPrimaryField.setText(selectedItem);
-                            break;
-                        case "ownerSort":
-                            ownerSortField.setText(selectedItem);
                             break;
                         case "language":
                             languageField.setText(selectedItem);
@@ -503,11 +537,18 @@ public class SettingsActivity extends BaseActivity_Save {
 	// Sets layout click listeners
     private void setClickListeners (){
 
-        LinearLayout programNotificationLayout = (LinearLayout) findViewById(R.id.programNotificationLayout);
-        programNotificationLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout ownerPrimaryLayout = (LinearLayout) findViewById(R.id.ownerPrimaryLayout);
+        ownerPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                programNotificationFieldClick();
+                ownerPrimaryFieldClick();
+            }});
+
+        LinearLayout ownerSortLayout = (LinearLayout) findViewById(R.id.ownerSortLayout);
+        ownerSortLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ownerSortFieldClick();
             }});
 
         LinearLayout programPrimaryLayout = (LinearLayout) findViewById(R.id.programPrimaryLayout);
@@ -524,11 +565,18 @@ public class SettingsActivity extends BaseActivity_Save {
                 programSortFieldClick();
             }});
 
-        LinearLayout cardNotificationLayout = (LinearLayout) findViewById(R.id.cardNotificationLayout);
-        cardNotificationLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout programNotificationLayout = (LinearLayout) findViewById(R.id.programNotificationLayout);
+        programNotificationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cardNotificationFieldClick();
+                programNotificationFieldClick();
+            }});
+
+        LinearLayout programFiltersLayout = (LinearLayout) findViewById(R.id.programFiltersLayout);
+        programFiltersLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                programFiltersFieldClick();
             }});
 
         LinearLayout cardPrimaryLayout = (LinearLayout) findViewById(R.id.cardPrimaryLayout);
@@ -545,18 +593,18 @@ public class SettingsActivity extends BaseActivity_Save {
                 cardSortFieldClick();
             }});
 
-        LinearLayout ownerPrimaryLayout = (LinearLayout) findViewById(R.id.ownerPrimaryLayout);
-        ownerPrimaryLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout cardNotificationLayout = (LinearLayout) findViewById(R.id.cardNotificationLayout);
+        cardNotificationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ownerPrimaryFieldClick();
+                cardNotificationFieldClick();
             }});
 
-        LinearLayout ownerSortLayout = (LinearLayout) findViewById(R.id.ownerSortLayout);
-        ownerSortLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout cardFiltersLayout = (LinearLayout) findViewById(R.id.cardFiltersLayout);
+        cardFiltersLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ownerSortFieldClick();
+                cardFiltersFieldClick();
             }});
 
         LinearLayout initialSummaryLayout = (LinearLayout) findViewById(R.id.initialSummaryLayout);
@@ -565,7 +613,6 @@ public class SettingsActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 initialSummaryFieldClick();
             }});
-
 
         LinearLayout phoneNotificationsLayout = (LinearLayout) findViewById(R.id.phoneNotificationsLayout);
         phoneNotificationsLayout.setOnClickListener(new View.OnClickListener() {

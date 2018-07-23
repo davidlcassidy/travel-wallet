@@ -31,7 +31,6 @@
         android:layout_marginRight="75dp"
         android:layout_below="@+id/notesField"
         android:layout_weight="1"
-        android:background="@color/colorPrimary"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text"/>
 

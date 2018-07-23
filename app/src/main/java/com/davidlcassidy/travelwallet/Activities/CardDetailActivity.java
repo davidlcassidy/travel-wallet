@@ -78,10 +78,15 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         lv.addHeaderView(header);
         lv.addFooterView(footer);
 
-		// Sets text for notification button
+		// Sets text and colors for notification button
         notificationButton = (ToggleButton) footer.findViewById(R.id.notificationButton);
         notificationButton.setTextOn("Monitoring : ON");
         notificationButton.setTextOff("Monitoring : OFF");
+        if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
+            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
+        } else {
+            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        }
 		
 		// Sets click listener for notification button. When clicked, the card's notification status
 		// will be updated and notification button text will change to reflect.
@@ -90,9 +95,11 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
                 if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
                     cardDS.changeCardNotificationStatus(card, NotificationStatus.OFF);
                     notificationButton.setChecked(true);
+                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 } else {
                     cardDS.changeCardNotificationStatus(card, NotificationStatus.UNMONITORED);
                     notificationButton.setChecked(false);
+                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
                 }
             }
         });
@@ -200,6 +207,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
                 cardDS.delete(cardId);
+                userPreferences.setCardFiltersUpdateRequired(true);
                 finish();
             }});
 

@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/Summary"
-        android:title="Summary Report"/>
+        android:title="Summary"/>
 
     <item
         android:id="@+id/Settings"

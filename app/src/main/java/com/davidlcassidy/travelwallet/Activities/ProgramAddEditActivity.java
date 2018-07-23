@@ -177,6 +177,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 		// Creates program if new
         } else if (programId == -1) {
             programDS.create(programRefId, owner, accountNumber, points, lastActivityDate, notes);
+            userPreferences.setProgramFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(ProgramAddEditActivity.this, programName + " program added.", Toast.LENGTH_SHORT).show();
 			
@@ -190,6 +191,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             program.setLastActivityDate(lastActivityDate);
             program.setNotes(notes);
             programDS.update(program);
+            userPreferences.setProgramFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(ProgramAddEditActivity.this, programName + " program updated.", Toast.LENGTH_SHORT).show();
         }

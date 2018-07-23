@@ -75,10 +75,15 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         lv.addHeaderView(header);
         lv.addFooterView(footer);
 
-		// Sets text for notification button
+		// Sets text and colors for notification button
         notificationButton = (ToggleButton) footer.findViewById(R.id.notificationButton);
         notificationButton.setTextOn("Monitoring : ON");
         notificationButton.setTextOff("Monitoring : OFF");
+        if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
+            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
+        } else {
+            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        }
 
 		// Sets click listener for notification button. When clicked, the program's notification status
 		// will be updated and notification button text will change to reflect.
@@ -87,9 +92,11 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
                 if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
                     programDS.changeProgramNotificationStatus(program, NotificationStatus.OFF);
                     notificationButton.setChecked(true);
+                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 } else {
                     programDS.changeProgramNotificationStatus(program, NotificationStatus.UNMONITORED);
                     notificationButton.setChecked(false);
+                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
                 }
             }
         });
@@ -186,6 +193,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
+                userPreferences.setProgramFiltersUpdateRequired(true);
                 programDS.delete(programId);
                 finish();
             }});

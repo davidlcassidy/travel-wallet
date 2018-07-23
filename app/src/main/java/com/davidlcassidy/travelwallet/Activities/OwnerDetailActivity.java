@@ -135,6 +135,7 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
                 ownerDS.delete(ownerId);
+                userPreferences.setFiltersUpdateRequired(true);
                 finish();
             }});
 

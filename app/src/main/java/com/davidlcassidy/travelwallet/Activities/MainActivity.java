@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity_Main {
                 String selectedItemName = (String) item.getTitle();
 
                 switch (selectedItemName) {
-                    case "Summary Report":
+                    case "Summary":
                         // Opens Summary Popup
                         showSummary();
                         break;
@@ -251,7 +251,7 @@ public class MainActivity extends BaseActivity_Main {
 
         // Sets title in dialog toolbar on top
         Toolbar toolBar2 = (Toolbar) v.findViewById(R.id.toolbar);
-        toolBar2.setTitle("Summary Report");
+        toolBar2.setTitle("Summary");
 
         // Retrieves programs total value data and saves to summary dialog fields
         SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();

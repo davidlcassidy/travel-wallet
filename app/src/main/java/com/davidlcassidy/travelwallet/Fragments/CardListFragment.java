@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,8 +52,8 @@ public class CardListFragment extends Fragment {
     private ArrayList<CreditCard> fullCardList, filteredCardList;
     private TextView emptyListText;
     private ListView lv;
+    private LinearLayout filterLayout;
     private Spinner filter1, filter2;
-    private Integer filterOwnerCount;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -60,6 +61,8 @@ public class CardListFragment extends Fragment {
         activity= getActivity();
 
         userPreferences = UserPreferences.getInstance(getContext());
+        userPreferences.setCardFiltersUpdateRequired(true);
+
         cardDS = CardDataSource.getInstance(getContext());
         ownerDS = OwnerDataSource.getInstance(getContext());
 
@@ -80,6 +83,7 @@ public class CardListFragment extends Fragment {
             }
         });
 
+        filterLayout = (LinearLayout) view.findViewById(R.id.filterLayout);
         filter1 = (Spinner) view.findViewById(R.id.spinner1);
         filter2 = (Spinner) view.findViewById(R.id.spinner2);
         setFilters(false);
@@ -92,12 +96,19 @@ public class CardListFragment extends Fragment {
 
 		// Gets all credit cards sorted by field defined in user preferences
         ItemField sortField = userPreferences.getSetting_CardSortField();
-        fullCardList = cardDS.getAll(null, sortField,false, false);
+        fullCardList = cardDS.getAll(null, sortField,false,false);
 
-        if (filterOwnerCount != ownerDS.getAll(null, null, null).size()) {
-            setFilters(true);
+        if (userPreferences.getCardFiltersUpdateRequired() == true) {
+            if (userPreferences.getSetting_CardFilters() == true) {
+                filterLayout.setVisibility(LinearLayout.VISIBLE);
+                setFilters(true);
+                filterCards();
+            } else {
+                filterLayout.setVisibility(LinearLayout.GONE);
+                filteredCardList = fullCardList;
+            }
+            userPreferences.setCardFiltersUpdateRequired(false);
         }
-        filterCards();
 
 		// Hides list and shows empty list text if there are no credit cards
         if (fullCardList.size() == 0){
@@ -124,7 +135,6 @@ public class CardListFragment extends Fragment {
 
         // Creates card owner filter with values
         ArrayList<String> owners = ownerDS.getAllNames();
-        filterOwnerCount = owners.size();
         if (owners.size() == 0) {
             owners.add(0, "No Owners Added");
             filter1.setEnabled(false);
@@ -140,6 +150,7 @@ public class CardListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 userPreferences.setFilter_CardOwner(parent.getItemAtPosition(position).toString());
+                filterCards();
                 onResume();
             }
 
@@ -172,6 +183,7 @@ public class CardListFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     userPreferences.setFilter_CardStatus(parent.getItemAtPosition(position).toString());
+                    filterCards();
                     onResume();
                 }
 

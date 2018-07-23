@@ -18,242 +18,12 @@
         android:padding="@dimen/standardPadding">
 
         <TextView
-            android:id="@+id/programSettingsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loyalty Program Settings"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:paddingBottom="20dp"
-            android:layout_centerHorizontal="true"
-            android:textSize="@dimen/header"/>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/programNotificationLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_below="@+id/programSettingsText"
-            android:orientation="horizontal"
-            android:background="@drawable/boarder"
-            android:clickable="true">
-
-            <TextView
-                android:id="@+id/programNotificationLabel"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:text="Expiration Notice"
-                android:gravity="left|center_vertical"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/text"/>
-
-            <TextView
-                android:id="@+id/programNotificationField"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:gravity="right"
-                android:layout_gravity="left"
-                android:background="@android:color/transparent"
-                android:textSize="@dimen/text"/>
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/programPrimaryLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/programNotificationLayout"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:background="@drawable/boarder"
-            android:clickable="true">
-
-            <TextView
-                android:id="@+id/programPrimaryLabel"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:text="Primary Field"
-                android:gravity="left|center_vertical"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/text"/>
-
-            <TextView
-                android:id="@+id/programPrimaryField"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:gravity="right"
-                android:layout_gravity="left"
-                android:background="@android:color/transparent"
-                android:textSize="@dimen/text"/>
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/programSortLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/programPrimaryLayout"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:background="@drawable/boarder"
-            android:clickable="true">
-
-            <TextView
-                android:id="@+id/programSortLabel"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:text="Sort Field"
-                android:gravity="left|center_vertical"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/text"/>
-
-            <TextView
-                android:id="@+id/programSortField"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:gravity="right"
-                android:layout_gravity="left"
-                android:background="@android:color/transparent"
-                android:textSize="@dimen/text"/>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/cardSettingsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Credit Card Settings"
-            android:layout_below="@+id/programSortLayout"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:paddingTop="25dp"
-            android:paddingBottom="20dp"
-            android:layout_centerHorizontal="true"
-            android:textSize="@dimen/header"/>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cardNotificationLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/cardSettingsText"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:background="@drawable/boarder"
-            android:clickable="true">
-
-            <TextView
-                android:id="@+id/cardNotificationLabel"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:text="Annual Fee Notice"
-                android:gravity="left|center_vertical"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/text"/>
-
-            <TextView
-                android:id="@+id/cardNotificationField"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:gravity="right"
-                android:layout_gravity="left"
-                android:background="@android:color/transparent"
-                android:textSize="@dimen/text"/>
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cardPrimaryLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/cardNotificationLayout"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:background="@drawable/boarder"
-            android:clickable="true">
-
-            <TextView
-                android:id="@+id/cardPrimaryLabel"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:text="Primary Field"
-                android:gravity="left|center_vertical"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/text"/>
-
-            <TextView
-                android:id="@+id/cardPrimaryField"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:gravity="right"
-                android:layout_gravity="left"
-                android:background="@android:color/transparent"
-                android:textSize="@dimen/text"/>
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cardSortLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/cardPrimaryLayout"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:background="@drawable/boarder"
-            android:clickable="true">
-
-            <TextView
-                android:id="@+id/cardSortLabel"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:text="Sort Field"
-                android:gravity="left|center_vertical"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/text"/>
-
-            <TextView
-                android:id="@+id/cardSortField"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:gravity="right"
-                android:layout_gravity="left"
-                android:background="@android:color/transparent"
-                android:textSize="@dimen/text"/>
-
-        </LinearLayout>
-
-        <TextView
             android:id="@+id/OwnerSettingsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Owner Settings"
-            android:layout_below="@+id/cardSortLayout"
             android:gravity="center"
             android:textStyle="bold"
-            android:paddingTop="25dp"
             android:paddingBottom="20dp"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/header"/>
@@ -327,11 +97,309 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/programSettingsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loyalty Program Settings"
+            android:layout_below="@+id/ownerSortLayout"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:paddingTop="25dp"
+            android:paddingBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/header"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/programPrimaryLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@+id/programSettingsText"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/programPrimaryLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Primary Field"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/programPrimaryField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/programSortLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/programPrimaryLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/programSortLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Sort Field"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/programSortField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/programNotificationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@+id/programSortLayout"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/programNotificationLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Expiration Notice"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/programNotificationField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/programFiltersLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/programNotificationLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/programFiltersLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Advanced Filters"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/programFiltersField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/cardSettingsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Credit Card Settings"
+            android:layout_below="@+id/programFiltersLayout"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:paddingTop="25dp"
+            android:paddingBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/header"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardPrimaryLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardSettingsText"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/cardPrimaryLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Primary Field"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/cardPrimaryField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardSortLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardPrimaryLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/cardSortLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Sort Field"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/cardSortField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardNotificationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardSortLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/cardNotificationLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Annual Fee Notice"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/cardNotificationField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cardFiltersLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardNotificationLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/cardFiltersLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Advanced Filters"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/cardFiltersField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
+        <TextView
             android:id="@+id/generalSettingsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="General Settings"
-            android:layout_below="@+id/ownerSortLayout"
+            android:layout_below="@+id/cardFiltersLayout"
             android:gravity="center"
             android:textStyle="bold"
             android:paddingTop="25dp"

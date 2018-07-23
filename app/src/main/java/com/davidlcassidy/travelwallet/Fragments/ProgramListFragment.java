@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,8 +51,8 @@ public class ProgramListFragment extends Fragment {
     private ArrayList<LoyaltyProgram> fullProgramList, filteredProgramList;
     private TextView emptyListText;
     private ListView lv;
+    private LinearLayout filterLayout;
     private Spinner filter1, filter2;
-    private Integer filterOwnerCount;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -59,6 +60,8 @@ public class ProgramListFragment extends Fragment {
         activity = getActivity();
 
         userPreferences = UserPreferences.getInstance(getContext());
+        userPreferences.setProgramFiltersUpdateRequired(true);
+
         programDS = ProgramDataSource.getInstance(getContext());
         userDS = OwnerDataSource.getInstance(getContext());
 
@@ -79,6 +82,7 @@ public class ProgramListFragment extends Fragment {
             }
         });
 
+        filterLayout = (LinearLayout) view.findViewById(R.id.filterLayout);
         filter1 = (Spinner) view.findViewById(R.id.spinner1);
         filter2 = (Spinner) view.findViewById(R.id.spinner2);
         setFilters(false);
@@ -93,10 +97,17 @@ public class ProgramListFragment extends Fragment {
         ItemField sortField = userPreferences.getSetting_ProgramSortField();
         fullProgramList = programDS.getAll(null, sortField, false);
 
-        if (filterOwnerCount != userDS.getAll(null, null, null).size()) {
-            setFilters(true);
+        if (userPreferences.getProgramFiltersUpdateRequired() == true) {
+            if (userPreferences.getSetting_ProgramFilters() == true) {
+                filterLayout.setVisibility(LinearLayout.VISIBLE);
+                setFilters(true);
+                filterPrograms();
+            } else {
+                filterLayout.setVisibility(LinearLayout.GONE);
+                filteredProgramList = fullProgramList;
+            }
+            userPreferences.setProgramFiltersUpdateRequired(false);
         }
-        filterPrograms();
 
 		// Hides list and shows empty list text if there are no loyalty programs
         if (fullProgramList.size() == 0){
@@ -124,7 +135,6 @@ public class ProgramListFragment extends Fragment {
 
         // Creates program owner filter with values
         ArrayList<String> owners = userDS.getAllNames();
-        filterOwnerCount = owners.size();
         if (owners.size() == 0) {
             owners.add(0, "No Owners Added");
             filter1.setEnabled(false);
@@ -134,12 +144,13 @@ public class ProgramListFragment extends Fragment {
             filter1.setEnabled(true);
             filter1.setClickable(true);
         }
-        FilterSpinnerAdapter ownersSpinnerAdapter =new FilterSpinnerAdapter(activity,owners);
+        FilterSpinnerAdapter ownersSpinnerAdapter = new FilterSpinnerAdapter(activity, owners);
         filter1.setAdapter(ownersSpinnerAdapter);
         filter1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 userPreferences.setFilter_ProgramOwner(parent.getItemAtPosition(position).toString());
+                filterPrograms();
                 onResume();
             }
 
@@ -169,6 +180,7 @@ public class ProgramListFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     userPreferences.setFilter_ProgramType(parent.getItemAtPosition(position).toString());
+                    filterPrograms();
                     onResume();
                 }
 
@@ -202,7 +214,7 @@ public class ProgramListFragment extends Fragment {
                 }
             }
             if (!filter2value.equals("All Types")) {
-                if (!program.getType().equals(filter2value)) {
+                if (!program.getType().getName().equals(filter2value)) {
                     continue;
                 }
             }

@@ -8,9 +8,10 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryLight">#6876CA</color>
+    <color name="colorPrimaryGray">#77787d</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="colorPrimaryLight">#6876CA</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>

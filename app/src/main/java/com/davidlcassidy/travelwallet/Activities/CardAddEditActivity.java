@@ -218,6 +218,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
 		// Creates card if new
         } else if (cardId == -1) {
             cardDS.create(cardRefId, owner, cardStatus, creditLimit, openDate, afDate, closeDate, notes);
+            userPreferences.setCardFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(CardAddEditActivity.this, cardName + " card added.", Toast.LENGTH_SHORT).show();
 			
@@ -234,6 +235,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             card.setCloseDate(closeDate);
             card.setNotes(notes);
             cardDS.update(card);
+            userPreferences.setCardFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(CardAddEditActivity.this, cardName + " card updated.", Toast.LENGTH_SHORT).show();
         }

@@ -30,21 +30,24 @@ public class UserPreferences {
     // Sets user preference keys
     private static String nUserPreferences = "UserPreferences";
     private static String nAppType = "AppType";
+    private static String nProgramFiltersUpdateRequired = "ProgramFilterUpdateRequired";
+    private static String nCardFiltersUpdateRequired = "CardFilterUpdateRequired";
 
     private static String nFilter_ProgramOwner = "Filter_ProgramOwner";
     private static String nFilter_ProgramType = "Filter_ProgramType";
     private static String nFilter_CardOwner = "Filter_CardOwner";
     private static String nFilter_CardStatus = "Filter_CardStatus";
 
-
-    private static String nSetting_ProgramNotificationPeriod = "Setting_ProgramNotificationPeriod";
-    private static String nSetting_ProgramPrimaryField = "Setting_ProgramPrimaryField";
-    private static String nSetting_ProgramSortField = "Setting_ProgramSortField";
-    private static String nSetting_CardNotificationPeriod = "Setting_CardNotificationPeriod";
-    private static String nSetting_CardPrimaryField = "Setting_CardPrimaryField";
-    private static String nSetting_CardSortField = "Setting_CardSortField";
     private static String nSetting_OwnerPrimaryField = "Setting_OwnerPrimaryField";
     private static String nSetting_OwnerSortField = "Setting_OwnerSortField";
+    private static String nSetting_ProgramPrimaryField = "Setting_ProgramPrimaryField";
+    private static String nSetting_ProgramSortField = "Setting_ProgramSortField";
+    private static String nSetting_ProgramNotificationPeriod = "Setting_ProgramNotificationPeriod";
+    private static String nSetting_ProgramFilters = "Setting_ProgramFilters";
+    private static String nSetting_CardPrimaryField = "Setting_CardPrimaryField";
+    private static String nSetting_CardSortField = "Setting_CardSortField";
+    private static String nSetting_CardNotificationPeriod = "Setting_CardNotificationPeriod";
+    private static String nSetting_CardFilters = "Setting_CardFilters";
     private static String nSetting_InitialSummary = "Setting_InitialSummary";
     private static String nSetting_PhoneNotifications = "Setting_PhoneNotifications";
     private static String nSetting_Language = "Setting_Language";
@@ -54,23 +57,26 @@ public class UserPreferences {
     private static String nDatabase_MainDBVersion = "Database_MainDBVersion";
     private static String nDatabase_RefDBVersion = "Database_RefDBVersion";
 
-
     // Sets user preference default values
     private static AppType dAppType = AppType.Lite;
+    private static boolean dProgramFiltersUpdateRequired = true;
+    private static boolean dCardFiltersUpdateRequired = true;
 
     private static String dFilter_ProgramOwner = "All Owners";
     private static String dFilter_ProgramType = "All Types";
     private static String dFilter_CardOwner = "All Owners";
     private static String dFilter_CardStatus = "All Statuses";
 
-    private static String dSetting_ProgramNotificationPeriod = "4 W";
-    private static ItemField dSetting_ProgramPrimaryField = ItemField.ACCOUNTNUMBER;
-    private static ItemField dSetting_ProgramSortField = ItemField.PROGRAMNAME;
-    private static String dSetting_CardNotificationPeriod = "4 W";
-    private static ItemField dSetting_CardPrimaryField = ItemField.OPENDATE;
-    private static ItemField dSetting_CardSortField = ItemField.CARDNAME;
     private static ItemField dSetting_OwnerPrimaryField = ItemField.ITEMCOUNTS;
     private static ItemField dSetting_OwnerSortField = ItemField.OWNERNAME;
+    private static ItemField dSetting_ProgramPrimaryField = ItemField.ACCOUNTNUMBER;
+    private static ItemField dSetting_ProgramSortField = ItemField.PROGRAMNAME;
+    private static String dSetting_ProgramNotificationPeriod = "4 W";
+    private static boolean dSetting_ProgramFilters = true;
+    private static ItemField dSetting_CardPrimaryField = ItemField.OPENDATE;
+    private static ItemField dSetting_CardSortField = ItemField.CARDNAME;
+    private static String dSetting_CardNotificationPeriod = "4 W";
+    private static boolean dSetting_CardFilters = true;
     private static boolean dSetting_InitialSummary = false;
     private static boolean dSetting_PhoneNotifications = true;
     private static Language dSetting_Language = Language.ENGLISH;
@@ -89,7 +95,6 @@ public class UserPreferences {
         return instance;
     }
 
-
     // Private UserPreferences constructor called by getInstance method
     private UserPreferences(Context context) {
         sharedPref = context.getSharedPreferences(nUserPreferences, Context.MODE_PRIVATE);
@@ -99,6 +104,35 @@ public class UserPreferences {
     // AppType UserPreference getter
     public AppType getAppType() {
         return dAppType;
+    }
+
+    public boolean getProgramFiltersUpdateRequired() {
+        int dProgramFiltersUpdateRequiredInt = (dProgramFiltersUpdateRequired) ? 1 : 0;
+        return sharedPref.getInt(nProgramFiltersUpdateRequired, dProgramFiltersUpdateRequiredInt) == 1;
+    }
+
+    public void setProgramFiltersUpdateRequired(boolean programFiltersUpdateRequired) {
+        int programFiltersUpdateRequiredInt = (programFiltersUpdateRequired) ? 1 : 0;
+        spEditor.putInt(nProgramFiltersUpdateRequired, programFiltersUpdateRequiredInt);
+        spEditor.commit();
+    }
+
+    public boolean getCardFiltersUpdateRequired() {
+        int dCardFiltersUpdateRequiredInt = (dCardFiltersUpdateRequired) ? 1 : 0;
+        return sharedPref.getInt(nCardFiltersUpdateRequired, dCardFiltersUpdateRequiredInt) == 1;
+    }
+
+    public void setCardFiltersUpdateRequired(boolean cardFiltersUpdateRequired) {
+        int cardFiltersUpdateRequiredInt = (cardFiltersUpdateRequired) ? 1 : 0;
+        spEditor.putInt(nCardFiltersUpdateRequired, cardFiltersUpdateRequiredInt);
+        spEditor.commit();
+    }
+
+    public void setFiltersUpdateRequired(boolean filtersUpdateRequired) {
+        int filtersUpdateRequiredInt = (filtersUpdateRequired) ? 1 : 0;
+        spEditor.putInt(nProgramFiltersUpdateRequired, filtersUpdateRequiredInt);
+        spEditor.putInt(nCardFiltersUpdateRequired, filtersUpdateRequiredInt);
+        spEditor.commit();
     }
 
     // Filter UserPreferences setters/getters
@@ -139,12 +173,35 @@ public class UserPreferences {
     }
 
     // Setting UserPreferences setters/getters
-    public String getSetting_ProgramNotificationPeriod() {
-        return sharedPref.getString(nSetting_ProgramNotificationPeriod, dSetting_ProgramNotificationPeriod);
+    public ItemField getSetting_OwnerPrimaryField() {
+        int id = sharedPref.getInt(nSetting_OwnerPrimaryField, dSetting_OwnerPrimaryField.getId());
+        ItemField itemField = ItemField.fromId(id);
+        if (itemField != null){
+            return itemField;
+        } else {
+            spEditor.putInt(nSetting_OwnerPrimaryField, dSetting_OwnerPrimaryField.getId());
+            return dSetting_OwnerPrimaryField;
+        }
     }
 
-    public void setSetting_ProgramNotificationPeriod(String programNotificationPeriod) {
-        spEditor.putString(nSetting_ProgramNotificationPeriod, programNotificationPeriod);
+    public void setSetting_OwnerPrimaryField(ItemField ownerPrimaryField) {
+        spEditor.putInt(nSetting_OwnerPrimaryField, ownerPrimaryField.getId());
+        spEditor.commit();
+    }
+
+    public ItemField getSetting_OwnerSortField() {
+        int id = sharedPref.getInt(nSetting_OwnerSortField, dSetting_OwnerSortField.getId());
+        ItemField itemField = ItemField.fromId(id);
+        if (itemField != null){
+            return itemField;
+        } else {
+            spEditor.putInt(nSetting_OwnerSortField, dSetting_OwnerSortField.getId());
+            return dSetting_OwnerSortField;
+        }
+    }
+
+    public void setSetting_OwnerSortField(ItemField OwnerSortField) {
+        spEditor.putInt(nSetting_OwnerSortField, OwnerSortField.getId());
         spEditor.commit();
     }
 
@@ -180,12 +237,23 @@ public class UserPreferences {
         spEditor.commit();
     }
 
-    public String getSetting_CardNotificationPeriod() {
-        return sharedPref.getString(nSetting_CardNotificationPeriod, dSetting_CardNotificationPeriod);
+    public String getSetting_ProgramNotificationPeriod() {
+        return sharedPref.getString(nSetting_ProgramNotificationPeriod, dSetting_ProgramNotificationPeriod);
     }
 
-    public void setSetting_CardNotificationPeriod(String cardNotificationPeriod) {
-        spEditor.putString(nSetting_CardNotificationPeriod, cardNotificationPeriod);
+    public void setSetting_ProgramNotificationPeriod(String programNotificationPeriod) {
+        spEditor.putString(nSetting_ProgramNotificationPeriod, programNotificationPeriod);
+        spEditor.commit();
+    }
+
+    public boolean getSetting_ProgramFilters() {
+        int dProgramFilters = (dSetting_ProgramFilters) ? 1 : 0;
+        return sharedPref.getInt(nSetting_ProgramFilters, dProgramFilters) == 1;
+    }
+
+    public void setSetting_ProgramFilters(boolean programFilters) {
+        int programFiltersInt = (programFilters) ? 1 : 0;
+        spEditor.putInt(nSetting_ProgramFilters, programFiltersInt);
         spEditor.commit();
     }
 
@@ -221,57 +289,45 @@ public class UserPreferences {
         spEditor.commit();
     }
 
-    public ItemField getSetting_OwnerPrimaryField() {
-        int id = sharedPref.getInt(nSetting_OwnerPrimaryField, dSetting_OwnerPrimaryField.getId());
-        ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
-            return itemField;
-        } else {
-            spEditor.putInt(nSetting_OwnerPrimaryField, dSetting_OwnerPrimaryField.getId());
-            return dSetting_OwnerPrimaryField;
-        }
+    public String getSetting_CardNotificationPeriod() {
+        return sharedPref.getString(nSetting_CardNotificationPeriod, dSetting_CardNotificationPeriod);
     }
 
-    public void setSetting_OwnerPrimaryField(ItemField ownerPrimaryField) {
-        spEditor.putInt(nSetting_OwnerPrimaryField, ownerPrimaryField.getId());
+    public void setSetting_CardNotificationPeriod(String cardNotificationPeriod) {
+        spEditor.putString(nSetting_CardNotificationPeriod, cardNotificationPeriod);
         spEditor.commit();
     }
 
-    public ItemField getSetting_OwnerSortField() {
-        int id = sharedPref.getInt(nSetting_OwnerSortField, dSetting_OwnerSortField.getId());
-        ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
-            return itemField;
-        } else {
-            spEditor.putInt(nSetting_OwnerSortField, dSetting_OwnerSortField.getId());
-            return dSetting_OwnerSortField;
-        }
+    public boolean getSetting_CardFilters() {
+        int dCardFilters = (dSetting_CardFilters) ? 1 : 0;
+        return sharedPref.getInt(nSetting_CardFilters, dCardFilters) == 1;
     }
 
-    public void setSetting_OwnerSortField(ItemField OwnerSortField) {
-        spEditor.putInt(nSetting_OwnerSortField, OwnerSortField.getId());
+    public void setSetting_CardFilters(boolean cardFilters) {
+        int cardFiltersInt = (cardFilters) ? 1 : 0;
+        spEditor.putInt(nSetting_CardFilters, cardFiltersInt);
         spEditor.commit();
     }
 
     public boolean getSetting_InitialSummary() {
-        int initSummary = (dSetting_InitialSummary) ? 1 : 0;
-        return sharedPref.getInt(nSetting_InitialSummary, initSummary) == 1;
+        int dInitialSummary = (dSetting_InitialSummary) ? 1 : 0;
+        return sharedPref.getInt(nSetting_InitialSummary, dInitialSummary) == 1;
     }
 
     public void setSetting_InitialSummary(boolean initialSummary) {
-        int initSummary = (initialSummary) ? 1 : 0;
-        spEditor.putInt(nSetting_InitialSummary, initSummary);
+        int initialSummaryInt = (initialSummary) ? 1 : 0;
+        spEditor.putInt(nSetting_InitialSummary, initialSummaryInt);
         spEditor.commit();
     }
 
     public boolean getSetting_PhoneNotifications() {
-        int phoneNotifications = (dSetting_PhoneNotifications) ? 1 : 0;
-        return sharedPref.getInt(nSetting_PhoneNotifications, phoneNotifications) == 1;
+        int dPhoneNotifications = (dSetting_PhoneNotifications) ? 1 : 0;
+        return sharedPref.getInt(nSetting_PhoneNotifications, dPhoneNotifications) == 1;
     }
 
     public void setSetting_PhoneNotifications(boolean phoneNotifications) {
-        int pn = (phoneNotifications) ? 1 : 0;
-        spEditor.putInt(nSetting_PhoneNotifications, pn);
+        int phoneNotificationsInt = (phoneNotifications) ? 1 : 0;
+        spEditor.putInt(nSetting_PhoneNotifications, phoneNotificationsInt);
         spEditor.commit();
     }
 
