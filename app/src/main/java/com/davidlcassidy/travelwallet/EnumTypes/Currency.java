@@ -20,16 +20,16 @@ app instability within current app installs
 public enum Currency {
 
 	// Enum members
-	// Exchange rates pulled from Google Finance on 09 JUNE 2018
+	// Exchange rates pulled from Google Finance on 25 JULY 2018
     USD(1, "$", "US Dollar", 1.0),
     EUR(2, "€", "Euro", 0.85),
-    GPB(3, "£", "British Pound", 0.75),
-    CAD(4, "CA$", "Canadian Dollar", 1.30),
-    AUD(5, "AU$", "Australian Dollar", 1.32),
-    CNY(6, "元", "Chinese Yuan", 6.39),
-    JPY(7, "¥", "Japanese Yen", 109.38),
-    INR(8, "₹", "Indian Rupee", 67.48),
-    MXN(9, "Mex$", "Mexican Peso", 19.51);
+    GPB(3, "£", "British Pound", 0.76),
+    CAD(4, "CA$", "Canadian Dollar", 1.31),
+    AUD(5, "AU$", "Australian Dollar", 1.35),
+    CNY(6, "元", "Chinese Yuan", 6.76),
+    JPY(7, "¥", "Japanese Yen", 111.15),
+    INR(8, "₹", "Indian Rupee", 68.71),
+    MXN(9, "Mex$", "Mexican Peso", 18.81);
 
 	private final int id;
     private final String symbol;
