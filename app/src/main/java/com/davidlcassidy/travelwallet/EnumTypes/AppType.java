@@ -16,7 +16,7 @@ app instability within current app installs
 public enum AppType {
 
 	// Enum members
-    Lite(1, "Lite"),
+    Free(1, "Free"),
     Pro(2, "Pro");
 
 	private final int id;

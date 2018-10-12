@@ -58,7 +58,7 @@ public class UserPreferences {
     private static String nDatabase_RefDBVersion = "Database_RefDBVersion";
 
     // Sets user preference default values
-    private static AppType dAppType = AppType.Lite;
+    private static AppType dAppType = AppType.Free;
     private static boolean dProgramFiltersUpdateRequired = true;
     private static boolean dCardFiltersUpdateRequired = true;
 
@@ -101,9 +101,20 @@ public class UserPreferences {
         spEditor = sharedPref.edit();
     }
 
-    // AppType UserPreference getter
     public AppType getAppType() {
-        return dAppType;
+        int id = sharedPref.getInt(nAppType, dAppType.getId());
+        AppType appType = AppType.fromId(id);
+        if (appType != null){
+            return appType;
+        } else {
+            spEditor.putInt(nAppType, dAppType.getId());
+            return dAppType;
+        }
+    }
+
+    public void setAppType(AppType appType) {
+        spEditor.putInt(nAppType, appType.getId());
+        spEditor.commit();
     }
 
     public boolean getProgramFiltersUpdateRequired() {

@@ -31,6 +31,7 @@ import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Main;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
+import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
@@ -58,6 +59,8 @@ and CardListFragment. These three fragments are contained within a tab layout.
 public class MainActivity extends BaseActivity_Main {
 
     private UserPreferences userPreferences;
+    private CardDataSource cardDS;
+    private ProgramDataSource programDS;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FloatingActionButton fab;
@@ -67,9 +70,10 @@ public class MainActivity extends BaseActivity_Main {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setDisplayHomeEnabled(false);
-		fab = (FloatingActionButton) findViewById(R.id.fabPlus);
-        fab.hide();
-        
+        userPreferences = UserPreferences.getInstance(this);
+        cardDS = CardDataSource.getInstance(this);
+        programDS = ProgramDataSource.getInstance(this);
+
 		// Starts Notification Timer Service
         startService(new Intent(this, NotificationTimerService.class));
 
@@ -81,8 +85,11 @@ public class MainActivity extends BaseActivity_Main {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        // Hide FAB by default
+        fab = (FloatingActionButton) findViewById(R.id.fabPlus);
+        fab.hide();
+
         // Opens summary dialog if configured in user settings
-        userPreferences = UserPreferences.getInstance(this);
         if (userPreferences.getSetting_InitialSummary()){
             showSummary();
         }
@@ -106,9 +113,20 @@ public class MainActivity extends BaseActivity_Main {
 							// Program ID of -1 indicates a adding a new program instead of editing an existing one
                             @Override
                             public void onClick(View v) {
-                                Intent intent = new Intent(MainActivity.this, ProgramAddEditActivity.class);
-                                intent.putExtra("PROGRAM_ID", String.valueOf(-1));
-                                startActivity(intent);
+                                AppType appType = userPreferences.getAppType();
+                                int programCount = programDS.getAll(null, null, false).size();
+                                if (programCount >= 10 && appType == AppType.Free) {
+                                    String limitTitle = "Program Limit Reached";
+                                    String limitText = "Travel Wallet it limited to only ten " +
+                                            "loyalty programs.\n\nTo add additional programs and support our " +
+                                            "ongoing development, please upgrade to Travel Wallet " +
+                                            "Pro.";
+                                    showLimitPopup(limitTitle, limitText);
+                                } else {
+                                    Intent intent = new Intent(MainActivity.this, ProgramAddEditActivity.class);
+                                    intent.putExtra("PROGRAM_ID", String.valueOf(-1));
+                                    startActivity(intent);
+                                }
                             }
                         });
                         break;
@@ -121,9 +139,20 @@ public class MainActivity extends BaseActivity_Main {
 							// Card ID of -1 indicates a adding a new card instead of editing an existing one
                             @Override
                             public void onClick(View v) {
-                                Intent intent = new Intent(MainActivity.this, CardAddEditActivity.class);
-                                intent.putExtra("CARD_ID", String.valueOf(-1));
-                                startActivity(intent);
+                                AppType appType = userPreferences.getAppType();
+                                int cardCount = cardDS.getAll(null, null, false, false).size();
+                                if (cardCount >= 10 && appType == AppType.Free) {
+                                    String limitTitle = "Card Limit Reached";
+                                    String limitText = "Travel Wallet it limited to only ten " +
+                                            "credit cards.\n\nTo add additional cards and support our " +
+                                            "ongoing development, please upgrade to Travel Wallet " +
+                                            "Pro.";
+                                    showLimitPopup(limitTitle, limitText);
+                                } else {
+                                    Intent intent = new Intent(MainActivity.this, CardAddEditActivity.class);
+                                    intent.putExtra("CARD_ID", String.valueOf(-1));
+                                    startActivity(intent);
+                                }
                             }
                         });
                         break;
@@ -144,7 +173,7 @@ public class MainActivity extends BaseActivity_Main {
 
     }
 
-	// Attaches fragments to main activity
+    // Attaches fragments to main activity
     private void setupViewPagerAdapter(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new NotificationsListFragment(), "Notifications");
@@ -191,12 +220,17 @@ public class MainActivity extends BaseActivity_Main {
         startActivity(intent2);
     }
 
-    // Runs when dropdown button is clicked
+    // Runs when dropdown_free button is clicked
     @Override
     public void menuDropdownClicked() {
         View menuView = findViewById(R.id.menu_dropdown);
         PopupMenu popupMenu = new PopupMenu(this, menuView);
-        popupMenu.inflate(R.menu.dropdown_main);
+        AppType appType = userPreferences.getAppType();
+        if (appType == AppType.Pro){
+            popupMenu.inflate(R.menu.dropdown_pro);
+        } else {
+            popupMenu.inflate(R.menu.dropdown_free);
+        }
 
         // Sets menu click listeners
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -210,12 +244,17 @@ public class MainActivity extends BaseActivity_Main {
                         break;
                     case "Settings":
                         // Opens Settings Activity
-                        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                        startActivity(intent);
+                        Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
+                        startActivity(intent1);
                         break;
                     case "About":
                         // Opens About Popup
                         showAbout();
+                        break;
+                    case "Upgrade to Pro":
+                        // Opens Settings Activity
+                        Intent intent2 = new Intent(MainActivity.this, PurchaseProActivity.class);
+                        startActivity(intent2);
                         break;
                 }
                 return true;
@@ -330,7 +369,7 @@ public class MainActivity extends BaseActivity_Main {
     public void showAbout() {
         // Gets dialog layout
         LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.dialog_about, null);
+        View v = inflater.inflate(R.layout.dialog_text, null);
 
         // Creates dialog
         final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
@@ -343,7 +382,16 @@ public class MainActivity extends BaseActivity_Main {
         TextView mainText = (TextView) v.findViewById(R.id.text);
         String appVersion = "";
 
-        // Get app version
+        // Set app name
+        String appName;
+        AppType appType = userPreferences.getAppType();
+        if (appType == AppType.Pro) {
+            appName = "Travel Wallet Pro";
+        } else {
+            appName = "Travel Wallet";
+        }
+
+        // Set app version
         try {
             appVersion = "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
@@ -351,7 +399,7 @@ public class MainActivity extends BaseActivity_Main {
         }
 
         String text =
-                "Travel Wallet " + appVersion + "\n\n" +
+                appName + " " + appVersion + "\n\n" +
                         "I hope you are able to find some value out of this app. If you have any feature requests, " +
                         "bug reports, or any other feedback, please feel free to shoot me an email. " +
                         "I love hearing back about my projects! \n\n" +
@@ -374,5 +422,63 @@ public class MainActivity extends BaseActivity_Main {
 
         // Dims background while dialog is active
         diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
+    // Opens Owner Limit Popup
+    public void showLimitPopup(String limitTitle, String limitText) {
+        // Gets dialog layout
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_upgrade, null);
+
+        // Creates dialog
+        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
+
+        // Sets title in dialog toolbar on top
+        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
+        toolBar1.setTitle(limitTitle);
+
+        // Sets text in dialog
+        TextView mainText = (TextView) v.findViewById(R.id.text);
+        mainText.setText(limitText);
+
+        // Runs with "Upgrade" button is clicked
+        Button upgradeButton = (Button) v.findViewById(R.id.upgradeButton);
+        upgradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                diag.dismiss();
+                Intent intent = new Intent(MainActivity.this, PurchaseProActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Runs with "Close" button is clicked
+        Button closeButton = (Button) v.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Dialog is destroyed
+                diag.dismiss();
+            }
+        });
+
+        // Displays dialog
+        diag.show();
+
+        // Dims background while dialog is active
+        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Set toolbar title
+        AppType appType = userPreferences.getAppType();
+        if (appType == AppType.Pro) {
+            setTitle("Travel Wallet Pro");
+        } else {
+            setTitle("Travel Wallet");
+        }
     }
 }

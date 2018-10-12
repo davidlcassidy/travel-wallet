@@ -6,11 +6,17 @@
 
 package com.davidlcassidy.travelwallet.Activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +27,7 @@ import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
+import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.R;
 
@@ -80,9 +87,14 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
             // Program ID of -1 indicates a adding a new program instead of editing an existing one
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OwnerListActivity.this, OwnerAddEditActivity.class);
-                intent.putExtra("OWNER_ID", String.valueOf(-1));
-                startActivity(intent);
+                AppType appType = userPreferences.getAppType();
+                if (ownerList.size() >= 2 && appType == AppType.Free) {
+                    showOwnerLimitPopup();
+                } else {
+                    Intent intent = new Intent(OwnerListActivity.this, OwnerAddEditActivity.class);
+                    intent.putExtra("OWNER_ID", String.valueOf(-1));
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -109,6 +121,54 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
             OwnerListAdapter adapter = new OwnerListAdapter(OwnerListActivity.this, ownerList);
             lv.setAdapter(adapter);
         }
+    }
+
+    // Opens Owner Limit Popup
+    public void showOwnerLimitPopup() {
+        // Gets dialog layout
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_upgrade, null);
+
+        // Creates dialog
+        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
+
+        // Sets title in dialog toolbar on top
+        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
+        toolBar1.setTitle("Owner Limit Reached");
+
+        // Sets text in dialog
+        TextView mainText = (TextView) v.findViewById(R.id.text);
+        String text =
+                "Travel Wallet it limited to only two owners.\n\nTo add additional owners and " +
+                        "support our ongoing development, please upgrade to Travel Wallet Pro.";
+        mainText.setText(text);
+
+        // Runs with "Upgrade" button is clicked
+        Button upgradeButton = (Button) v.findViewById(R.id.upgradeButton);
+        upgradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                diag.dismiss();
+                Intent intent = new Intent(OwnerListActivity.this, PurchaseProActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Runs with "Close" button is clicked
+        Button closeButton = (Button) v.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Dialog is destroyed
+                diag.dismiss();
+            }
+        });
+
+        // Displays dialog
+        diag.show();
+
+        // Dims background while dialog is active
+        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
 }

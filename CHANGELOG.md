@@ -1,3 +1,9 @@
+v1.4.0 : 2018-10-11
+Minor Release
+
+ - Added fully-featured pro app version
+ - Added In-app Billing ability
+
 v1.3.3 : 2018-07-22
 Feature Release
 
