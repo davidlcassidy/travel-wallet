@@ -393,17 +393,7 @@ public class UserPreferences {
 
     // Database UserPreferences setters/getters
     public Integer getDatabase_MainDBVersion() {
-        // return sharedPref.getInt(nDatabase_MainDBVersion, dDatabase_MainDBVersion);
-
-        // Code below added to backward compatibility with old naming convention.
-        // This can be removed after a couple versions.
-        Integer mainVersion = sharedPref.getInt(nDatabase_MainDBVersion, dDatabase_MainDBVersion);
-        if (mainVersion == 0){
-            String nOldDatabase_MainDBVersion = "MainDBVersion";
-            mainVersion = sharedPref.getInt(nOldDatabase_MainDBVersion, dDatabase_MainDBVersion);
-            setDatabase_MainDBVersion(mainVersion);
-        }
-        return mainVersion;
+        return sharedPref.getInt(nDatabase_MainDBVersion, dDatabase_MainDBVersion);
     }
 
     public void setDatabase_MainDBVersion(Integer version) {
@@ -412,17 +402,7 @@ public class UserPreferences {
     }
 
     public Integer getDatabase_RefDBVersion() {
-        // return sharedPref.getInt(nDatabase_RefDBVersion, dDatabase_RefDBVersion);
-
-        // Code below added to backward compatibility with old naming convention.
-        // This can be removed after a couple versions.
-        Integer refVersion = sharedPref.getInt(nDatabase_RefDBVersion, dDatabase_RefDBVersion);
-        if (refVersion == 0){
-            String nOldDatabase_RefDBVersion = "RefDBVersion";
-            refVersion = sharedPref.getInt(nOldDatabase_RefDBVersion, dDatabase_RefDBVersion);
-            setDatabase_RefDBVersion(refVersion);
-        }
-        return refVersion;
+        return sharedPref.getInt(nDatabase_RefDBVersion, dDatabase_RefDBVersion);
     }
 
     public void setDatabase_RefDBVersion(Integer version) {

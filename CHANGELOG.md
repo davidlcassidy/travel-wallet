@@ -1,3 +1,8 @@
+v1.4.1 : 2018-10-12
+Patch Release
+
+ - Fixed IAB bug, due to incorrect public key
+
 v1.4.0 : 2018-10-11
 Minor Release
 

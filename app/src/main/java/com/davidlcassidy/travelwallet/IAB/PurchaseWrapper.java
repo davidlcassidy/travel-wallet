@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.android.vending.billing.util.IabException;
 import com.android.vending.billing.util.IabHelper;
 import com.android.vending.billing.util.IabResult;
+import com.android.vending.billing.util.Inventory;
 import com.android.vending.billing.util.Purchase;
+
+import java.util.List;
 
 /*
 PurchaseWrapper is a wrapper exposing purchasing functionality of IabHelper. This class
@@ -90,22 +94,13 @@ public abstract class PurchaseWrapper extends AppCompatActivity implements IabHe
 
     // Generate base 64 key string
     public static String getBase64Key(){
-        String base64Key1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArFKsWOCguKlHkKngnwp3JFU/VF+ChVUNSgNlWdOXPKoW+";
-        String base64Key2 = "ZEHZsWRD9CReNhiJoLvnkhlGioWyl729J9uNZF0j3qOAzTIBJpkDfYcG";
-        String base64Key3 = "z8nYmUJrWcPxzGuQ7OMcIArJYJvpnd3bxafomhdqc1OzEhK/fEX26lbzh4HHvOpcFmrhfUjgkLvwzO/+";
-        String base64Key4 = "mlvHAv9wUWMNplnEMrAOJkMyewz3qZuzAHY04m6OQYu/Xqp6cGtBXfntzx3UtaSY9bpjE";
-        String base64Key5 = "0c3dGZQsf+4J9JtLqsGEfMf7JvAiqpBLeYwfNhYMrL7eeBlqTEN/pTkqJRsRdP24jxePWgA0VMK3R8ueh55/Tl0cvN3QIDAQAB";
-        String fullBase64Key = base64Key1 + base64Key2 + base64Key3 + base64Key4 + base64Key5;
-
-        char[] chars = fullBase64Key.toCharArray();
-        for (int i = 0; i < chars.length; i++){
-            char c = chars[i];
-            if (Character.isUpperCase(c)) {
-                chars[i] = Character.toLowerCase(c);
-            } else if (Character.isLowerCase(c)) {
-                chars[i] = Character.toUpperCase(c);
-            }
-        }
-        return new String(chars);
+        String base64Key1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAixtsWbAp6HVnO3rwOn1U6eBhen";
+        String base64Key2 = "A/Xp/AT7NqALXCCb9dYt7DG+12JW5384Iex+JEM5d8beQoTBzj2hjavL58ex";
+        String base64Key3 = "KoMPAlKAGcaJifu7ETnVxnPkwDbT+UpJEBQgd32xrMBZsMU9hbDn+lS6";
+        String base64Key4 = "/W/GrmayRcCnJgA4C7tOLGfIrtPOfQrTcacM2OEqpv5EI/Mkwjw6vGhvka9Oa55IOH9bP9WZmOesN";
+        String base64Key5 = "yyKS/xA0+F5jFkfHvg4a9Qx+/g4/MnDz5PYolde5eBYfo67ArX9ES7daAChVmkTljZKMi1eonZNJg8E1Q";
+        String base64Key6 = "KKINupsOuaeDWgctdR3qYjcl2MOtbiTf98aSLkXN/QIDAQAB";
+        return base64Key1 + base64Key2 + base64Key3 + base64Key4  + base64Key5 + base64Key6;
     }
+
 }

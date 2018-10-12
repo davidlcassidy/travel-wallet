@@ -220,7 +220,7 @@ public class MainActivity extends BaseActivity_Main {
         startActivity(intent2);
     }
 
-    // Runs when dropdown_free button is clicked
+    // Runs when dropdown button is clicked
     @Override
     public void menuDropdownClicked() {
         View menuView = findViewById(R.id.menu_dropdown);
@@ -252,7 +252,7 @@ public class MainActivity extends BaseActivity_Main {
                         showAbout();
                         break;
                     case "Upgrade to Pro":
-                        // Opens Settings Activity
+                        // Opens PurchasePro Activity
                         Intent intent2 = new Intent(MainActivity.this, PurchaseProActivity.class);
                         startActivity(intent2);
                         break;

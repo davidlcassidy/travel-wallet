@@ -8,6 +8,7 @@ package com.davidlcassidy.travelwallet.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -59,10 +60,20 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), PurchasePro.class);
-                startActivityForResult(intent, REQUEST_PRO_PURCHASE);
+                // Prevent purchases in v1.4.0, due to incorrect public key
+                String appVersion = "";
+                try {
+                    appVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                } catch (PackageManager.NameNotFoundException e) {
+                    appVersion = "1.4.0";
+                }
+                if (!appVersion.equals("1.4.0")) {
+                    Intent intent = new Intent(getApplicationContext(), PurchasePro.class);
+                    startActivityForResult(intent, REQUEST_PRO_PURCHASE);
+                }
             }
         });
+
     }
 
     @Override
