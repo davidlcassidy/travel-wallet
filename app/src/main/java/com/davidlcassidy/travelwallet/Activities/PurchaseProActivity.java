@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/22/18 9:12 PM
+ * Last modified 10/12/18 1:22 AM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -51,7 +51,7 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
                 "*  Unlimited owners\n" +
                 "*  More pro features coming soon!\n" +
                 "\nPro features will last forever.\n" +
-                "All for only $3.99."
+                "All for only $3.99 USD."
         );
 
         button = (Button) findViewById(R.id.getProButton);
@@ -60,17 +60,8 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
 
             @Override
             public void onClick(View v) {
-                // Prevent purchases in v1.4.0, due to incorrect public key
-                String appVersion = "";
-                try {
-                    appVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    appVersion = "1.4.0";
-                }
-                if (!appVersion.equals("1.4.0")) {
-                    Intent intent = new Intent(getApplicationContext(), PurchasePro.class);
-                    startActivityForResult(intent, REQUEST_PRO_PURCHASE);
-                }
+                Intent intent = new Intent(getApplicationContext(), PurchasePro.class);
+                startActivityForResult(intent, REQUEST_PRO_PURCHASE);
             }
         });
 

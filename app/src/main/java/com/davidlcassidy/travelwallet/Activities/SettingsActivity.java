@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 10/12/18 2:29 AM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -172,7 +172,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
     // Displays list of owner fields for user selection
     private void ownerPrimaryFieldClick () {
-        String title = "Select Owner Primary Detail";
+        String title = "Set Owner Primary Field";
         List<String> types = Arrays.asList(
                 ItemField.ITEMCOUNTS.getName(),
                 ItemField.PROGRAMSVALUE.getName(),
@@ -184,7 +184,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
     // Displays list of owner fields for user selection
     private void ownerSortFieldClick () {
-        String title = "Select Owner Sort Detail";
+        String title = "Set Owner Sort Field";
         List<String> types = Arrays.asList(
                 ItemField.OWNERNAME.getName(),
                 ItemField.PROGRAMSVALUE.getName(),
@@ -194,7 +194,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
 	// Displays list of program fields for user selection
     private void programPrimaryFieldClick () {
-        String title = "Select Program Primary Detail";
+        String title = "Set Program Primary Field";
         List<String> types = Arrays.asList(
                 ItemField.ACCOUNTNUMBER.getName(),
                 ItemField.POINTS.getName(),
@@ -206,7 +206,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
 	// Displays list of program fields for user selection
     private void programSortFieldClick () {
-        String title = "Select Program Sort Detail";
+        String title = "Set Program Sort Field";
         List<String> types = Arrays.asList(
                 ItemField.PROGRAMNAME.getName(),
                 ItemField.POINTS.getName(),
@@ -217,7 +217,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
     // Displays time period spinner dialog for user selection
     private void programNotificationFieldClick(){
-        String title = "Select Program Expiration Notice";
+        String title = "Set Program Expiration Notice";
         spinnerDialog(title, ItemType.LOYALTY_PROGRAM);
     }
 
@@ -233,7 +233,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
 	// Displays list of card fields for user selection
     private void cardPrimaryFieldClick () {
-        String title = "Select Card Primary Detail";
+        String title = "Set Card Primary Field";
         List<String> types = Arrays.asList(
                 ItemField.ANNUALFEE.getName(),
                 ItemField.OPENDATE.getName(),
@@ -244,7 +244,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
 	// Displays list of card fields for user selection
     private void cardSortFieldClick () {
-        String title = "Select Card Sort Detail";
+        String title = "Set Card Sort Field";
         List<String> types = Arrays.asList(
                 ItemField.CARDNAME.getName(),
                 ItemField.BANK.getName(),
@@ -256,7 +256,7 @@ public class SettingsActivity extends BaseActivity_Save {
 
     // Displays time period spinner dialog for user selection
     private void cardNotificationFieldClick(){
-        String title = "Select Card Expiration Notice";
+        String title = "Set Card AF Notice";
         spinnerDialog(title, ItemType.CREDIT_CARD);
     }
 
@@ -292,21 +292,21 @@ public class SettingsActivity extends BaseActivity_Save {
 
 	// Displays list of languages for user selection
     private void languageFieldClick () {
-        String title = "Select Language";
+        String title = "Set Language";
         List<String> types = Language.getAllNames();
         fieldSelectDialog(title, types, "language");
     }
 
 	// Displays list of currencies for user selection
     private void currencyFieldClick () {
-        String title = "Select Currency";
+        String title = "Set Currency";
         List<String> types = Currency.getAllNames();
         fieldSelectDialog(title, types, "currency");
     }
 
 	// Displays list of date formats for user selection
     private void dateFieldClick () {
-        String title = "Select Date Format";
+        String title = "Set Date Format";
         List<String> types = DatePattern.getAllSampleDates();
         fieldSelectDialog(title, types, "date");
     }

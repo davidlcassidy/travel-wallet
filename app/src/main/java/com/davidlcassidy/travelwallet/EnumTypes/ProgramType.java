@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/29/18 1:58 AM
+ * Last modified 6/29/18 2:17 AM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;

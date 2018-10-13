@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 10/13/18 12:14 AM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -264,6 +264,65 @@ public class MainActivity extends BaseActivity_Main {
         popupMenu.show();
     }
 
+    // Opens About Popup
+    public void showAbout() {
+        // Gets dialog layout
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_text, null);
+
+        // Creates dialog
+        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
+
+        // Sets title in dialog toolbar on top
+        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
+        toolBar1.setTitle("About");
+
+        // Sets text in dialog
+        TextView mainText = (TextView) v.findViewById(R.id.text);
+        String appVersion = "";
+
+        // Set app name
+        String appName;
+        AppType appType = userPreferences.getAppType();
+        if (appType == AppType.Pro) {
+            appName = "Travel Wallet Pro";
+        } else {
+            appName = "Travel Wallet";
+        }
+
+        // Set app version
+        try {
+            appVersion = "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String text =
+                appName + " " + appVersion + "\n\n" +
+                        "I hope you are able to find some value out of this app. If you have any feature requests, " +
+                        "bug reports, or any other feedback, please feel free to shoot me an email. " +
+                        "I love hearing back about my projects! \n\n" +
+                        "Email:  travelwallet@davidlcassidy.com\nWebsite:  www.DavidLCassidy.com";
+        mainText.setText(text);
+        Linkify.addLinks(mainText, Linkify.ALL);
+
+        // Runs with "Close" button is clicked
+        Button closeButton = (Button) v.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Dialog is destroyed
+                diag.dismiss();
+            }
+        });
+
+        // Displays dialog
+        diag.show();
+
+        // Dims background while dialog is active
+        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
     // Opens Summary Popup
     public void showSummary() {
         NumberPattern numberPattern = NumberPattern.COMMADOT;
@@ -365,64 +424,6 @@ public class MainActivity extends BaseActivity_Main {
         diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-    // Opens About Popup
-    public void showAbout() {
-        // Gets dialog layout
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.dialog_text, null);
-
-        // Creates dialog
-        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
-
-        // Sets title in dialog toolbar on top
-        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
-        toolBar1.setTitle("About");
-
-        // Sets text in dialog
-        TextView mainText = (TextView) v.findViewById(R.id.text);
-        String appVersion = "";
-
-        // Set app name
-        String appName;
-        AppType appType = userPreferences.getAppType();
-        if (appType == AppType.Pro) {
-            appName = "Travel Wallet Pro";
-        } else {
-            appName = "Travel Wallet";
-        }
-
-        // Set app version
-        try {
-            appVersion = "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        String text =
-                appName + " " + appVersion + "\n\n" +
-                        "I hope you are able to find some value out of this app. If you have any feature requests, " +
-                        "bug reports, or any other feedback, please feel free to shoot me an email. " +
-                        "I love hearing back about my projects! \n\n" +
-                        "Email:  travelwallet@davidlcassidy.com\nWebsite:  www.DavidLCassidy.com";
-        mainText.setText(text);
-        Linkify.addLinks(mainText, Linkify.ALL);
-
-        // Runs with "Close" button is clicked
-        Button closeButton = (Button) v.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Dialog is destroyed
-                diag.dismiss();
-            }
-        });
-
-        // Displays dialog
-        diag.show();
-
-        // Dims background while dialog is active
-        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-    }
 
     // Opens Owner Limit Popup
     public void showLimitPopup(String limitTitle, String limitText) {

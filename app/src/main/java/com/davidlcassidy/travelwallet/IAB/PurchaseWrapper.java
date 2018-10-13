@@ -1,16 +1,18 @@
+/*
+ * Travel Wallet Android App
+ * Copyright (C) 2018 David L Cassidy. All rights reserved.
+ * Last modified 10/12/18 11:48 PM
+ */
+
 package com.davidlcassidy.travelwallet.IAB;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.android.vending.billing.util.IabException;
 import com.android.vending.billing.util.IabHelper;
 import com.android.vending.billing.util.IabResult;
-import com.android.vending.billing.util.Inventory;
 import com.android.vending.billing.util.Purchase;
-
-import java.util.List;
 
 /*
 PurchaseWrapper is a wrapper exposing purchasing functionality of IabHelper. This class

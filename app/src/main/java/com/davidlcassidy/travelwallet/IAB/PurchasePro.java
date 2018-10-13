@@ -1,3 +1,9 @@
+/*
+ * Travel Wallet Android App
+ * Copyright (C) 2018 David L Cassidy. All rights reserved.
+ * Last modified 10/12/18 11:51 PM
+ */
+
 package com.davidlcassidy.travelwallet.IAB;
 
 import android.os.Bundle;
@@ -22,7 +28,8 @@ public class PurchasePro extends PurchaseWrapper {
     @Override
     protected void handleIABSetupSuccess() {
         // Unique product ID matching listing in Google Play Billing Library
-        final String sku= "travelwallet.pro";
+        //final String sku = "travelwallet.pro"; //TODO Switch back
+        final String sku = "android.test.purchased"; //Used for local testing only
         purchaseItem(sku);
     }
 
