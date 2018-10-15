@@ -1,16 +1,14 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/29/18 1:46 AM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
 ID Local Cache : MainDatabase
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+WARNING : Changing ID values requires updates to the database reference field.
  */
 
 import java.util.ArrayList;
@@ -41,16 +39,16 @@ public enum CardStatus {
 
 	// Returns card status from ID
     public static CardStatus fromId(int id) {
-        for (CardStatus cs : CardStatus.values()) {
-            if (cs.getId() == id) {return cs;}
+        for (CardStatus cardStatus : CardStatus.values()) {
+            if (cardStatus.getId() == id) {return cardStatus;}
         }
         return null;
     }
 
     // Returns card status from name
     public static CardStatus fromName(String name) {
-        for (CardStatus cs : CardStatus.values()) {
-            if (cs.getName().equals(name)) {return cs;}
+        for (CardStatus cardStatus : CardStatus.values()) {
+            if (cardStatus.getName().equals(name)) {return cardStatus;}
         }
         return null;
     }
@@ -58,8 +56,8 @@ public enum CardStatus {
     // Returns the names of every card status
     public static ArrayList<String> getAllNames() {
         ArrayList<String> list = new ArrayList <String>();
-        for (CardStatus cs : CardStatus.values()) {
-            list.add(cs.getName());
+        for (CardStatus cardStatus : CardStatus.values()) {
+            list.add(cardStatus.getName());
         }
         return list;
     }

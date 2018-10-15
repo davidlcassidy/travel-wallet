@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/22/18 9:38 PM
+ * Last modified 10/14/18 12:32 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -46,7 +46,6 @@ the DetailListAdapter.
 
 public class CardDetailActivity extends BaseActivity_EditDelete {
 
-    private UserPreferences userPreferences;
     private CardDataSource cardDS;
     private Integer cardId;
     private List<Detail> detailList;
@@ -63,7 +62,6 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         setContentView(R.layout.activity_detailslist);
 		setTitle("Credit Card");
 
-        userPreferences = UserPreferences.getInstance(this);
         cardDS = CardDataSource.getInstance(this);
         cardId = Integer.parseInt(getIntent().getStringExtra("CARD_ID"));
         detailList = new ArrayList<Detail>();
@@ -83,9 +81,9 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         notificationButton.setTextOn("Monitoring : ON");
         notificationButton.setTextOff("Monitoring : OFF");
         if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
-            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
+            notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
         } else {
-            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
         }
 		
 		// Sets click listener for notification button. When clicked, the card's notification status
@@ -95,11 +93,11 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
                 if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
                     cardDS.changeCardNotificationStatus(card, NotificationStatus.OFF);
                     notificationButton.setChecked(true);
-                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
                 } else {
                     cardDS.changeCardNotificationStatus(card, NotificationStatus.UNMONITORED);
                     notificationButton.setChecked(false);
-                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
+                    notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
                 }
             }
         });

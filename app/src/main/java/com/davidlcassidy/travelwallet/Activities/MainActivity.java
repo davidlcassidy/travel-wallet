@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/13/18 12:14 AM
+ * Last modified 10/14/18 12:04 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -58,7 +58,6 @@ and CardListFragment. These three fragments are contained within a tab layout.
 
 public class MainActivity extends BaseActivity_Main {
 
-    private UserPreferences userPreferences;
     private CardDataSource cardDS;
     private ProgramDataSource programDS;
     private TabLayout tabLayout;
@@ -70,7 +69,6 @@ public class MainActivity extends BaseActivity_Main {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setDisplayHomeEnabled(false);
-        userPreferences = UserPreferences.getInstance(this);
         cardDS = CardDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
 
@@ -84,6 +82,7 @@ public class MainActivity extends BaseActivity_Main {
         // Creates tab layout for navigation between fragments
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setBackgroundColor(getThemeColor(R.attr.colorPrimaryLight));
 
         // Hide FAB by default
         fab = (FloatingActionButton) findViewById(R.id.fabPlus);

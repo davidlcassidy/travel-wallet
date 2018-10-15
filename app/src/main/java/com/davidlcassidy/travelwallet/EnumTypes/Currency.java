@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/18 4:52 AM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
@@ -12,24 +12,22 @@ import java.util.ArrayList;
 
 /*
 ID Local Cache : UserPreferences
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+WARNING : Changing ID values may change user settings to the default value within current app installs.
  */
 
 public enum Currency {
 
 	// Enum members
-	// Exchange rates pulled from Google Finance on 25 JULY 2018
+	// Exchange rates pulled from Google Finance on 13 OCT 2018
     USD(1, "$", "US Dollar", 1.0),
-    EUR(2, "€", "Euro", 0.85),
+    EUR(2, "€", "Euro", 0.86),
     GPB(3, "£", "British Pound", 0.76),
-    CAD(4, "CA$", "Canadian Dollar", 1.31),
-    AUD(5, "AU$", "Australian Dollar", 1.35),
-    CNY(6, "元", "Chinese Yuan", 6.76),
-    JPY(7, "¥", "Japanese Yen", 111.15),
-    INR(8, "₹", "Indian Rupee", 68.71),
-    MXN(9, "Mex$", "Mexican Peso", 18.81);
+    CAD(4, "$", "Canadian Dollar", 1.30),
+    AUD(5, "$", "Australian Dollar", 1.41),
+    CNY(6, "元", "Chinese Yuan", 6.92),
+    JPY(7, "¥", "Japanese Yen", 112.21),
+    INR(8, "₹", "Indian Rupee", 73.69),
+    MXN(9, "$", "Mexican Peso", 18.86);
 
 	private final int id;
     private final String symbol;
@@ -73,8 +71,8 @@ public enum Currency {
 
 	// Returns currency from ID
     public static Currency fromId(int id) {
-        for (Currency c : Currency.values()) {
-            if (c.getId() == id) {return c;}
+        for (Currency currency : Currency.values()) {
+            if (currency.getId() == id) {return currency;}
         }
         return null;
     }
@@ -96,8 +94,8 @@ public enum Currency {
 
     // Returns currency from name
     public static Currency fromName(String name) {
-        for (Currency c : Currency.values()) {
-            if (c.getName().equals(name)) {return c;}
+        for (Currency currency : Currency.values()) {
+            if (currency.getName().equals(name)) {return currency;}
         }
         return null;
     }
@@ -105,8 +103,8 @@ public enum Currency {
 	// Returns the names of every currency
     public static ArrayList<String> getAllNames() {
         ArrayList<String> list = new ArrayList <String>();
-        for (Currency c : Currency.values()) {
-            list.add(c.getName());
+        for (Currency currency : Currency.values()) {
+            list.add(currency.getName());
         }
         return list;
     }

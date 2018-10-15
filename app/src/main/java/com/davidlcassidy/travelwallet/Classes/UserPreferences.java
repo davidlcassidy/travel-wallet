@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/11/18 11:08 PM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.Classes;
@@ -9,6 +9,7 @@ package com.davidlcassidy.travelwallet.Classes;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
@@ -53,6 +54,7 @@ public class UserPreferences {
     private static String nSetting_Language = "Setting_Language";
     private static String nSetting_Currency = "Setting_Currency";
     private static String nSetting_DatePattern = "Setting_DatePattern";
+    private static String nSetting_ColorScheme = "Setting_ColorScheme";
 
     private static String nDatabase_MainDBVersion = "Database_MainDBVersion";
     private static String nDatabase_RefDBVersion = "Database_RefDBVersion";
@@ -82,6 +84,7 @@ public class UserPreferences {
     private static Language dSetting_Language = Language.ENGLISH;
     private static Currency dSetting_Currency = Currency.USD;
     private static DatePattern dSetting_DatePattern = DatePattern.MDY_LONG;
+    private static ColorScheme dSetting_ColorScheme = ColorScheme.Blue;
 
     private static Integer dDatabase_MainDBVersion = 0;
     private static Integer dDatabase_RefDBVersion = 0;
@@ -183,7 +186,7 @@ public class UserPreferences {
         spEditor.commit();
     }
 
-    // Setting UserPreferences setters/getters
+    // Setting settings setters/getters
     public ItemField getSetting_OwnerPrimaryField() {
         int id = sharedPref.getInt(nSetting_OwnerPrimaryField, dSetting_OwnerPrimaryField.getId());
         ItemField itemField = ItemField.fromId(id);
@@ -387,6 +390,22 @@ public class UserPreferences {
 
     public void setSetting_DatePattern(DatePattern datePattern) {
         spEditor.putInt(nSetting_DatePattern, datePattern.getId());
+        spEditor.commit();
+    }
+
+    public ColorScheme getSetting_ColorScheme() {
+        int id = sharedPref.getInt(nSetting_ColorScheme, dSetting_ColorScheme.getId());
+        ColorScheme colorScheme = ColorScheme.fromId(id);
+        if (colorScheme != null){
+            return colorScheme;
+        } else {
+            spEditor.putInt(nSetting_ColorScheme, dSetting_ColorScheme.getId());
+            return dSetting_ColorScheme;
+        }
+    }
+
+    public void setSetting_ColorScheme(ColorScheme colorScheme) {
+        spEditor.putInt(nSetting_ColorScheme, colorScheme.getId());
         spEditor.commit();
     }
 

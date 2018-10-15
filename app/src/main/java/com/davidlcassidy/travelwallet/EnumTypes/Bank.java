@@ -1,16 +1,14 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/29/18 1:58 AM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
-ID Local Cache : MainDatabase
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+ID Local Cache : RefDatabase
+WARNING : Changing ID values requires updates to the database reference field.
  */
 
 import java.util.ArrayList;

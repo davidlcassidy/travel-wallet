@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
@@ -12,9 +12,6 @@ import java.util.Locale;
 
 /*
 ID Local Cache : None
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
  */
 
 public enum NumberPattern {
@@ -55,8 +52,8 @@ public enum NumberPattern {
 
     // Returns number pattern from ID
     public static NumberPattern fromId(int id) {
-        for (NumberPattern np : NumberPattern.values()) {
-            if (np.getId() == id) {return np;}
+        for (NumberPattern numberPattern : NumberPattern.values()) {
+            if (numberPattern.getId() == id) {return numberPattern;}
         }
         return null;
     }

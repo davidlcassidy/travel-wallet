@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/22/18 9:38 PM
+ * Last modified 10/13/18 5:37 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -50,7 +50,6 @@ fields and a handful of value selection dialogs.
 
 public class ProgramAddEditActivity extends BaseActivity_Save {
 
-    private UserPreferences userPreferences;
     private SimpleDateFormat dateFormat;
     private ProgramDataSource programDS;
     private OwnerDataSource ownerDS;
@@ -65,7 +64,6 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programaddedit);
 
-        userPreferences = UserPreferences.getInstance(this);
         dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         programDS = ProgramDataSource.getInstance(this);
         ownerDS = OwnerDataSource.getInstance(this);

@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/12/18 2:29 AM
+ * Last modified 10/14/18 9:09 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
@@ -22,6 +21,8 @@ import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
+import com.davidlcassidy.travelwallet.EnumTypes.AppType;
+import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
@@ -32,6 +33,7 @@ import com.davidlcassidy.travelwallet.R;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -41,8 +43,6 @@ user preferences fields and a handful of value selection dialogs.
  */
 
 public class SettingsActivity extends BaseActivity_Save {
-
-    private UserPreferences userPreferences;
 
     private TextView ownerPrimaryField;
     private TextView ownerSortField;
@@ -59,6 +59,7 @@ public class SettingsActivity extends BaseActivity_Save {
     private TextView languageField;
     private TextView currencyField;
     private TextView dateField;
+    private TextView colorSchemeField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,6 @@ public class SettingsActivity extends BaseActivity_Save {
         setTitle("Settings");
 
 		// Gets Settings activity fields
-        userPreferences = UserPreferences.getInstance(this);
         ownerPrimaryField = (TextView) findViewById(R.id.ownerPrimaryField);
         ownerSortField = (TextView) findViewById(R.id.ownerSortField);
         programPrimaryField = (TextView) findViewById(R.id.programPrimaryField);
@@ -83,6 +83,7 @@ public class SettingsActivity extends BaseActivity_Save {
         languageField = (TextView) findViewById(R.id.languageField);
         currencyField = (TextView) findViewById(R.id.currencyField);
         dateField = (TextView) findViewById(R.id.dateField);
+        colorSchemeField = (TextView) findViewById(R.id.colorSchemeField);
 
 		// Sets activity click listeners
         setClickListeners();
@@ -108,6 +109,7 @@ public class SettingsActivity extends BaseActivity_Save {
         Language language = userPreferences.getSetting_Language();
         Currency currency = userPreferences.getSetting_Currency();
         DatePattern datePattern = userPreferences.getSetting_DatePattern();
+        ColorScheme colorScheme = userPreferences.getSetting_ColorScheme();
 
 		// Sets activity fields to values from user preferences
         ownerPrimaryField.setText(ownerPrimary.getName());
@@ -125,6 +127,7 @@ public class SettingsActivity extends BaseActivity_Save {
         languageField.setText(language.getName());
         currencyField.setText(currency.getName());
         dateField.setText(datePattern.getSampleDate());
+        colorSchemeField.setText(colorScheme.getName());
     }
 
 	// Runs when save button is clicked
@@ -132,36 +135,40 @@ public class SettingsActivity extends BaseActivity_Save {
     public void menuSaveClicked() {
 
 		// Gets values from activity fields
-        String ownerPrimary = ownerPrimaryField.getText().toString();
-        String ownerSort = ownerSortField.getText().toString();
-        String programPrimary = programPrimaryField.getText().toString();
-        String programSort = programSortField.getText().toString();
-        String programFilters = programFiltersField.getText().toString();
-        String cardPrimary = cardPrimaryField.getText().toString();
-        String cardSort = cardSortField.getText().toString();
-        String cardFilters = cardFiltersField.getText().toString();
-        String initialSummary = initialSummaryField.getText().toString();
-        String phoneNotifications = phoneNotificationsField.getText().toString();
-        String language = languageField.getText().toString();
-        String date = dateField.getText().toString();
-        String currency = currencyField.getText().toString();
+        ItemField ownerPrimary = ItemField.fromName(ownerPrimaryField.getText().toString());
+        ItemField ownerSort = ItemField.fromName(ownerSortField.getText().toString());
+        ItemField programPrimary = ItemField.fromName(programPrimaryField.getText().toString());
+        ItemField programSort = ItemField.fromName(programSortField.getText().toString());
+        String programNotificationPeriod = getNotificationField(ItemType.LOYALTY_PROGRAM);
+        boolean programFilters = programFiltersField.getText().toString().equals("ON");
+        ItemField cardPrimary = ItemField.fromName(cardPrimaryField.getText().toString());
+        ItemField cardSort = ItemField.fromName(cardSortField.getText().toString());
+        String cardNotificationPeriod = getNotificationField(ItemType.CREDIT_CARD);
+        boolean cardFilters = cardFiltersField.getText().toString().equals("ON");
+        boolean initialSummary = initialSummaryField.getText().toString().equals("ON");
+        boolean phoneNotifications = phoneNotificationsField.getText().toString().equals("ON");
+        Language language = Language.fromName(languageField.getText().toString());
+        Currency currency = Currency.fromName(currencyField.getText().toString());
+        DatePattern date = DatePattern.fromSampleDate(dateField.getText().toString());
+        ColorScheme colorScheme = ColorScheme.fromName(colorSchemeField.getText().toString());
 
 		// Saves values from activity fields to user preferences
-        userPreferences.setSetting_OwnerPrimaryField(ItemField.fromName(ownerPrimary));
-        userPreferences.setSetting_OwnerSortField(ItemField.fromName(ownerSort));
-        userPreferences.setSetting_ProgramPrimaryField(ItemField.fromName(programPrimary));
-        userPreferences.setSetting_ProgramSortField(ItemField.fromName(programSort));
-        userPreferences.setSetting_ProgramNotificationPeriod(getNotificationField(ItemType.LOYALTY_PROGRAM));
-        userPreferences.setSetting_ProgramFilters(programFilters.equals("ON"));
-        userPreferences.setSetting_CardPrimaryField(ItemField.fromName(cardPrimary));
-        userPreferences.setSetting_CardSortField(ItemField.fromName(cardSort));
-        userPreferences.setSetting_CardNotificationPeriod(getNotificationField(ItemType.CREDIT_CARD));
-        userPreferences.setSetting_CardFilters(cardFilters.equals("ON"));
-        userPreferences.setSetting_InitialSummary(initialSummary.equals("ON"));
-        userPreferences.setSetting_PhoneNotifications(phoneNotifications.equals("ON"));
-        userPreferences.setSetting_Language(Language.fromName(language));
-        userPreferences.setSetting_Currency(Currency.fromName(currency));
-        userPreferences.setSetting_DatePattern(DatePattern.fromSampleDate(date));
+        userPreferences.setSetting_OwnerPrimaryField(ownerPrimary);
+        userPreferences.setSetting_OwnerSortField(ownerSort);
+        userPreferences.setSetting_ProgramPrimaryField(programPrimary);
+        userPreferences.setSetting_ProgramSortField(programSort);
+        userPreferences.setSetting_ProgramNotificationPeriod(programNotificationPeriod);
+        userPreferences.setSetting_ProgramFilters(programFilters);
+        userPreferences.setSetting_CardPrimaryField(cardPrimary);
+        userPreferences.setSetting_CardSortField(cardSort);
+        userPreferences.setSetting_CardNotificationPeriod(cardNotificationPeriod);
+        userPreferences.setSetting_CardFilters(cardFilters);
+        userPreferences.setSetting_InitialSummary(initialSummary);
+        userPreferences.setSetting_PhoneNotifications(phoneNotifications);
+        userPreferences.setSetting_Language(language);
+        userPreferences.setSetting_Currency(currency);
+        userPreferences.setSetting_DatePattern(date);
+        userPreferences.setSetting_ColorScheme(colorScheme);
 
         userPreferences.setFiltersUpdateRequired(true);
 
@@ -311,6 +318,13 @@ public class SettingsActivity extends BaseActivity_Save {
         fieldSelectDialog(title, types, "date");
     }
 
+    // Displays list of date formats for user selection
+    private void colorFieldClick () {
+        String title = "Set Color Scheme";
+        List<String> types = ColorScheme.getAllNames();
+        fieldSelectDialog(title, types, "color");
+    }
+
 	// Creates standard list selection dialog
     private void fieldSelectDialog(String title, List<String> items, final String saveField) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
@@ -363,6 +377,13 @@ public class SettingsActivity extends BaseActivity_Save {
                             break;
                         case "date":
                             dateField.setText(selectedItem);
+                            break;
+                        case "color":
+                            boolean appTypeFree = userPreferences.getAppType() == AppType.Free;
+                            boolean goldColorScheme = selectedItem == ColorScheme.Gold.getName();
+                            if (!(appTypeFree && goldColorScheme)) {
+                                colorSchemeField.setText(selectedItem);
+                            }
                             break;
                     }
                 }
@@ -640,6 +661,13 @@ public class SettingsActivity extends BaseActivity_Save {
             @Override
             public void onClick(View v) {
                 dateFieldClick();
+            }});
+
+        LinearLayout colorLayout = (LinearLayout) findViewById(R.id.colorSchemeLayout);
+        colorLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                colorFieldClick();
             }});
     }
 }

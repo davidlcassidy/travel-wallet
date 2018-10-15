@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/22/18 9:38 PM
+ * Last modified 10/14/18 12:32 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -45,7 +45,6 @@ the DetailListAdapter.
 
 public class ProgramDetailActivity extends BaseActivity_EditDelete {
 
-    private UserPreferences userPreferences;
     private ProgramDataSource programDS;
     private Integer programId;
     private List<Detail> detailList;
@@ -61,7 +60,6 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         setContentView(R.layout.activity_detailslist);
 		setTitle("Loyalty Program");
 
-        userPreferences = UserPreferences.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
         programId = Integer.parseInt(getIntent().getStringExtra("PROGRAM_ID"));
         detailList = new ArrayList<Detail>();
@@ -80,9 +78,9 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         notificationButton.setTextOn("Monitoring : ON");
         notificationButton.setTextOff("Monitoring : OFF");
         if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
-            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
+            notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
         } else {
-            notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
         }
 
 		// Sets click listener for notification button. When clicked, the program's notification status
@@ -92,11 +90,11 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
                 if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
                     programDS.changeProgramNotificationStatus(program, NotificationStatus.OFF);
                     notificationButton.setChecked(true);
-                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
                 } else {
-                    programDS.changeProgramNotificationStatus(program, NotificationStatus.UNMONITORED);
+                    programDS.changeProgramNotificationStatus(program, NotificationStatus.UNMONITORED); //Change to non static
                     notificationButton.setChecked(false);
-                    notificationButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryGray));
+                    notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
                 }
             }
         });

@@ -1,16 +1,13 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
-ID Local Cache : UserPreferences
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+ID Local Cache : None
  */
 
 public enum ItemType {
@@ -40,8 +37,8 @@ public enum ItemType {
 
 	// Returns item type from ID
     public static ItemType fromId(int i) {
-        for (ItemType g : ItemType.values()) {
-            if (g.getId() == i) {return g;}
+        for (ItemType itemType : ItemType.values()) {
+            if (itemType.getId() == i) {return itemType;}
         }
         return null;
     }

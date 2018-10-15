@@ -1,16 +1,14 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/29/18 2:17 AM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
-ID Local Cache : MainDatabase
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+ID Local Cache : RefDatabase
+WARNING : Changing ID values requires updates to the database reference field.
  */
 
 import java.util.ArrayList;
@@ -45,16 +43,16 @@ public enum ProgramType {
 
 	// Returns program type from ID
     public static ProgramType fromId(int id) {
-        for (ProgramType cs : ProgramType.values()) {
-            if (cs.getId() == id) {return cs;}
+        for (ProgramType programType : ProgramType.values()) {
+            if (programType.getId() == id) {return programType;}
         }
         return null;
     }
 
     // Returns program type from name
     public static ProgramType fromName(String name) {
-        for (ProgramType cs : ProgramType.values()) {
-            if (cs.getName().equals(name)) {return cs;}
+        for (ProgramType programType : ProgramType.values()) {
+            if (programType.getName().equals(name)) {return programType;}
         }
         return null;
     }
@@ -62,8 +60,8 @@ public enum ProgramType {
     // Returns the names of every program type
     public static ArrayList<String> getAllNames() {
         ArrayList<String> list = new ArrayList <String>();
-        for (ProgramType cs : ProgramType.values()) {
-            list.add(cs.getName());
+        for (ProgramType programType : ProgramType.values()) {
+            list.add(programType.getName());
         }
         return list;
     }

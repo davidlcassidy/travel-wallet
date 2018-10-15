@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/12/18 1:22 AM
+ * Last modified 10/14/18 8:50 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -27,7 +27,6 @@ and contains a button to allowing for purchase from Google Play Store.
 
 public class PurchaseProActivity extends BaseActivity_BackOnly {
 
-    private UserPreferences userPreferences;
     private TextView title;
     private TextView text;
     private Button button;
@@ -39,8 +38,6 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
         setContentView(R.layout.activity_getpro);
         setTitle("Upgrade to Pro");
 
-        userPreferences = UserPreferences.getInstance(this);
-
         title = (TextView) findViewById(R.id.getProTitle);
         title.setText("Travel Wallet Pro includes:");
 
@@ -49,13 +46,14 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
                 "*  Unlimited loyalty programs\n" +
                 "*  Unlimited credit cards\n" +
                 "*  Unlimited owners\n" +
+                "*  Exclusive Gold color scheme\n" +
                 "*  More pro features coming soon!\n" +
                 "\nPro features will last forever.\n" +
                 "All for only $3.99 USD."
         );
 
         button = (Button) findViewById(R.id.getProButton);
-        button.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        button.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override

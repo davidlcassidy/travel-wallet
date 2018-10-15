@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/11/18 10:12 PM
+ * Last modified 10/13/18 5:37 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -44,7 +44,6 @@ the "add" button.
 
 public class OwnerListActivity extends BaseActivity_BackOnly {
 
-    private UserPreferences userPreferences;
     private OwnerDataSource ownerDS;
     private ProgramDataSource programDS;
     private CardDataSource cardDS;
@@ -59,7 +58,6 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
         setContentView(R.layout.activity_ownerlist);
         setTitle("Current Owners");
 
-        userPreferences = UserPreferences.getInstance(this);
         ownerDS = OwnerDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
         cardDS = CardDataSource.getInstance(this);

@@ -2,11 +2,10 @@
 <!--
   ~ Travel Wallet Android App
   ~ Copyright (C) 2018 David L Cassidy. All rights reserved.
-  ~ Last modified 10/14/18 12:31 PM
+  ~ Last modified 10/14/18 12:30 PM
   -->
 
 <resources>
-    <color name="black">#000000</color>
-    <color name="gray">#77787d</color>
-    <color name="white">#FFFFFF</color>
+    <attr name="themeName" format="string"/>
+    <attr name="colorPrimaryLight" format="color"/>
 </resources>

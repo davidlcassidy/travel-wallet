@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/22/18 9:12 PM
+ * Last modified 10/13/18 5:37 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -32,7 +32,6 @@ comprised of several owner attribute fields and a handful of value selection dia
 
 public class OwnerAddEditActivity extends BaseActivity_Save {
 
-    private UserPreferences userPreferences;
     private OwnerDataSource ownerDS;
     private Integer ownerId;
 
@@ -42,7 +41,6 @@ public class OwnerAddEditActivity extends BaseActivity_Save {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owneraddedit);
-        userPreferences = UserPreferences.getInstance(this);
 
 		// Gets owner ID from intent. Owner ID of -1 means add new card
         ownerDS = OwnerDataSource.getInstance(this);

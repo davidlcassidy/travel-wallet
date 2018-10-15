@@ -1,16 +1,14 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
 ID Local Cache : UserPreferences
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+WARNING : Changing ID values may change user settings to the default value within current app installs.
  */
 
 public enum ItemField {
@@ -38,8 +36,9 @@ public enum ItemField {
     OWNERNOTES(36, ItemType.OWNER, "Notes");
 
 	private final int id;
-    private final String name;
     private final ItemType itemType;
+    private final String name;
+
 
     private ItemField(int id, ItemType itemType, String name) {
 		this.id = id;
@@ -59,16 +58,16 @@ public enum ItemField {
 
 	// Returns item status from ID
     public static ItemField fromId(int id) {
-        for (ItemField i : ItemField.values()) {
-            if (i.getId() == id) {return i;}
+        for (ItemField itemField : ItemField.values()) {
+            if (itemField.getId() == id) {return itemField;}
         }
         return null;
     }
 
     // Returns item field from name
     public static ItemField fromName(String name) {
-        for (ItemField i : ItemField.values()) {
-            if (i.getName().equals(name)) {return i;}
+        for (ItemField itemField : ItemField.values()) {
+            if (itemField.getName().equals(name)) {return itemField;}
         }
         return null;
     }

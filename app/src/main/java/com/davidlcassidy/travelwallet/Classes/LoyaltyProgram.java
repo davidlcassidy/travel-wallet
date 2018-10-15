@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/29/18 2:24 AM
+ * Last modified 10/13/18 10:43 AM
  */
 
 package com.davidlcassidy.travelwallet.Classes;

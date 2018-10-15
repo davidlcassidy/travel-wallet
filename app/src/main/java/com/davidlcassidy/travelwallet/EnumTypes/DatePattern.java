@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
@@ -11,9 +11,7 @@ import java.util.ArrayList;
 
 /*
 ID Local Cache : UserPreferences
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+WARNING : Changing ID values may change user settings to the default value within current app installs.
  */
 
 public enum DatePattern {
@@ -37,42 +35,42 @@ public enum DatePattern {
         this.dateFormat = new SimpleDateFormat(formatString);
     }
 	
-	// Returns date format ID
+	// Returns date pattern ID
     public int getId() {
         return id;
     }
 	
-	// Returns date format sample
+	// Returns date pattern sample
     public String getSampleDate() {
         return sampleDate;
     }
 
-    // Returns date format as SimpleDateFormat
+    // Returns date pattern as SimpleDateFormat
     public SimpleDateFormat getDateFormat() {
         return dateFormat;
     }
 
-    // Returns date format from ID
+    // Returns date pattern from ID
     public static DatePattern fromId(int id) {
-        for (DatePattern d : DatePattern.values()) {
-            if (d.getId() == id) {return d;}
+        for (DatePattern datePattern : DatePattern.values()) {
+            if (datePattern.getId() == id) {return datePattern;}
         }
         return null;
     }
 
-	// Returns date format from sample date
+	// Returns date pattern from sample date
     public static DatePattern fromSampleDate(String sampleDate) {
-        for (DatePattern d : DatePattern.values()) {
-            if (d.getSampleDate().equals(sampleDate)) {return d;}
+        for (DatePattern datePattern : DatePattern.values()) {
+            if (datePattern.getSampleDate().equals(sampleDate)) {return datePattern;}
         }
         return null;
     }
 
-    // Returns sample dates of every date format
+    // Returns sample dates of every date pattern
     public static ArrayList<String> getAllSampleDates() {
         ArrayList<String> list = new ArrayList <String>();
-        for (DatePattern d : DatePattern.values()) {
-            list.add(d.getSampleDate());
+        for (DatePattern datePattern : DatePattern.values()) {
+            list.add(datePattern.getSampleDate());
         }
         return list;
     }

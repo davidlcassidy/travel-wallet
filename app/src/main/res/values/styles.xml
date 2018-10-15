@@ -1,21 +1,63 @@
 <!--
   ~ Travel Wallet Android App
   ~ Copyright (C) 2018 David L Cassidy. All rights reserved.
-  ~ Last modified 6/24/18 2:17 PM
+  ~ Last modified 10/14/18 9:03 PM
   -->
 
 <resources>
 
-    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
-
-    </style>
-
-    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="themeName">Base</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Blue.Theme" parent="Base.Theme">
+        <item name="themeName">Blue</item>
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#3345A3</item>
+        <item name="colorPrimaryLight">#6073DA</item>
+        <item name="colorAccent">#EE5696</item>
+    </style>
+
+    <style name="Green.Theme" parent="Base.Theme">
+        <item name="themeName">Green</item>
+        <item name="colorPrimary">#0C9430</item>
+        <item name="colorPrimaryDark">#0A7B28</item>
+        <item name="colorPrimaryLight">#1EC44A</item>
+        <item name="colorAccent">#F5D20F</item>
+    </style>
+
+    <style name="Red.Theme" parent="Base.Theme">
+        <item name="themeName">Red</item>
+        <item name="colorPrimary">#800300</item>
+        <item name="colorPrimaryDark">#5B0200</item>
+        <item name="colorPrimaryLight">#BE0500</item>
+        <item name="colorAccent">#ffd500</item>
+    </style>
+
+    <style name="Purple.Theme" parent="Base.Theme">
+        <item name="themeName">Purple</item>
+        <item name="colorPrimary">#7E36B2</item>
+        <item name="colorPrimaryDark">#6F2AA0</item>
+        <item name="colorPrimaryLight">#A257D8</item>
+        <item name="colorAccent">#FFA05C</item>
+    </style>
+
+    <style name="Orange.Theme" parent="Base.Theme">
+        <item name="themeName">Orange</item>
+        <item name="colorPrimary">#D86927</item>
+        <item name="colorPrimaryDark">#AF5621</item>
+        <item name="colorPrimaryLight">#FF8D4A</item>
+        <item name="colorAccent">#8e54c4</item>
+    </style>
+
+    <style name="Gold.Theme" parent="Base.Theme">
+        <item name="themeName">Gold (Pro Only)</item>
+        <item name="colorPrimary">#D8AF27</item>
+        <item name="colorPrimaryDark">#AF8E21</item>
+        <item name="colorPrimaryLight">#FFD44A</item>
+        <item name="colorAccent">#827ecd</item>
     </style>
 
 </resources>

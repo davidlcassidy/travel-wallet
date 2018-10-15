@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/22/18 9:45 PM
+ * Last modified 10/13/18 6:02 PM
  */
 
 package com.davidlcassidy.travelwallet.Fragments;
@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.Activities.CardDetailActivity;
+import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Adapters.CardListAdapter;
 import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
@@ -58,7 +59,7 @@ public class CardListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        activity= getActivity();
+        activity = (MainActivity) getActivity();
 
         userPreferences = UserPreferences.getInstance(getContext());
         userPreferences.setCardFiltersUpdateRequired(true);

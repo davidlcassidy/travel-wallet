@@ -1,16 +1,15 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/24/18 2:17 PM
+ * Last modified 10/14/18 9:39 PM
  */
 
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
 ID Local Cache : MainDatabase
-
-WARNING : Changing the id values may end backwards compatibility and can cause local
-app instability within current app installs
+WARNING : Changing the ID values may end backwards compatibility and can cause local
+app instability within current app installs.
  */
 
 public enum NotificationStatus {
@@ -33,8 +32,8 @@ public enum NotificationStatus {
 
 	// Returns notification status from ID
     public static NotificationStatus fromId(int id) {
-        for (NotificationStatus ns : NotificationStatus.values()) {
-            if (ns.getId() == id) {return ns;}
+        for (NotificationStatus status : NotificationStatus.values()) {
+            if (status.getId() == id) {return status;}
         }
         return null;
     }

@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 6/29/18 2:39 AM
+ * Last modified 10/13/18 6:02 PM
  */
 
 package com.davidlcassidy.travelwallet.Fragments;
@@ -57,7 +57,7 @@ public class NotificationsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        activity= getActivity();
+        activity = getActivity();
 
         programDS = ProgramDataSource.getInstance(getContext());
         cardDS = CardDataSource.getInstance(getContext());

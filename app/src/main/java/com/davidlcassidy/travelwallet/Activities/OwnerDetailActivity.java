@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/22/18 9:12 PM
+ * Last modified 10/13/18 5:37 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -42,7 +42,6 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
     private OwnerDataSource ownerDS;
     private ProgramDataSource programDS;
     private CardDataSource cardDS;
-    private UserPreferences userPreferences;
     private Currency currency;
     private Integer ownerId;
 
@@ -59,7 +58,6 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
         ownerDS = OwnerDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
         cardDS = CardDataSource.getInstance(this);
-        userPreferences = UserPreferences.getInstance(this);
         currency = userPreferences.getSetting_Currency();
 
         ownerId = Integer.parseInt(getIntent().getStringExtra("OWNER_ID"));

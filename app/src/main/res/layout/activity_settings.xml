@@ -2,7 +2,7 @@
 <!--
   ~ Travel Wallet Android App
   ~ Copyright (C) 2018 David L Cassidy. All rights reserved.
-  ~ Last modified 7/22/18 8:26 PM
+  ~ Last modified 10/13/18 5:04 PM
   -->
 
 <ScrollView
@@ -576,5 +576,40 @@
                 android:textSize="@dimen/text"/>
 
         </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/colorSchemeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dateLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/colorSchemeLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Color Scheme"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/colorSchemeField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
     </RelativeLayout>
 </ScrollView>

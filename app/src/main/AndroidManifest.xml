@@ -2,7 +2,7 @@
 <!--
   ~ Travel Wallet Android App
   ~ Copyright (C) 2018 David L Cassidy. All rights reserved.
-  ~ Last modified 10/11/18 9:49 PM
+  ~ Last modified 10/14/18 8:48 PM
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,7 +18,7 @@
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/MyMaterialTheme">
+        android:theme="@style/Base.Theme">
         <activity android:name=".Activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
