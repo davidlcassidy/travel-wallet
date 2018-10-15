@@ -71,7 +71,6 @@ public class CardAddEditActivity extends BaseActivity_Save {
         ownerDS = OwnerDataSource.getInstance(this);
 		
 		// Gets card ID from intent. Card ID of -1 means add new card
-        //cardId = Integer.parseInt(getIntent().getStringExtra("CARD_ID"));
         cardId = getIntent().getIntExtra("CARD_ID", -1);
 
 		// Gets CardAddEdit activity fields

@@ -250,7 +250,7 @@ public class MainActivity extends BaseActivity_Main {
                         showAbout();
                         break;
                     case "Upgrade to Pro":
-                        // Opens PurchasePro Activity
+                        // Opens PurchaseItem Activity
                         Intent intent2 = new Intent(MainActivity.this, PurchaseProActivity.class);
                         startActivity(intent2);
                         break;

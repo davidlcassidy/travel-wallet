@@ -10,6 +10,7 @@
         <item name="themeName">Base</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">true</item>
+        <item name="colorPrimary">#FFFFFF</item>
     </style>
 
     <style name="Blue.Theme" parent="Base.Theme">

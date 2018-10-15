@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_BackOnly;
-import com.davidlcassidy.travelwallet.IAB.PurchasePro;
+import com.davidlcassidy.travelwallet.IAB.PurchaseItem;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.R;
 
@@ -29,6 +29,10 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
     private TextView text;
     private Button button;
     private static final short REQUEST_PRO_PURCHASE = 101;
+
+    // Unique product ID matching listing in Google Play Billing Library
+    //final String PRODUCT_ID = "travelwallet.pro"; //TODO Switch back
+    private final String PRODUCT_ID = "android.test.purchased"; //Used for local testing only
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,8 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), PurchasePro.class);
+                Intent intent = new Intent(getApplicationContext(), PurchaseItem.class);
+                intent.putExtra("PRODUCT_ID", PRODUCT_ID);
                 startActivityForResult(intent, REQUEST_PRO_PURCHASE);
             }
         });

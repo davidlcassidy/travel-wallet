@@ -12,11 +12,10 @@ import com.android.vending.billing.util.IabResult;
 import com.android.vending.billing.util.Purchase;
 
 /*
-PurchasePro is use to purchase Travel Wallet Pro from the Google Play Store.
+PurchaseItem class is use to purchase items from the Google Play Store.
  */
 
-// TODO: Update class so SKU can be passed as an intent to make it modular
-public class PurchasePro extends PurchaseWrapper {
+public class PurchaseItem extends PurchaseWrapper {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +26,8 @@ public class PurchasePro extends PurchaseWrapper {
 
     @Override
     protected void handleIABSetupSuccess() {
-        // Unique product ID matching listing in Google Play Billing Library
-        //final String sku = "travelwallet.pro"; //TODO Switch back
-        final String sku = "android.test.purchased"; //Used for local testing only
-        purchaseItem(sku);
+        String productId = getIntent().getStringExtra("PRODUCT_ID");
+        purchaseItem(productId);
     }
 
     @Override
