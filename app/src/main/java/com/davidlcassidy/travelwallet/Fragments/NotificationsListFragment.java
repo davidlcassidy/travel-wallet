@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/13/18 6:02 PM
+ * Last modified 10/14/18 10:51 PM
  */
 
 package com.davidlcassidy.travelwallet.Fragments;
@@ -89,13 +89,13 @@ public class NotificationsListFragment extends Fragment {
 				// If loyalty program notification is clicked, ProgramDetailActivity activity opens
                 if (selectionType == ItemType.LOYALTY_PROGRAM) {
                     Intent intent = new Intent(view.getContext(), ProgramDetailActivity.class);
-                    intent.putExtra("PROGRAM_ID", selection.getId().toString());
+                    intent.putExtra("PROGRAM_ID", selection.getId());
                     startActivity(intent);
 					
 				// If credit card notification is clicked, CardDetailActivity activity opens
                 } else if (selectionType == ItemType.CREDIT_CARD) {
                     Intent intent = new Intent(view.getContext(), CardDetailActivity.class);
-                    intent.putExtra("CARD_ID", selection.getId().toString());
+                    intent.putExtra("CARD_ID", selection.getId());
                     startActivity(intent);
                 }
             }

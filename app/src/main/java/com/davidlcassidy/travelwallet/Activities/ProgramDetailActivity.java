@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/14/18 12:32 PM
+ * Last modified 10/14/18 10:51 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -60,7 +60,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
 		setTitle("Loyalty Program");
 
         programDS = ProgramDataSource.getInstance(this);
-        programId = Integer.parseInt(getIntent().getStringExtra("PROGRAM_ID"));
+        programId = getIntent().getIntExtra("PROGRAM_ID", -1);
         detailList = new ArrayList<Detail>();
         final LoyaltyProgram program = programDS.getSingle(programId);
         
@@ -171,7 +171,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
     public void menuEditClicked() {
 		// Opens ProgramAddEdit Activity
         Intent intent = new Intent(ProgramDetailActivity.this, ProgramAddEditActivity.class);
-        intent.putExtra("PROGRAM_ID", String.valueOf(programId));
+        intent.putExtra("PROGRAM_ID", programId);
         startActivity(intent);
     }
 

@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/13/18 10:43 AM
+ * Last modified 10/14/18 10:51 PM
  */
 
 package com.davidlcassidy.travelwallet.Fragments;
@@ -75,7 +75,7 @@ public class ProgramListFragment extends Fragment {
 			// Opens ProgramDetail Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String programID = filteredProgramList.get(position).getId().toString();
+                Integer programID = filteredProgramList.get(position).getId();
                 Intent intent = new Intent(getContext(), ProgramDetailActivity.class);
                 intent.putExtra("PROGRAM_ID", programID);
                 startActivity(intent);

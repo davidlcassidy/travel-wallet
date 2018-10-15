@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/13/18 6:02 PM
+ * Last modified 10/14/18 10:43 PM
  */
 
 package com.davidlcassidy.travelwallet.Fragments;
@@ -77,7 +77,7 @@ public class CardListFragment extends Fragment {
 			// Opens CardDetail Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String cardID = filteredCardList.get(position).getId().toString();
+                Integer cardID = filteredCardList.get(position).getId();
                 Intent intent = new Intent(getContext(), CardDetailActivity.class);
                 intent.putExtra("CARD_ID", cardID);
                 startActivity(intent);

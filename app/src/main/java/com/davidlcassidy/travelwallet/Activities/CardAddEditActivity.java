@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/13/18 5:37 PM
+ * Last modified 10/14/18 10:43 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -71,7 +71,8 @@ public class CardAddEditActivity extends BaseActivity_Save {
         ownerDS = OwnerDataSource.getInstance(this);
 		
 		// Gets card ID from intent. Card ID of -1 means add new card
-        cardId = Integer.parseInt(getIntent().getStringExtra("CARD_ID"));
+        //cardId = Integer.parseInt(getIntent().getStringExtra("CARD_ID"));
+        cardId = getIntent().getIntExtra("CARD_ID", -1);
 
 		// Gets CardAddEdit activity fields
         ownerField = (TextView) findViewById(R.id.ownerField);

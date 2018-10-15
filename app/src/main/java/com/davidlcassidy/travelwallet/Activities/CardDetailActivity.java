@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/14/18 12:32 PM
+ * Last modified 10/14/18 10:47 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -62,7 +62,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
 		setTitle("Credit Card");
 
         cardDS = CardDataSource.getInstance(this);
-        cardId = Integer.parseInt(getIntent().getStringExtra("CARD_ID"));
+        cardId = getIntent().getIntExtra("CARD_ID", -1);
         detailList = new ArrayList<Detail>();
         final CreditCard card = cardDS.getSingle(cardId);
         
@@ -184,7 +184,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
     public void menuEditClicked() {
 		// Opens CardAddEdit Activity
         Intent intent = new Intent(CardDetailActivity.this, CardAddEditActivity.class);
-        intent.putExtra("CARD_ID", String.valueOf(cardId));
+        intent.putExtra("CARD_ID", cardId);
         startActivity(intent);
     }
 

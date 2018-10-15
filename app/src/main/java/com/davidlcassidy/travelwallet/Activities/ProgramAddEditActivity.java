@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/13/18 5:37 PM
+ * Last modified 10/14/18 10:51 PM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -68,7 +68,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         ownerDS = OwnerDataSource.getInstance(this);
 		
 		// Gets program ID from intent. Program ID of -1 means add new program
-        programId = Integer.parseInt(getIntent().getStringExtra("PROGRAM_ID"));
+        programId = getIntent().getIntExtra("PROGRAM_ID", -1);
 
 		// Gets ProgramAddEdit activity fields
         ownerField = (TextView) findViewById(R.id.ownerField);
