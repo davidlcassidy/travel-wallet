@@ -1,3 +1,8 @@
+v1.4.2 : XXXX-XX-XX
+Feature Release
+
+ - Added color schemes
+
 v1.4.1 : 2018-10-12
 Patch Release
 

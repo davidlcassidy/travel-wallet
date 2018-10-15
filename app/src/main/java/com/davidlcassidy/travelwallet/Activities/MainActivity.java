@@ -42,7 +42,6 @@ import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Fragments.ProgramListFragment;
 import com.davidlcassidy.travelwallet.R;
 import com.davidlcassidy.travelwallet.Classes.NotificationTimerService;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
