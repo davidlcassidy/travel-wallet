@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_BackOnly;
-import com.davidlcassidy.travelwallet.IAB.PurchaseItem;
+import com.davidlcassidy.travelwallet.Classes.PurchaseItem;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.R;
 

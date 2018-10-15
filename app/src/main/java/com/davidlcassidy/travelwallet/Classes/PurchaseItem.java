@@ -1,10 +1,10 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 10/14/18 10:43 PM
+ * Last modified 10/14/18 11:29 PM
  */
 
-package com.davidlcassidy.travelwallet.IAB;
+package com.davidlcassidy.travelwallet.Classes;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,11 +15,11 @@ import com.android.vending.billing.util.IabResult;
 import com.android.vending.billing.util.Purchase;
 
 /*
-PurchaseWrapper is a wrapper exposing purchasing functionality of IabHelper. This class
-should be the parent of any activity requiring an app purchase.
+PurchaseItem is a wrapper exposing purchasing functionality of IabHelper. It is use to purchase
+the item with the unique product ID of PRODUCT_ID from the Google Play Store.
  */
 
-public abstract class PurchaseWrapper extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
+public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
 
     private IabHelper billingHelper;
     private String DeveloperPayload = "Tr4v3l_W411et_4pp";
@@ -36,15 +36,11 @@ public abstract class PurchaseWrapper extends AppCompatActivity implements IabHe
     @Override
     public void onIabSetupFinished(IabResult result) {
         if (result.isSuccess()) {
-            handleIABSetupSuccess();
+            purchaseItem();
         } else {
-            handleIABSetupFailure();
+            finish();
         }
     }
-
-    protected abstract void handleIABSetupSuccess();
-
-    protected abstract void handleIABSetupFailure();
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -52,19 +48,23 @@ public abstract class PurchaseWrapper extends AppCompatActivity implements IabHe
         billingHelper.handleActivityResult(requestCode, resultCode, data);
     }
 
-    protected void purchaseItem(String sku) {
+    protected void purchaseItem() {
+        String productId = getIntent().getStringExtra("PRODUCT_ID");
         short requestCode = 123;
-        billingHelper.launchPurchaseFlow(this, sku, requestCode, this, DeveloperPayload);
+        billingHelper.launchPurchaseFlow(this, productId, requestCode, this, DeveloperPayload);
     }
 
     @Override
     public void onIabPurchaseFinished(IabResult result, Purchase info) {
         if (result.isSuccess()) {
-            // Consume purchase after purchase
+
+            // Consume purchase immediately after purchase
             billingHelper.consumeAsync(info, null);
+
             // For security, check info matches developer payload
             if (info.getDeveloperPayload().equals(DeveloperPayload)) {
-                handlePurchaseSuccess(result, info);
+                setResult(RESULT_OK);
+                finish();
             } else {
                 handlePurchaseFailed(result);
             }
@@ -74,10 +74,10 @@ public abstract class PurchaseWrapper extends AppCompatActivity implements IabHe
         finish();
     }
 
-
-    protected abstract void handlePurchaseSuccess(IabResult result, Purchase info);
-
-    protected abstract void handlePurchaseFailed(IabResult result);
+    protected void handlePurchaseFailed(IabResult result) {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 
 
     @Override
