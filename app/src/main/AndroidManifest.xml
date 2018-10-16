@@ -42,6 +42,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.SettingsActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.DevelopersNoteActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activities.PurchaseProActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".Classes.PurchaseItem"

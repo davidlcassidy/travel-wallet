@@ -22,7 +22,7 @@ the item with the unique product ID of PRODUCT_ID from the Google Play Store.
 public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
 
     private IabHelper billingHelper;
-    private String DeveloperPayload = "Tr4v3l_W411et_4pp";
+    private String DeveloperPayload = "Tr4v3l_W411et_PR0_4pp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +40,6 @@ public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSe
         } else {
             finish();
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        billingHelper.handleActivityResult(requestCode, resultCode, data);
     }
 
     protected void purchaseItem() {
@@ -68,6 +62,7 @@ public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSe
             } else {
                 handlePurchaseFailed(result);
             }
+
         } else {
             handlePurchaseFailed(result);
         }
@@ -79,21 +74,22 @@ public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSe
         finish();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        billingHelper.handleActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onDestroy() {
-        disposeBillingHelper();
-        super.onDestroy();
-    }
-
-    private void disposeBillingHelper() {
         if (billingHelper != null) {
             billingHelper.dispose();
         }
         billingHelper = null;
+        super.onDestroy();
     }
 
-    // Generate base 64 key string
+    // Generate base 64 key string, split for security reasons
     public static String getBase64Key(){
         String base64Key1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAixtsWbAp6HVnO3rwOn1U6eBhen";
         String base64Key2 = "A/Xp/AT7NqALXCCb9dYt7DG+12JW5384Iex+JEM5d8beQoTBzj2hjavL58ex";
@@ -103,5 +99,4 @@ public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSe
         String base64Key6 = "KKINupsOuaeDWgctdR3qYjcl2MOtbiTf98aSLkXN/QIDAQAB";
         return base64Key1 + base64Key2 + base64Key3 + base64Key4  + base64Key5 + base64Key6;
     }
-
 }

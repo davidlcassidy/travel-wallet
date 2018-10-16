@@ -18,7 +18,7 @@
         android:padding="@dimen/standardPadding">
 
         <TextView
-            android:id="@+id/getProTitle"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -26,31 +26,29 @@
             android:paddingTop="25dp"
             android:paddingBottom="20dp"
             android:layout_centerHorizontal="true"
-            android:textSize="19sp"/>
+            android:textSize="@dimen/header"/>
 
         <TextView
-            android:id="@+id/getProText"
+            android:id="@+id/text"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="@color/black"
-            android:lineSpacingExtra="3dp"
             android:background="@android:color/transparent"
-            android:layout_below="@+id/getProTitle"
+            android:layout_below="@+id/title"
             android:paddingBottom="20dp"
-            android:textSize="17sp"/>
+            android:textSize="@dimen/text"/>
 
         <Button
-            android:id="@+id/getProButton"
+            android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="75dp"
             android:layout_marginRight="75dp"
-            android:layout_below="@+id/getProText"
+            android:layout_below="@+id/text"
             android:layout_weight="1"
-            android:text="Upgrade to Pro"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text"/>
 

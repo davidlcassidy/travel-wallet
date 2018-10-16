@@ -9,7 +9,6 @@ package com.davidlcassidy.travelwallet.Activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -18,7 +17,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -116,8 +114,8 @@ public class MainActivity extends BaseActivity_Main {
                                 if (programCount >= 10 && appType == AppType.Free) {
                                     String limitTitle = "Program Limit Reached";
                                     String limitText = "Travel Wallet it limited to only ten " +
-                                            "loyalty programs.\n\nTo add additional programs and support our " +
-                                            "ongoing development, please upgrade to Travel Wallet " +
+                                            "loyalty programs.\n\nTo add additional programs and support the " +
+                                            "ongoing app development, please upgrade to Travel Wallet " +
                                             "Pro.";
                                     showLimitPopup(limitTitle, limitText);
                                 } else {
@@ -142,8 +140,8 @@ public class MainActivity extends BaseActivity_Main {
                                 if (cardCount >= 10 && appType == AppType.Free) {
                                     String limitTitle = "Card Limit Reached";
                                     String limitText = "Travel Wallet it limited to only ten " +
-                                            "credit cards.\n\nTo add additional cards and support our " +
-                                            "ongoing development, please upgrade to Travel Wallet " +
+                                            "credit cards.\n\nTo add additional cards and support the " +
+                                            "ongoing app development, please upgrade to Travel Wallet " +
                                             "Pro.";
                                     showLimitPopup(limitTitle, limitText);
                                 } else {
@@ -236,23 +234,24 @@ public class MainActivity extends BaseActivity_Main {
                 String selectedItemName = (String) item.getTitle();
 
                 switch (selectedItemName) {
-                    case "Summary":
-                        // Opens Summary Popup
-                        showSummary();
-                        break;
                     case "Settings":
                         // Opens Settings Activity
                         Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(intent1);
                         break;
-                    case "About":
-                        // Opens About Popup
-                        showAbout();
+                    case "Summary":
+                        // Opens Summary Popup
+                        showSummary();
+                        break;
+                    case "Developer's Note":
+                        // Opens DevelopersNote Activity
+                        Intent intent2 = new Intent(MainActivity.this, DevelopersNoteActivity.class);
+                        startActivity(intent2);
                         break;
                     case "Upgrade to Pro":
                         // Opens PurchaseItem Activity
-                        Intent intent2 = new Intent(MainActivity.this, PurchaseProActivity.class);
-                        startActivity(intent2);
+                        Intent intent3 = new Intent(MainActivity.this, PurchaseProActivity.class);
+                        startActivity(intent3);
                         break;
                 }
                 return true;
@@ -260,65 +259,6 @@ public class MainActivity extends BaseActivity_Main {
         });
 
         popupMenu.show();
-    }
-
-    // Opens About Popup
-    public void showAbout() {
-        // Gets dialog layout
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.dialog_text, null);
-
-        // Creates dialog
-        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
-
-        // Sets title in dialog toolbar on top
-        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
-        toolBar1.setTitle("About");
-
-        // Sets text in dialog
-        TextView mainText = (TextView) v.findViewById(R.id.text);
-        String appVersion = "";
-
-        // Set app name
-        String appName;
-        AppType appType = userPreferences.getAppType();
-        if (appType == AppType.Pro) {
-            appName = "Travel Wallet Pro";
-        } else {
-            appName = "Travel Wallet";
-        }
-
-        // Set app version
-        try {
-            appVersion = "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        String text =
-                appName + " " + appVersion + "\n\n" +
-                        "I hope you are able to find some value out of this app. If you have any feature requests, " +
-                        "bug reports, or any other feedback, please feel free to shoot me an email. " +
-                        "I love hearing back about my projects! \n\n" +
-                        "Email:  travelwallet@davidlcassidy.com\nWebsite:  www.DavidLCassidy.com";
-        mainText.setText(text);
-        Linkify.addLinks(mainText, Linkify.ALL);
-
-        // Runs with "Close" button is clicked
-        Button closeButton = (Button) v.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Dialog is destroyed
-                diag.dismiss();
-            }
-        });
-
-        // Displays dialog
-        diag.show();
-
-        // Dims background while dialog is active
-        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
     // Opens Summary Popup

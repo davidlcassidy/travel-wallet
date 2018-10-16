@@ -8,14 +8,14 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/About"
-        android:title="About"/>
+        android:id="@+id/Settings"
+        android:title="Settings"/>
     <item
         android:id="@+id/Summary"
         android:title="Summary"/>
     <item
-        android:id="@+id/Settings"
-        android:title="Settings"/>
+        android:id="@+id/DeveloperNote"
+        android:title="Developer's Note"/>
     <item
         android:id="@+id/GetPro"
         android:title="Upgrade to Pro"/>

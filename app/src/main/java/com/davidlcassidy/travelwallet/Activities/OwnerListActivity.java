@@ -137,7 +137,7 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
         TextView mainText = (TextView) v.findViewById(R.id.text);
         String text =
                 "Travel Wallet it limited to only two owners.\n\nTo add additional owners and " +
-                        "support our ongoing development, please upgrade to Travel Wallet Pro.";
+                        "support the ongoing app development, please upgrade to Travel Wallet Pro.";
         mainText.setText(text);
 
         // Runs with "Upgrade" button is clicked
