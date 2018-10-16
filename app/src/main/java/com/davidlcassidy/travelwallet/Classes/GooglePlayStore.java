@@ -10,19 +10,35 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.android.vending.billing.util.IabException;
 import com.android.vending.billing.util.IabHelper;
 import com.android.vending.billing.util.IabResult;
+import com.android.vending.billing.util.Inventory;
 import com.android.vending.billing.util.Purchase;
+import com.android.vending.billing.util.SkuDetails;
+
+import java.util.Arrays;
+import java.util.List;
 
 /*
-PurchaseItem is a wrapper exposing purchasing functionality of IabHelper. It is use to purchase
-the item with the unique product ID of PRODUCT_ID from the Google Play Store.
+GooglePlayStore is a wrapper exposing purchasing functionality of IabHelper. It is use to query
+details and purchase the item with the unique product ID of PRODUCT_ID from the Google Play Store.
  */
 
-public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
+//TODO Remove activity
+public class GooglePlayStore extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
 
     private IabHelper billingHelper;
     private String DeveloperPayload = "Tr4v3l_W411et_PR0_4pp";
+
+    public static final String INTENT_ACTION = "INTENT_ACTION";
+    public static final String ACTION_PURCHASE = "ACTION_PURCHASE";
+    public static final String ACTION_QUERY = "ACTION_QUERY";
+    public static final String PRODUCT_TITLE = "PRODUCT_TITLE";
+    public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
+    public static final String PRODUCT_TYPE = "PRODUCT_TYPE";
+    public static final String PRODUCT_PRICE = "PRODUCT_PRICE";
+    public static final String PRODUCT_PURCHASED = "PRODUCT_PURCHASED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +52,36 @@ public class PurchaseItem extends AppCompatActivity implements IabHelper.OnIabSe
     @Override
     public void onIabSetupFinished(IabResult result) {
         if (result.isSuccess()) {
-            purchaseItem();
+            String action = getIntent().getStringExtra(INTENT_ACTION);
+            if (action.equals(ACTION_QUERY)){
+                queryItem();
+            } else if (action.equals(ACTION_PURCHASE)){
+                purchaseItem();
+            } else{
+                finish();
+            }
         } else {
             finish();
         }
+    }
+
+    protected void queryItem() {
+        String productId = getIntent().getStringExtra("PRODUCT_ID");
+        List<String> skus = Arrays.asList(productId);
+        try {
+            Inventory inventory = billingHelper.queryInventory(true,skus);
+            SkuDetails details = inventory.getSkuDetails(productId);
+            Intent output = new Intent();
+            output.putExtra(PRODUCT_TITLE, details.getTitle());
+            output.putExtra(PRODUCT_DESCRIPTION, details.getDescription());
+            output.putExtra(PRODUCT_TYPE, details.getType());
+            output.putExtra(PRODUCT_PRICE, details.getPrice());
+            output.putExtra(PRODUCT_PURCHASED, inventory.hasPurchase(productId) ? 1 : 0);
+            setResult(RESULT_OK, output);
+        } catch (IabException e) {
+            setResult(RESULT_CANCELED);
+        }
+        finish();
     }
 
     protected void purchaseItem() {

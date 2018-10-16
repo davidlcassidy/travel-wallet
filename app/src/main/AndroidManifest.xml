@@ -46,7 +46,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.PurchaseProActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Classes.PurchaseItem"
+        <activity android:name=".Classes.GooglePlayStore"
             android:screenOrientation="portrait"/>
         <service android:name=".Classes.NotificationTimerService"/>
     </application>

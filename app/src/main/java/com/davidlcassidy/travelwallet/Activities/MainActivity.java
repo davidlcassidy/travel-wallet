@@ -249,7 +249,7 @@ public class MainActivity extends BaseActivity_Main {
                         startActivity(intent2);
                         break;
                     case "Upgrade to Pro":
-                        // Opens PurchaseItem Activity
+                        // Opens GooglePlayStore Activity
                         Intent intent3 = new Intent(MainActivity.this, PurchaseProActivity.class);
                         startActivity(intent3);
                         break;
