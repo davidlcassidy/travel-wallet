@@ -44,11 +44,11 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
         setTitle("Upgrade to Pro");
 
         title = (TextView) findViewById(R.id.title);
-        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 19);
-        title.setText("Travel Wallet Pro includes:");
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        title.setText("Travel Wallet Pro features:");
 
         text = (TextView) findViewById(R.id.text);
-        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
+        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
         Intent intent = new Intent(getApplicationContext(), GooglePlayStore.class);
         intent.putExtra(GooglePlayStore.INTENT_ACTION, GooglePlayStore.ACTION_QUERY);
@@ -84,13 +84,16 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
                 // boolean proPurchased = data.getIntExtra(GooglePlayStore.PRODUCT_PURCHASED, -1)==1;
 
                 text.setText(
-                        "*  Unlimited loyalty programs\n" +
-                                "*  Unlimited credit cards\n" +
-                                "*  Unlimited owners\n" +
-                                "*  Exclusive Gold color scheme\n" +
-                                "*  More pro features coming soon!\n" +
-                                "\nPro features will last forever.\n" +
-                                "All for only " + proPrice + " USD."
+                        "*  Add unlimited loyalty programs\n" +
+                        "   (Free version limit = 10)\n\n" +
+                        "*  Add unlimited credit cards\n" +
+                        "   (Free version limit = 10)\n\n" +
+                        "*  Add unlimited owners\n" +
+                        "   (Free version limit = 2)\n\n" +
+                        "*  Exclusive Gold color scheme\n\n" +
+                        "*  More pro features coming soon!\n\n" +
+                        "\nPro features will last forever.\n" +
+                        "All for only " + proPrice + " USD."
                 );
 
             } else if (resultCode == Activity.RESULT_CANCELED) {

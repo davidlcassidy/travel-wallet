@@ -25,11 +25,10 @@ GooglePlayStore is a wrapper exposing purchasing functionality of IabHelper. It 
 details and purchase the item with the unique product ID of PRODUCT_ID from the Google Play Store.
  */
 
-//TODO Convert from Activity to Class to reduce complex intents
 public class GooglePlayStore extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
 
     private IabHelper billingHelper;
-    private String DeveloperPayload = "Tr4v3l_W411et_PR0_4pp";
+    private String developerPayload = "Tr4v3l_W411et_PR0_4pp";
 
     public static final String INTENT_ACTION = "INTENT_ACTION";
     public static final String ACTION_PURCHASE = "ACTION_PURCHASE";
@@ -87,7 +86,7 @@ public class GooglePlayStore extends AppCompatActivity implements IabHelper.OnIa
     protected void purchaseItem() {
         String productId = getIntent().getStringExtra("PRODUCT_ID");
         short requestCode = 123;
-        billingHelper.launchPurchaseFlow(this, productId, requestCode, this, DeveloperPayload);
+        billingHelper.launchPurchaseFlow(this, productId, requestCode, this, developerPayload);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class GooglePlayStore extends AppCompatActivity implements IabHelper.OnIa
             billingHelper.consumeAsync(info, null);
 
             // For security, check info matches developer payload
-            if (info.getDeveloperPayload().equals(DeveloperPayload)) {
+            if (info.getDeveloperPayload().equals(developerPayload)) {
                 setResult(RESULT_OK);
                 finish();
             } else {

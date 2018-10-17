@@ -1,4 +1,9 @@
-v1.4.3 : XXXX-XX-XX
+v1.4.4 : 2018-10-17
+Feature Release
+
+ - Update PurchasePro features description
+
+v1.4.3 : 2018-10-17
 Patch Release
 
  - Fix summary next date calculations
@@ -6,7 +11,7 @@ Patch Release
  - Update screenshots
  
 
-v1.4.2 : 2018-17-10
+v1.4.2 : 2018-10-17
 Feature Release
 
  - Add color schemes in settings
