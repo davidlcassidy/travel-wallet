@@ -34,7 +34,7 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
     private static final short REQUEST_PURCHASE_PRO = 102;
 
     // Unique product ID matching listing in Google Play Billing Library
-    final String PRODUCT_ID = "travelwallet.pro"; //TODO Switch back
+    final String PRODUCT_ID = "travelwallet.pro";
     //private final String PRODUCT_ID = "android.test.purchased"; //Used for local testing only
 
     @Override
@@ -74,14 +74,14 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
+        // Get pro price from store and add to text field
         if (requestCode == REQUEST_QUERY_PRO) {
             if(resultCode == Activity.RESULT_OK){
                 // String proTitle = data.getStringExtra(GooglePlayStore.PRODUCT_TITLE);
                 // String proDescription = data.getStringExtra(GooglePlayStore.PRODUCT_DESCRIPTION);
                 // String proType = data.getStringExtra(GooglePlayStore.PRODUCT_TYPE);
                 String proPrice = data.getStringExtra(GooglePlayStore.PRODUCT_PRICE);
-                // boolean proPurchased = data.getIntExtra(GooglePlayStore.PRODUCT_PURCHASED, -1)==1; TODO Remove consume purchase?
+                // boolean proPurchased = data.getIntExtra(GooglePlayStore.PRODUCT_PURCHASED, -1)==1;
 
                 text.setText(
                         "*  Unlimited loyalty programs\n" +
@@ -98,7 +98,7 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
                 Toast.makeText(PurchaseProActivity.this, "Error connecting to Play Store.", Toast.LENGTH_SHORT).show();
             }
 
-
+        // Change title and text after successful purchase
         } else if (requestCode == REQUEST_PURCHASE_PRO) {
             if(resultCode == Activity.RESULT_OK){
                 userPreferences.setAppType(AppType.Pro);

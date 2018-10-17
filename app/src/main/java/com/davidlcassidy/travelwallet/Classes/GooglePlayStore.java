@@ -25,7 +25,7 @@ GooglePlayStore is a wrapper exposing purchasing functionality of IabHelper. It 
 details and purchase the item with the unique product ID of PRODUCT_ID from the Google Play Store.
  */
 
-//TODO Remove activity
+//TODO Convert from Activity to Class to reduce complex intents
 public class GooglePlayStore extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
 
     private IabHelper billingHelper;

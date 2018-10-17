@@ -121,7 +121,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         BigDecimal creditlimit = card.getCreditLimit();
         String creditLimitString = currency.numToString(creditlimit, numberPattern);
 
-		// Sets card image and card name text for list header #TODO Remove images?
+		// Sets card image and card name text for list header #TODO Consider removing images to reduce app size
         int logoNum = this.getResources().getIdentifier("card_000_image", "drawable", this.getPackageName());
         logo.setImageResource(logoNum);
         logoText.setText(card.getName());
