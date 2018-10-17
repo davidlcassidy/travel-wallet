@@ -314,6 +314,7 @@ public class MainActivity extends BaseActivity_Main {
                 if (expDate.compareTo(today) > 0 && points > 0) {
                     TextView  programNextExpire = (TextView) v.findViewById(R.id.programNextExpireField);
                     programNextExpire.setText(dateFormat.format(program.getExpirationDate()));
+                    break;
                 }
             }
         }
@@ -341,6 +342,7 @@ public class MainActivity extends BaseActivity_Main {
                 if (annualFeeDate.compareTo(today) > 0) {
                     TextView  cardNextAF = (TextView) v.findViewById(R.id.cardNextAFField);
                     cardNextAF.setText(dateFormat.format(card.getAfDate()));
+                    break;
                 }
             }
         }

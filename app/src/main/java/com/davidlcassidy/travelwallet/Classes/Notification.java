@@ -39,20 +39,27 @@ public class Notification {
         int numOfDays = round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         if (numOfDays <= 0) {
             message = "Your points have expired.";
+        } else if (0 < numOfDays && numOfDays <= 13) {
+            if (numOfDays == 1) {
+                message = "Your points will expire in 1 day.";
+            } else {
+                message = "Your points will expire in " + String.valueOf(numOfDays) + " days.";
+            }
+        } else if (13 < numOfDays && numOfDays <= 30) {
+            int numOfWeeks = (int) round(numOfDays / 7);
+            if (numOfWeeks == 1) {
+                message = "Your points will expire in 1 week.";
+            } else {
+                message = "Your points will expire in " + String.valueOf(numOfWeeks) + " weeks.";
+            }
+        } else {
+            int numOfMonths = (int) round(numOfDays / 30.4);
+            if (numOfMonths == 1) {
+                message = "Your points will expire in 1 month.";
+            } else {
+                message = "Your points will expire in " + String.valueOf(numOfMonths) + " months.";
+            }
         }
-        else if (0 < numOfDays && numOfDays <= 1) {
-            message = "Your points will expire in 1 day.";
-        }
-        else if (1 < numOfDays && numOfDays <= 13) {
-            message = "Your points will expire in " + String.valueOf(numOfDays) + " days.";
-        }
-        else if (13 < numOfDays && numOfDays <= 32) {
-            message = "Your points will expire in " + String.valueOf(round(numOfDays/7)) + " weeks.";
-        }
-        else {
-            message = "Your points will expire in " + String.valueOf(round(numOfDays/30.4)) + " months.";;
-        }
-
     }
 
     public Notification(CreditCard card) {
@@ -67,20 +74,27 @@ public class Notification {
         int numOfDays = round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         if (numOfDays <= 0) {
             message = "Your annual fee is past due.";
+        } else if (0 < numOfDays && numOfDays <= 13) {
+            if (numOfDays == 1) {
+                message = "Your annual fee is due in 1 day.";
+            } else {
+                message = "Your annual fee is due in " + String.valueOf(numOfDays) + " days.";
+            }
+        } else if (13 < numOfDays && numOfDays <= 30) {
+            int numOfWeeks = (int) round(numOfDays / 7);
+            if (numOfWeeks == 1) {
+                message = "Your annual fee is due in 1 week.";
+            } else {
+                message = "Your annual fee is due in " + String.valueOf(round(numOfDays/7)) + " weeks.";
+            }
+        } else {
+            int numOfMonths = (int) round(numOfDays / 30.4);
+            if (numOfMonths == 1) {
+                message = "Your annual fee is due in 1 month.";
+            } else {
+                message = "Your annual fee is due in " + String.valueOf(round(numOfDays/30.4)) + " months.";
+            }
         }
-        else if (0 < numOfDays && numOfDays <= 1) {
-            message = "Your annual fee is due in 1 day.";
-        }
-        else if (1 < numOfDays && numOfDays <= 32) {
-            message = "Your annual fee is due in " + String.valueOf(numOfDays) + " days.";
-        }
-        else if (15 < numOfDays && numOfDays <= 32) {
-            message = "Your annual fee is due in " + String.valueOf(round(numOfDays/7)) + " weeks.";
-        }
-        else {
-            message = "Your annual fee is due in " + String.valueOf(round(numOfDays/30.4)) + " months.";;
-        }
-
     }
 
 	// Sends notification to device if configured in user settings

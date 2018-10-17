@@ -1,8 +1,17 @@
+v1.4.3 : XXXX-XX-XX
+Patch Release
+
+ - Fix summary next date calculations
+ - Fix bug with notification month plurals ("1 months")
+ - Update screenshots
+ 
+
 v1.4.2 : 2018-17-10
 Feature Release
 
- - Add color schemes
+ - Add color schemes in settings
  - Update reference database
+ - Update IAB for dynamic pricing
  - Update developer's notes
 
 v1.4.1 : 2018-10-12
