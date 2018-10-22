@@ -9,6 +9,8 @@
 *.class
 
 # Generated files
+app/build/
+app/release/
 bin/
 gen/
 out/

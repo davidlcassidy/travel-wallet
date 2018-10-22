@@ -1,21 +1,15 @@
 
 # Travel Wallet
 
-Travel Wallet is an Android mobile app that can be used to manage travel loyalty programs and credit cards. Built for frequent travelers and regular users of rewards credit cards, Travel Wallet allows you to track all of your frequent flier miles, hotel/rental car points, and credit cards all in one location. Travel Wallet also monitors all of these items and provides helpful notifications to its users.
-
-Finally, after the initial installation, Travel Wallet works completely offline. Along with the superior privacy implications of preventing user data from ever leaving the device, this also makes Travel Wallet an ideal travel app for any world traveler.
+Travel Wallet helps you keep manage your loyalty programs and credit cards. It's a free app packed with useful features for travelers.
 
 Features:
-- Simple design
-- Ad-free
-- Works offline
-- Multiple color schemes
-- Point expiration notifications
-- Annual fee notifications
-- Chase 5/24 status
-- Supports multiple card/program owners
-- Supports 40+ loyalty programs, 130+ credit cards
 
+- Specifically designed for travelers. No internet connection required.
+- 100% Ad-free
+- Supports 40+ loyalty programs, 160+ credit cards
+- Ability to add multiple users
+- Includes Chase 5/24 status
 
 ## Installation
 
@@ -35,7 +29,7 @@ Travel Wallet primarily consist of three interfaces, each with its own tab and d
 - Loyalty Program Interface - Provides users the ability add, view, edit, and delete loyalty programs
 - Credit Card Interface - Provides users the ability add, view, edit, and delete credit cards
 
-Along with these three interfaces, there are two buttons located on the top of the main screen. The first is the Owners button allowing the user to manage multiple program/card owners. The second is a dropdown menu where the user can see app details, view a summary report, modify settings and upgrade to Travel Wallet Pro if they have not already.
+Along with these three interfaces, there are two buttons located on the top of the main screen. The first is the Owners button allowing the user to manage multiple program/card owners. The second is a dropdown menu where the user can modify app settings, open a summary report, view the developer's note, and upgrade to Travel Wallet Pro if they have not already.
 
 ### Notifications Interface
 
@@ -60,18 +54,21 @@ Credit cards will appear in the third tab titled Credit Cards. The credit card i
 
 ### Travel Wallet Pro
 
-The free version of Travel Wallet is limited to two users, ten loyalty programs, and ten credit cards. Purchasing Travel Wallet Pro will release these limits and also unlock an exclusive Gold color scheme. There is an option to upgrade to Travel Wallet Pro in the dropdown menu in the top right corner of the main screen.
+The free version of Travel Wallet is limited to two users, ten loyalty programs, and ten credit cards. Purchasing Travel Wallet Pro will release these limits and unlock an exclusive Gold color scheme. There is an option to upgrade to Travel Wallet Pro in the dropdown menu in the top right corner of the main screen.
 
-## Developer Note
+## Screenshots
 
-I hope you find this app helpful for tracking your loyalty programs and credit cards. Please let me know if you find any value in this app. I love hearing back about my projects!
+<p align="center">
+  <img src="screenshots/basic/screenshot_1.png" width="250">
+  <img src="screenshots/basic/screenshot_2.png" width="250">
+  <img src="screenshots/basic/screenshot_3.png" width="250">
+</p>
 
-Maintaining all of the backend data in the ever changing field of loyalty programs and credit cards is extremely time consuming and manually intensive. If you notice anything missing or incorrect, please feel free to shoot me an email so I can fix it. Also, please consider supporting my work by purchasing Travel Wallet Pro. It is a cheap one time purchase.
-
-Thank you and safe travels!
-
-- Email:  travelwallet@davidlcassidy.com
-- Website:  www.DavidLCassidy.com
+<p align="center">
+  <img src="screenshots/basic/screenshot_4.png" width="250">
+  <img src="screenshots/basic/screenshot_5.png" width="250">
+  <img src="screenshots/basic/screenshot_6.png" width="250">
+</p>
 
 ## Building from Source
 

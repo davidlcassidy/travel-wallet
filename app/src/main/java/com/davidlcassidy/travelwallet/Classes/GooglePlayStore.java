@@ -66,9 +66,8 @@ public class GooglePlayStore extends AppCompatActivity implements IabHelper.OnIa
 
     protected void queryItem() {
         String productId = getIntent().getStringExtra("PRODUCT_ID");
-        List<String> skus = Arrays.asList(productId);
         try {
-            Inventory inventory = billingHelper.queryInventory(true,skus);
+            Inventory inventory = billingHelper.queryInventory(true, Arrays.asList(productId));
             SkuDetails details = inventory.getSkuDetails(productId);
             Intent output = new Intent();
             output.putExtra(PRODUCT_TITLE, details.getTitle());
