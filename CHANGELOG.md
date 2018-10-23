@@ -1,3 +1,10 @@
+v1.4.5 : XXXX-XX-XX
+Feature Release
+
+ - Reduce size of logos/icons
+ - Update reference database
+ 
+
 v1.4.4 : 2018-10-17
 Feature Release
 

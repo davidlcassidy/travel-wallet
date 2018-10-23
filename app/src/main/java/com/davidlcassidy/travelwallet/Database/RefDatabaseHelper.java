@@ -30,7 +30,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     // database. This will have users re-create their local database on the next app
     // launch. Unlike the Main Database, updating database version will not result
     // in loss of user data as long as the unique ID remains unchanged
-    public static int DATABASE_VERSION = 2;
+    public static int DATABASE_VERSION = 3;
 
     private String DB_DIRECTORY;
     private static String DB_NAME;
@@ -40,7 +40,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
     public static final String TABLE_LP_REF = "loyaltyprograms_ref";
     public static final String COLUMN_LP_ID = "_id";
-    public static final String COLUMN_LP_TYPEID = "typeId";
+    public static final String COLUMN_LP_TYPE = "type";
     public static final String COLUMN_LP_NAME = "name";
     public static final String COLUMN_LP_POINTVALUE = "pointValue";
     public static final String COLUMN_LP_INACTIVITYEXPIRATION = "inactivityExpiration";
@@ -49,7 +49,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
     public static final String TABLE_CC_REF = "creditcards_ref";
     public static final String COLUMN_CC_ID = "_id";
-    public static final String COLUMN_CC_BANKID = "bankId";
+    public static final String COLUMN_CC_BANK = "bank";
     public static final String COLUMN_CC_NAME = "name";
     public static final String COLUMN_CC_TYPE = "type";
     public static final String COLUMN_CC_AF = "annualFee";

@@ -28,7 +28,6 @@ import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.Bank;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.R;
 
@@ -112,7 +111,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
 			// Sets activity fields
             Owner cOwner = card.getOwner();
-            Bank cBank = card.getBank();
+            String cBank = card.getBank();
             String cName = card.getName();
             CardStatus cStatus = card.getStatus();
             BigDecimal cCreditLimit = card.getCreditLimit();
@@ -121,7 +120,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             Date cCloseDate = card.getCloseDate();
             String cNotes = card.getNotes();
             if (cOwner != null) {ownerField.setText(cOwner.getName());}
-            if (cBank != null) {bankField.setText(cBank.getName());}
+            if (cBank != null) {bankField.setText(cBank);}
             if (cName != null) {nameField.setText(cName);}
             if (cStatus != null) {statusField.setText(cStatus.getName());}
             if (cCreditLimit != null) {creditLimitField.setText(String.valueOf(cCreditLimit));}

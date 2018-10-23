@@ -13,7 +13,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Owner;
-import com.davidlcassidy.travelwallet.EnumTypes.Bank;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
@@ -186,7 +185,7 @@ public class CardDataSource {
                         c = c1.getName().compareTo(c2.getName());
                         break;
                     case "Bank":
-                        c = c1.getBank().getName().compareTo(c2.getBank().getName());
+                        c = c1.getBank().compareTo(c2.getBank());
                         if (c == 0) {
                             c = c1.getName().compareTo(c2.getName());
                         }
@@ -254,7 +253,7 @@ public class CardDataSource {
                 if (openDateCal.after(cutoffDate)) {
                     if (card.getType().equals("P")) {
                         recentCardList.add(card);
-                    } else if (card.getType().equals("B") && businessCardsCreditCheck.contains(card.getBank().getName())) {
+                    } else if (card.getType().equals("B") && businessCardsCreditCheck.contains(card.getBank())) {
                         recentCardList.add(card);
                     }
                 }
@@ -276,16 +275,16 @@ public class CardDataSource {
     public ArrayList<String> getAvailableBanks(boolean ignoreDeprecated) {
         ArrayList<String> bankList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                {dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_DEPRECIATED},
                 null, null, null, null, null);
         cursor.moveToFirst();
-        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
-            Bank bank = Bank.fromId(cursor.getInt(refIndex_bankId));
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
             if ( !(ignoreDeprecated && depreciated) ) {
-                bankList.add(bank.getName());
+                String bankName = cursor.getString(refIndex_bank);
+                bankList.add(bankName);
             }
             cursor.moveToNext();
         }
@@ -302,18 +301,18 @@ public class CardDataSource {
     public ArrayList<String> getAvailableCards(String bank, boolean ignoreDeprecated) {
         ArrayList<String> cardList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                {dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_DEPRECIATED},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
-        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
-            Bank cardBank = Bank.fromId(cursor.getInt(refIndex_bankId));
+            String cardBank = cursor.getString(refIndex_bank);
             String cardName = cursor.getString(refIndex_name);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
-            if (bank.equals(cardBank.getName()) && !(ignoreDeprecated && depreciated) ) {
+            if (bank.equals(cardBank) && !(ignoreDeprecated && depreciated) ) {
                 cardList.add(cardName);
             }
             cursor.moveToNext();
@@ -437,19 +436,19 @@ public class CardDataSource {
 	// Look up card reference ID by card name
     public Integer getCardRefId(String cardBank, String cardName) {
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_ID, dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_NAME},
+                {dbHelperRef.COLUMN_CC_ID, dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
         int refIndex_id = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_ID);
-        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
         Integer cardRefId = null;
         while (!cursor.isAfterLast()) {
             Integer id = cursor.getInt(refIndex_id);
-            Bank bank = Bank.fromId(cursor.getInt(refIndex_bankId));
+            String bank = cursor.getString(refIndex_bank);
             String name = cursor.getString(refIndex_name);
-            if (cardBank.equals(bank.getName()) && cardName.equals(name)){
+            if (cardBank.equals(bank) && cardName.equals(name)){
                 cardRefId = id;
                 break;
             }
@@ -462,19 +461,19 @@ public class CardDataSource {
 	// Look up card annual by card name
     public BigDecimal getCardAnnualFee(String cardBank, String cardName) {
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_BANKID, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_AF},
+                {dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_AF},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
-        int refIndex_bankId = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
         int refIndex_af = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
         BigDecimal cardAnnualFee = null;
         while (!cursor.isAfterLast()) {
-            Bank bank = Bank.fromId(cursor.getInt(refIndex_bankId));
+            String bank = cursor.getString(refIndex_bank);
             String name = cursor.getString(refIndex_name);
             BigDecimal annualFee = new BigDecimal(cursor.getString(refIndex_af));
-            if (cardBank.equals(bank.getName()) && cardName.equals(name)){
+            if (cardBank.equals(bank) && cardName.equals(name)){
                 cardAnnualFee = annualFee;
                 break;
             }
@@ -541,13 +540,13 @@ public class CardDataSource {
             return null;
         } else {
             cursorRef.moveToFirst();
-            int refIndex_bankId = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_BANKID);
+            int refIndex_bank = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
             int refIndex_name = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
             int refIndex_type = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_TYPE);
             int refIndex_af = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
             int refIndex_ftf = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_FTF);
 
-            Bank bank = Bank.fromId(cursorRef.getInt(refIndex_bankId));
+            String bank = cursorRef.getString(refIndex_bank);
             String name = cursorRef.getString(refIndex_name);
             String type = cursorRef.getString(refIndex_type);
             BigDecimal annualFee = new BigDecimal(cursorRef.getString(refIndex_af));

@@ -65,7 +65,9 @@ public class Notification {
     public Notification(CreditCard card) {
         this.itemType = ItemType.CREDIT_CARD;
         this.id = card.getId();
-        this.icon = card.getBank().getLogoIcon();
+        String bankNoSpaces = card.getBank().replaceAll("\\s","").toLowerCase();
+        String logoName = "bank_" + bankNoSpaces.substring(0, Math.min(bankNoSpaces.length(), 3)).toLowerCase() + "_icon";
+        this.icon = logoName;
         this.date = card.getAfDate();
         this.header = card.getName() + " Card";
 

@@ -28,7 +28,6 @@ import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.ProgramType;
 import com.davidlcassidy.travelwallet.R;
 
 import java.text.ParseException;
@@ -103,14 +102,14 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
 			// Sets activity fields
             Owner pOwner = program.getOwner();
-            ProgramType pType = program.getType();
+            String pType = program.getType();
             String pName = program.getName();
             String pAccountNumber = program.getAccountNumber();
             Integer pPoints = program.getPoints();
             Date pLastActivityDate = program.getLastActivityDate();
             String pNotes = program.getNotes();
             if (pOwner != null) {ownerField.setText(pOwner.getName());}
-            if (pType != null) {typeField.setText(pType.getName());}
+            if (pType != null) {typeField.setText(pType);}
             if (pName != null) {nameField.setText(pName);}
             if (pAccountNumber != null) {accountNumberField.setText(pAccountNumber);}
             if (pPoints != null) {pointsField.setText(String.valueOf(pPoints));}

@@ -6,7 +6,6 @@
 
 package com.davidlcassidy.travelwallet.Classes;
 
-import com.davidlcassidy.travelwallet.EnumTypes.Bank;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 
@@ -24,7 +23,7 @@ public class CreditCard {
     private Integer refId;
     private Owner owner;
     private CardStatus status;
-    private Bank bank;
+    private String bank;
     private String name;
     private String type;
     private BigDecimal creditLimit;
@@ -36,7 +35,7 @@ public class CreditCard {
     private NotificationStatus notificationStatus;
     private String notes;
 
-    public CreditCard(Integer id, Integer refId, Owner owner, CardStatus status,  Bank bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer refId, Owner owner, CardStatus status,  String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.refId = refId;
         this.owner = owner;
@@ -90,11 +89,11 @@ public class CreditCard {
         this.status = status;
     }
 
-    public Bank getBank() {
+    public String getBank() {
         return bank;
     }
 
-    public void setBank(Bank bank) {
+    public void setBank(String bank) {
         this.bank = bank;
     }
 

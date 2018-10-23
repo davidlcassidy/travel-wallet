@@ -7,7 +7,6 @@
 package com.davidlcassidy.travelwallet.Classes;
 
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.ProgramType;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -23,7 +22,7 @@ public class LoyaltyProgram {
     private Integer id;
     private Integer refId;
     private Owner owner;
-    private ProgramType type;
+    private String type;
     private String name;
     private String accountNumber;
     private Integer points;
@@ -38,7 +37,7 @@ public class LoyaltyProgram {
     private String logoIcon;
     private String notes;
 
-    public LoyaltyProgram(Integer id, Integer refId, Owner owner, ProgramType type, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
+    public LoyaltyProgram(Integer id, Integer refId, Owner owner, String type, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.refId = refId;
         this.owner = owner;
@@ -109,11 +108,11 @@ public class LoyaltyProgram {
         this.owner = owner;
     }
 
-    public ProgramType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(ProgramType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

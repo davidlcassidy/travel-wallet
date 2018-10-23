@@ -17,7 +17,6 @@ import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.ProgramType;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -245,17 +244,17 @@ public class ProgramDataSource {
     public ArrayList<String> getAvailableTypes(boolean ignoreDeprecated) {
         ArrayList<String> typeList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_LP_TYPEID, dbHelperRef.COLUMN_LP_DEPRECIATED},
+                {dbHelperRef.COLUMN_LP_TYPE, dbHelperRef.COLUMN_LP_DEPRECIATED},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
-        int refIndex_typeId = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPEID);
+        int refIndex_type = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPE);
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_DEPRECIATED);
         while (!cursor.isAfterLast()) {
-            ProgramType type = ProgramType.fromId(cursor.getInt(refIndex_typeId));
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
             if ( !(ignoreDeprecated && depreciated) ) {
-                typeList.add(type.getName());
+                String type = cursor.getString(refIndex_type);
+                typeList.add(type);
             }
             cursor.moveToNext();
         }
@@ -272,17 +271,17 @@ public class ProgramDataSource {
     public ArrayList<String> getAvailablePrograms(String type, boolean ignoreDeprecated) {
         ArrayList<String> programList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_LP_TYPEID, dbHelperRef.COLUMN_LP_NAME, dbHelperRef.COLUMN_LP_DEPRECIATED},
+                {dbHelperRef.COLUMN_LP_TYPE, dbHelperRef.COLUMN_LP_NAME, dbHelperRef.COLUMN_LP_DEPRECIATED},
                 null, null, null, null, null);
         cursor.moveToFirst();
-        int refIndex_typeId = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPEID);
+        int refIndex_type = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPE);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_NAME);
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_DEPRECIATED);
         while (!cursor.isAfterLast()) {
-            ProgramType programType = ProgramType.fromId(cursor.getInt(refIndex_typeId));
+            String programType = cursor.getString(refIndex_type);
             String programName = cursor.getString(refIndex_name);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
-            if (type.equals(programType.getName()) && !(ignoreDeprecated && depreciated)) {
+            if (type.equals(programType) && !(ignoreDeprecated && depreciated)) {
                 programList.add(programName);
             }
             cursor.moveToNext();
@@ -396,19 +395,19 @@ public class ProgramDataSource {
     // Look up program reference ID by program name
     public Integer getProgramRefId(String programType, String programName) {
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_LP_ID, dbHelperRef.COLUMN_LP_TYPEID, dbHelperRef.COLUMN_LP_NAME},
+                {dbHelperRef.COLUMN_LP_ID, dbHelperRef.COLUMN_LP_TYPE, dbHelperRef.COLUMN_LP_NAME},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
         int refIndex_id = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_ID);
-        int refIndex_typeId = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPEID);
+        int refIndex_type = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPE);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_NAME);
         Integer programRefId = null;
         while (!cursor.isAfterLast()) {
             Integer id = cursor.getInt(refIndex_id);
-            ProgramType type = ProgramType.fromId(cursor.getInt(refIndex_typeId));
+            String type = cursor.getString(refIndex_type);
             String name = cursor.getString(refIndex_name);
-            if (programType.equals(type.getName()) && programName.equals(name)){
+            if (programType.equals(type) && programName.equals(name)){
                 programRefId = id;
                 break;
             }
@@ -421,19 +420,19 @@ public class ProgramDataSource {
     // Look up inactivity expiration by program name
     public Integer getProgramInactivityExpiration(String programType, String programName) {
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_LP_TYPEID, dbHelperRef.COLUMN_LP_NAME, dbHelperRef.COLUMN_LP_INACTIVITYEXPIRATION},
+                {dbHelperRef.COLUMN_LP_TYPE, dbHelperRef.COLUMN_LP_NAME, dbHelperRef.COLUMN_LP_INACTIVITYEXPIRATION},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
-        int refIndex_typeId = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPEID);
+        int refIndex_type = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPE);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_NAME);
         int refIndex_inactivityExpiration = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_INACTIVITYEXPIRATION);
         Integer programInactivityExpiration = null;
         while (!cursor.isAfterLast()) {
             String name = cursor.getString(refIndex_name);
-            ProgramType type = ProgramType.fromId(cursor.getInt(refIndex_typeId));
+            String type = cursor.getString(refIndex_type);
             Integer inactivityExpiration = cursor.getInt(refIndex_inactivityExpiration);
-            if (programType.equals(type.getName()) && programName.equals(name)){
+            if (programType.equals(type) && programName.equals(name)){
                 programInactivityExpiration = inactivityExpiration;
                 break;
             }
@@ -475,13 +474,13 @@ public class ProgramDataSource {
             return null;
         } else {
             cursorRef.moveToFirst();
-            int refIndex_typeId = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_TYPEID);
+            int refIndex_type = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_TYPE);
             int refIndex_name = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_NAME);
             int refIndex_pointValue = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_POINTVALUE);
             int refIndex_inactivityExpiration = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_INACTIVITYEXPIRATION);
             int refIndex_expirationOverride = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_EXPIRATIONOVERRIDE);
 
-            ProgramType type = ProgramType.fromId(cursorRef.getInt(refIndex_typeId));
+            String type = cursorRef.getString(refIndex_type);
             String name = cursorRef.getString(refIndex_name);
             BigDecimal pointValue = new BigDecimal(cursorRef.getString(refIndex_pointValue));
             Integer inactivityExpiration = cursorRef.getInt(refIndex_inactivityExpiration);

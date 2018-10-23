@@ -20,14 +20,14 @@ public enum Currency {
 	// Enum members
 	// Exchange rates pulled from Google Finance on 13 OCT 2018
     USD(1, "$", "US Dollar", 1.0),
-    EUR(2, "€", "Euro", 0.86),
-    GPB(3, "£", "British Pound", 0.76),
-    CAD(4, "$", "Canadian Dollar", 1.30),
-    AUD(5, "$", "Australian Dollar", 1.41),
-    CNY(6, "元", "Chinese Yuan", 6.92),
-    JPY(7, "¥", "Japanese Yen", 112.21),
-    INR(8, "₹", "Indian Rupee", 73.69),
-    MXN(9, "$", "Mexican Peso", 18.86);
+    EUR(2, "€", "Euro", 0.87),
+    GPB(3, "£", "British Pound", 0.77),
+    CAD(4, "$", "Canadian Dollar", 1.31),
+    AUD(5, "$", "Australian Dollar", 1.42),
+    CNY(6, "元", "Chinese Yuan", 6.95),
+    JPY(7, "¥", "Japanese Yen", 112.72),
+    INR(8, "₹", "Indian Rupee", 73.56),
+    MXN(9, "$", "Mexican Peso", 19.42);
 
 	private final int id;
     private final String symbol;
@@ -38,6 +38,8 @@ public enum Currency {
 		this.id = id;
         this.symbol = symbol;
         this.name = name;
+
+        // Exchange rates are hardcoded to maintain offline ability. Must update regularly.
         this.exchangeRate = BigDecimal.valueOf(exchangeRate);
     }
 

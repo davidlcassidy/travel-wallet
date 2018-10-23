@@ -214,7 +214,7 @@ public class ProgramListFragment extends Fragment {
                 }
             }
             if (!filter2value.equals("All Types")) {
-                if (!program.getType().getName().equals(filter2value)) {
+                if (!program.getType().equals(filter2value)) {
                     continue;
                 }
             }
