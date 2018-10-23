@@ -20,9 +20,9 @@ public enum Currency {
 	// Enum members
 	// Exchange rates pulled from Google Finance on 13 OCT 2018
     USD(1, "$", "US Dollar", 1.0),
-    EUR(2, "€", "Euro", 0.87),
-    GPB(3, "£", "British Pound", 0.77),
-    CAD(4, "$", "Canadian Dollar", 1.31),
+    CAD(2, "$", "Canadian Dollar", 1.31),
+    EUR(3, "€", "Euro", 0.87),
+    GPB(4, "£", "British Pound", 0.77),
     AUD(5, "$", "Australian Dollar", 1.42),
     CNY(6, "元", "Chinese Yuan", 6.95),
     JPY(7, "¥", "Japanese Yen", 112.72),

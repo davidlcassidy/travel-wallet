@@ -48,10 +48,11 @@ fields and a handful of value selection dialogs.
 
 public class ProgramAddEditActivity extends BaseActivity_Save {
 
-    private SimpleDateFormat dateFormat;
     private ProgramDataSource programDS;
     private OwnerDataSource ownerDS;
     private Integer programId;
+
+    private SimpleDateFormat dateFormat;
 
     private TextView ownerField, typeField, nameField, lastActivityField;
     private EditText accountNumberField, pointsField, notesField;
@@ -62,12 +63,14 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programaddedit);
 
-        dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         programDS = ProgramDataSource.getInstance(this);
         ownerDS = OwnerDataSource.getInstance(this);
 		
 		// Gets program ID from intent. Program ID of -1 means add new program
         programId = getIntent().getIntExtra("PROGRAM_ID", -1);
+
+        // Gets user defined data format
+        dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
 
 		// Gets ProgramAddEdit activity fields
         ownerField = (TextView) findViewById(R.id.ownerField);

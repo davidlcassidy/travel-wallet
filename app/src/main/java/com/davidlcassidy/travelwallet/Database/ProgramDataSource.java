@@ -252,7 +252,9 @@ public class ProgramDataSource {
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_DEPRECIATED);
         while (!cursor.isAfterLast()) {
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
-            if ( !(ignoreDeprecated && depreciated) ) {
+
+            Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
+            if (depreciatedCheck) {
                 String type = cursor.getString(refIndex_type);
                 typeList.add(type);
             }
@@ -281,7 +283,10 @@ public class ProgramDataSource {
             String programType = cursor.getString(refIndex_type);
             String programName = cursor.getString(refIndex_name);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
-            if (type.equals(programType) && !(ignoreDeprecated && depreciated)) {
+
+            Boolean typeCheck = type.equals(programType);
+            Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
+            if (typeCheck && depreciatedCheck) {
                 programList.add(programName);
             }
             cursor.moveToNext();

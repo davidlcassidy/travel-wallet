@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 
 import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
+import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
@@ -51,6 +52,7 @@ public class UserPreferences {
     private static String nSetting_CardFilters = "Setting_CardFilters";
     private static String nSetting_InitialSummary = "Setting_InitialSummary";
     private static String nSetting_PhoneNotifications = "Setting_PhoneNotifications";
+    private static String nSetting_Country = "Setting_Country";
     private static String nSetting_Language = "Setting_Language";
     private static String nSetting_Currency = "Setting_Currency";
     private static String nSetting_DatePattern = "Setting_DatePattern";
@@ -81,6 +83,7 @@ public class UserPreferences {
     private static boolean dSetting_CardFilters = true;
     private static boolean dSetting_InitialSummary = false;
     private static boolean dSetting_PhoneNotifications = true;
+    private static Country dSetting_Country = Country.USA;
     private static Language dSetting_Language = Language.ENGLISH;
     private static Currency dSetting_Currency = Currency.USD;
     private static DatePattern dSetting_DatePattern = DatePattern.MDY_LONG;
@@ -88,7 +91,6 @@ public class UserPreferences {
 
     private static Integer dDatabase_MainDBVersion = 0;
     private static Integer dDatabase_RefDBVersion = 0;
-
 
     // Gets instance of UserPreferences. Creates instance if it doesn't exist.
     public static UserPreferences getInstance(Context context) {
@@ -342,6 +344,22 @@ public class UserPreferences {
     public void setSetting_PhoneNotifications(boolean phoneNotifications) {
         int phoneNotificationsInt = (phoneNotifications) ? 1 : 0;
         spEditor.putInt(nSetting_PhoneNotifications, phoneNotificationsInt);
+        spEditor.commit();
+    }
+
+    public Country getSetting_Country() {
+        int id = sharedPref.getInt(nSetting_Country, dSetting_Country.getId());
+        Country country = Country.fromId(id);
+        if (country != null){
+            return country;
+        } else {
+            spEditor.putInt(nSetting_Country, dSetting_Country.getId());
+            return dSetting_Country;
+        }
+    }
+
+    public void setSetting_Country(Country country) {
+        spEditor.putInt(nSetting_Country, country.getId());
         spEditor.commit();
     }
 

@@ -49,6 +49,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
     public static final String TABLE_CC_REF = "creditcards_ref";
     public static final String COLUMN_CC_ID = "_id";
+    public static final String COLUMN_CC_COUNTRY = "country";
     public static final String COLUMN_CC_BANK = "bank";
     public static final String COLUMN_CC_NAME = "name";
     public static final String COLUMN_CC_TYPE = "type";

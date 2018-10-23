@@ -1,9 +1,9 @@
 v1.4.5 : XXXX-XX-XX
 Feature Release
 
- - Reduce size of logos/icons
- - Update reference database
- 
+ - Reduce size of logos/icons (reduces size of app by 18%)
+ - Add support for second country (Canada)
+ - Reference database update
 
 v1.4.4 : 2018-10-17
 Feature Release
@@ -22,9 +22,9 @@ v1.4.2 : 2018-10-17
 Feature Release
 
  - Add color schemes in settings
- - Update reference database
  - Update IAB for dynamic pricing
  - Update developer's notes
+ - Reference database update
 
 v1.4.1 : 2018-10-12
 Patch Release

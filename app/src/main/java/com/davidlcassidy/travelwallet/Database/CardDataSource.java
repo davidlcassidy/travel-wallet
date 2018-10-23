@@ -13,6 +13,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.EnumTypes.Country;
+import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
@@ -20,6 +22,7 @@ import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Classes.UserPreferences;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -272,17 +275,22 @@ public class CardDataSource {
     }
 
 	// Returns list of banks with option to ignore depreciated cards
-    public ArrayList<String> getAvailableBanks(boolean ignoreDeprecated) {
+    public ArrayList<String> getAvailableBanks(Country country, boolean ignoreDeprecated) {
         ArrayList<String> bankList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                {dbHelperRef.COLUMN_CC_COUNTRY, dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_DEPRECIATED},
                 null, null, null, null, null);
         cursor.moveToFirst();
+        int refIndex_country = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_COUNTRY);
         int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
+            String cardCountry = cursor.getString(refIndex_country);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
-            if ( !(ignoreDeprecated && depreciated) ) {
+
+            Boolean countryCheck = country == null || country.getName().equals(cardCountry);
+            Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
+            if (countryCheck && depreciatedCheck) {
                 String bankName = cursor.getString(refIndex_bank);
                 bankList.add(bankName);
             }
@@ -298,21 +306,27 @@ public class CardDataSource {
     }
 
 	// Returns list of cards with option to ignore depreciated cards
-    public ArrayList<String> getAvailableCards(String bank, boolean ignoreDeprecated) {
+    public ArrayList<String> getAvailableCards(Country country, String bank, boolean ignoreDeprecated) {
         ArrayList<String> cardList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                {dbHelperRef.COLUMN_CC_COUNTRY, dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_DEPRECIATED},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
+        int refIndex_country = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_COUNTRY);
         int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
+            String cardCountry = cursor.getString(refIndex_country);
             String cardBank = cursor.getString(refIndex_bank);
             String cardName = cursor.getString(refIndex_name);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
-            if (bank.equals(cardBank) && !(ignoreDeprecated && depreciated) ) {
+
+            Boolean countryCheck = country == null || country.getName().equals(cardCountry);
+            Boolean bankCheck = bank.equals(cardBank);
+            Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
+            if (countryCheck && bankCheck && depreciatedCheck) {
                 cardList.add(cardName);
             }
             cursor.moveToNext();
@@ -540,6 +554,7 @@ public class CardDataSource {
             return null;
         } else {
             cursorRef.moveToFirst();
+            int refIndex_country = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_COUNTRY);
             int refIndex_bank = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
             int refIndex_name = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
             int refIndex_type = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_TYPE);
@@ -550,6 +565,13 @@ public class CardDataSource {
             String name = cursorRef.getString(refIndex_name);
             String type = cursorRef.getString(refIndex_type);
             BigDecimal annualFee = new BigDecimal(cursorRef.getString(refIndex_af));
+
+            // Convert local currencies in DB to USD
+            String country = cursorRef.getString(refIndex_country);
+            if (country.equals(Country.CANADA.getName())){
+                annualFee = annualFee.divide(Currency.CAD.getExchangeRate(), 10, RoundingMode.HALF_EVEN);
+            }
+
             BigDecimal foreignTransactionFee = new BigDecimal(cursorRef.getString(refIndex_ftf));
 
             cursorRef.close();

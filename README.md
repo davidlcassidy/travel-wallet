@@ -7,7 +7,7 @@ Features:
 
 - Specifically designed for travelers. No internet connection required.
 - 100% Ad-free
-- Supports 40+ loyalty programs, 160+ credit cards
+- Supports 40+ loyalty programs, 250+ credit cards
 - Ability to add multiple users
 - Includes Chase 5/24 status
 

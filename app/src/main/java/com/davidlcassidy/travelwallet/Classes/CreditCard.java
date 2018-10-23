@@ -35,7 +35,7 @@ public class CreditCard {
     private NotificationStatus notificationStatus;
     private String notes;
 
-    public CreditCard(Integer id, Integer refId, Owner owner, CardStatus status,  String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer refId, Owner owner, CardStatus status, String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.refId = refId;
         this.owner = owner;

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
+import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
@@ -55,6 +56,7 @@ public class SettingsActivity extends BaseActivity_Save {
     private TextView cardFiltersField;
     private TextView initialSummaryField;
     private TextView phoneNotificationsField;
+    private TextView countryField;
     private TextView languageField;
     private TextView currencyField;
     private TextView dateField;
@@ -79,6 +81,7 @@ public class SettingsActivity extends BaseActivity_Save {
         cardFiltersField = (TextView) findViewById(R.id.cardFiltersField);
         initialSummaryField = (TextView) findViewById(R.id.initialSummaryField);
         phoneNotificationsField = (TextView) findViewById(R.id.phoneNotificationsField);
+        countryField = (TextView) findViewById(R.id.countryField);
         languageField = (TextView) findViewById(R.id.languageField);
         currencyField = (TextView) findViewById(R.id.currencyField);
         dateField = (TextView) findViewById(R.id.dateField);
@@ -105,6 +108,7 @@ public class SettingsActivity extends BaseActivity_Save {
         String cardFilters = userPreferences.getSetting_CardFilters() ? "ON" : "OFF";
         String initialSummary = userPreferences.getSetting_InitialSummary() ? "ON" : "OFF";
         String phoneNotifications = userPreferences.getSetting_PhoneNotifications() ? "ON" : "OFF";
+        Country country = userPreferences.getSetting_Country();
         Language language = userPreferences.getSetting_Language();
         Currency currency = userPreferences.getSetting_Currency();
         DatePattern datePattern = userPreferences.getSetting_DatePattern();
@@ -123,6 +127,7 @@ public class SettingsActivity extends BaseActivity_Save {
         cardFiltersField.setText(cardFilters);
         initialSummaryField.setText(initialSummary);
         phoneNotificationsField.setText(phoneNotifications);
+        countryField.setText(country.getName());
         languageField.setText(language.getName());
         currencyField.setText(currency.getName());
         dateField.setText(datePattern.getSampleDate());
@@ -146,6 +151,7 @@ public class SettingsActivity extends BaseActivity_Save {
         boolean cardFilters = cardFiltersField.getText().toString().equals("ON");
         boolean initialSummary = initialSummaryField.getText().toString().equals("ON");
         boolean phoneNotifications = phoneNotificationsField.getText().toString().equals("ON");
+        Country country = Country.fromName(countryField.getText().toString());
         Language language = Language.fromName(languageField.getText().toString());
         Currency currency = Currency.fromName(currencyField.getText().toString());
         DatePattern date = DatePattern.fromSampleDate(dateField.getText().toString());
@@ -164,6 +170,7 @@ public class SettingsActivity extends BaseActivity_Save {
         userPreferences.setSetting_CardFilters(cardFilters);
         userPreferences.setSetting_InitialSummary(initialSummary);
         userPreferences.setSetting_PhoneNotifications(phoneNotifications);
+        userPreferences.setSetting_Country(country);
         userPreferences.setSetting_Language(language);
         userPreferences.setSetting_Currency(currency);
         userPreferences.setSetting_DatePattern(date);
@@ -179,46 +186,46 @@ public class SettingsActivity extends BaseActivity_Save {
     // Displays list of owner fields for user selection
     private void ownerPrimaryFieldClick () {
         String title = "Set Owner Primary Field";
-        List<String> types = Arrays.asList(
+        List<String> selectionList = Arrays.asList(
                 ItemField.ITEMCOUNTS.getName(),
                 ItemField.PROGRAMSVALUE.getName(),
                 ItemField.CREDITLIMIT.getName(),
                 ItemField.CHASESTATUS.getName(),
                 ItemField.OWNERNOTES.getName());
-        fieldSelectDialog(title, types, "ownerPrimary");
+        fieldSelectDialog(title, selectionList, "ownerPrimary");
     }
 
     // Displays list of owner fields for user selection
     private void ownerSortFieldClick () {
         String title = "Set Owner Sort Field";
-        List<String> types = Arrays.asList(
+        List<String> selectionList = Arrays.asList(
                 ItemField.OWNERNAME.getName(),
                 ItemField.PROGRAMSVALUE.getName(),
                 ItemField.CREDITLIMIT.getName());
-        fieldSelectDialog(title, types, "ownerSort");
+        fieldSelectDialog(title, selectionList, "ownerSort");
     }
 
 	// Displays list of program fields for user selection
     private void programPrimaryFieldClick () {
         String title = "Set Program Primary Field";
-        List<String> types = Arrays.asList(
+        List<String> selectionList = Arrays.asList(
                 ItemField.ACCOUNTNUMBER.getName(),
                 ItemField.POINTS.getName(),
                 ItemField.VALUE.getName(),
                 ItemField.EXPIRATIONDATE.getName(),
                 ItemField.PROGRAMNOTES.getName());
-        fieldSelectDialog(title, types, "programPrimary");
+        fieldSelectDialog(title, selectionList, "programPrimary");
     }
 
 	// Displays list of program fields for user selection
     private void programSortFieldClick () {
         String title = "Set Program Sort Field";
-        List<String> types = Arrays.asList(
+        List<String> selectionList = Arrays.asList(
                 ItemField.PROGRAMNAME.getName(),
                 ItemField.POINTS.getName(),
                 ItemField.VALUE.getName(),
                 ItemField.EXPIRATIONDATE.getName());
-        fieldSelectDialog(title, types, "programSort");
+        fieldSelectDialog(title, selectionList, "programSort");
     }
 
     // Displays time period spinner dialog for user selection
@@ -240,30 +247,30 @@ public class SettingsActivity extends BaseActivity_Save {
 	// Displays list of card fields for user selection
     private void cardPrimaryFieldClick () {
         String title = "Set Card Primary Field";
-        List<String> types = Arrays.asList(
+        List<String> selectionList = Arrays.asList(
                 ItemField.ANNUALFEE.getName(),
                 ItemField.OPENDATE.getName(),
                 ItemField.AFDATE.getName(),
                 ItemField.CARDNOTES.getName());
-        fieldSelectDialog(title, types, "cardPrimary");
+        fieldSelectDialog(title, selectionList, "cardPrimary");
     }
 
 	// Displays list of card fields for user selection
     private void cardSortFieldClick () {
         String title = "Set Card Sort Field";
-        List<String> types = Arrays.asList(
+        List<String> selectionList = Arrays.asList(
                 ItemField.CARDNAME.getName(),
                 ItemField.BANK.getName(),
                 ItemField.ANNUALFEE.getName(),
                 ItemField.OPENDATE.getName(),
                 ItemField.AFDATE.getName());
-        fieldSelectDialog(title, types, "cardSort");
+        fieldSelectDialog(title, selectionList, "cardSort");
     }
 
     // Displays time period spinner dialog for user selection
     private void cardNotificationFieldClick(){
-        String title = "Set Card AF Notice";
-        spinnerDialog(title, ItemType.CREDIT_CARD);
+        String selectionList = "Set Card AF Notice";
+        spinnerDialog(selectionList, ItemType.CREDIT_CARD);
     }
 
     // Toggles card filters on/off
@@ -296,32 +303,41 @@ public class SettingsActivity extends BaseActivity_Save {
         }
     }
 
+    // Displays list of countries for user selection
+    private void countryFieldClick () {
+        String title = "Set Country";
+        List<String> selectionList = Arrays.asList(
+                Country.USA.getName(),
+                Country.CANADA.getName());
+        fieldSelectDialog(title, selectionList, "country");
+    }
+
 	// Displays list of languages for user selection
     private void languageFieldClick () {
         String title = "Set Language";
-        List<String> types = Language.getAllNames();
-        fieldSelectDialog(title, types, "language");
+        List<String> selectionList = Language.getAllNames();
+        fieldSelectDialog(title, selectionList, "language");
     }
 
 	// Displays list of currencies for user selection
     private void currencyFieldClick () {
         String title = "Set Currency";
-        List<String> types = Currency.getAllNames();
-        fieldSelectDialog(title, types, "currency");
+        List<String> selectionList = Currency.getAllNames();
+        fieldSelectDialog(title, selectionList, "currency");
     }
 
 	// Displays list of date formats for user selection
     private void dateFieldClick () {
         String title = "Set Date Format";
-        List<String> types = DatePattern.getAllSampleDates();
-        fieldSelectDialog(title, types, "date");
+        List<String> selectionList = DatePattern.getAllSampleDates();
+        fieldSelectDialog(title, selectionList, "date");
     }
 
     // Displays list of date formats for user selection
     private void colorFieldClick () {
         String title = "Set Color Scheme";
-        List<String> types = ColorScheme.getAllNames();
-        fieldSelectDialog(title, types, "color");
+        List<String> selectionList = ColorScheme.getAllNames();
+        fieldSelectDialog(title, selectionList, "color");
     }
 
 	// Creates standard list selection dialog
@@ -367,6 +383,9 @@ public class SettingsActivity extends BaseActivity_Save {
                             break;
                         case "cardSort":
                             cardSortField.setText(selectedItem);
+                            break;
+                        case "country":
+                            countryField.setText(selectedItem);
                             break;
                         case "language":
                             languageField.setText(selectedItem);
@@ -597,6 +616,13 @@ public class SettingsActivity extends BaseActivity_Save {
             @Override
             public void onClick(View v) {
                 programFiltersFieldClick();
+            }});
+
+        LinearLayout countryLayout = (LinearLayout) findViewById(R.id.countryLayout);
+        countryLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                countryFieldClick();
             }});
 
         LinearLayout cardPrimaryLayout = (LinearLayout) findViewById(R.id.cardPrimaryLayout);

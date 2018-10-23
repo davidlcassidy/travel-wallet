@@ -29,6 +29,7 @@ import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
+import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -50,10 +51,12 @@ selection dialogs.
 
 public class CardAddEditActivity extends BaseActivity_Save {
 
-    private SimpleDateFormat dateFormat;
     private CardDataSource cardDS;
     private OwnerDataSource ownerDS;
     private Integer cardId;
+
+    private Country country;
+    private SimpleDateFormat dateFormat;
 
     private TextView ownerField, bankField, nameField, statusField, openDateField,
             afDateField, closeDateField;
@@ -65,12 +68,14 @@ public class CardAddEditActivity extends BaseActivity_Save {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cardaddedit);
 
-        dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
         cardDS = CardDataSource.getInstance(this);
         ownerDS = OwnerDataSource.getInstance(this);
 		
 		// Gets card ID from intent. Card ID of -1 means add new card
         cardId = getIntent().getIntExtra("CARD_ID", -1);
+
+        // Gets user defined data format
+        dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
 
 		// Gets CardAddEdit activity fields
         ownerField = (TextView) findViewById(R.id.ownerField);
@@ -103,6 +108,9 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
     protected void onResume() {
         super.onResume();
+
+        // Gets user defined country
+        country = userPreferences.getSetting_Country();
 
 		// If edit card, sets fields to current card values
         if (cardId != -1) {
@@ -246,14 +254,14 @@ public class CardAddEditActivity extends BaseActivity_Save {
 	// Displays list of banks for user selection
     private void bankFieldClick () {
         String title = "Select Issuing Bank";
-        ArrayList<String> types = cardDS.getAvailableBanks(true);
+        ArrayList<String> types = cardDS.getAvailableBanks(country, true);
         fieldSelectDialog(title, types, "bank");
     }
 
 	// Displays list of credit cards for user selection
     private void nameFieldClick () {
         String bank = bankField.getText().toString();
-        ArrayList<String> cards = cardDS.getAvailableCards(bank, true);
+        ArrayList<String> cards = cardDS.getAvailableCards(country, bank, true);
         if (cards.size() > 0){
 			String title = "Select " + bank + " Card";
             fieldSelectDialog(title, cards, "card");

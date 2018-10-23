@@ -169,8 +169,8 @@ public class NotificationsListFragment extends Fragment {
                 programDS.create(refID, null, "ABC123", pointValue.intValue(), new Date(), "");
             }
         }
-        for (String cBank : cardDS.getAvailableBanks(false)) {
-            for (String cName : cardDS.getAvailableCards(cBank, false)) {
+        for (String cBank : cardDS.getAvailableBanks(null, false)) {
+            for (String cName : cardDS.getAvailableCards(null, cBank, false)) {
                 Integer refID = cardDS.getCardRefId(cBank, cName);
                 cardDS.create(refID, null, CardStatus.OPEN, new BigDecimal("0.0"), new Date(), new Date(), null, "");
             }
