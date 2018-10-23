@@ -21,7 +21,7 @@ import com.davidlcassidy.travelwallet.R;
 DevelopersNoteActivity is used to allow user to view the developer's notes for the app.
  */
 
-public class DevelopersNoteActivity extends BaseActivity_BackOnly {
+public class DevelopersNoteActivity extends BaseActivity_BackOnly { //TODO Change text after pro purchase?
 
     private TextView title;
     private TextView text;
@@ -62,9 +62,11 @@ public class DevelopersNoteActivity extends BaseActivity_BackOnly {
                         "Maintaining all of the backend data in the ever changing field of loyalty " +
                         "programs and credit cards is extremely time consuming and manually " +
                         "intensive. If you notice anything missing or incorrect, please feel " +
-                        "free to shoot me an email so I can fix it. Also, please consider " +
-                        "supporting my work by purchasing Travel Wallet Pro. It is a cheap " +
-                        "one time purchase.\n" +
+                        "free to shoot me an email so I can fix it.\n" +
+                        "\n" +
+                        "Also if you like the app, please leave a review on the app store " +
+                        "and consider purchasing Travel Wallet Pro. It is a cheap one time " +
+                        "purchase.\n" +
                         "\n" +
                         "Thank you and safe travels!\n" +
                         "\n" +
@@ -74,11 +76,7 @@ public class DevelopersNoteActivity extends BaseActivity_BackOnly {
         Linkify.addLinks(text, Linkify.ALL);
 
         button = (Button) findViewById(R.id.button);
-        button.setText("Close");
-        button.setBackgroundColor(getResources().getColor(R.color.gray));
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {finish();}
-        });
+        button.setVisibility(View.GONE);
 
     }
 }

@@ -9,7 +9,7 @@ Features:
 - 100% Ad-free
 - Supports 40+ loyalty programs, 250+ credit cards
 - Ability to add multiple users
-- Includes Chase 5/24 status
+- Calculates Chase 5/24 status (US Only)
 
 ## Installation
 

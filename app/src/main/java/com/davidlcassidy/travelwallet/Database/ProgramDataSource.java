@@ -306,7 +306,7 @@ public class ProgramDataSource {
 
 		// Calculates number of days before program points expiration to send notification to user
         Integer notificationDays = null;
-        String[] notificationPeriodArray = userPreferences.getSetting_ProgramNotificationPeriod().split(" ");
+        String[] notificationPeriodArray = userPreferences.getCustom_ProgramNotificationPeriod().split(" ");
         Integer value = Integer.valueOf(notificationPeriodArray[0]);
         String period = notificationPeriodArray[1];
         switch (period) {

@@ -100,7 +100,7 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
         super.onResume();
 
         // Gets all owners sorted by field defined in user preferences
-        ItemField sortField = userPreferences.getSetting_OwnerSortField();
+        ItemField sortField = userPreferences.getCustom_OwnerSortField();
         ownerList = ownerDS.getAll(sortField, programDS, cardDS);
 
         // Hides list and shows empty list text if there are no owners

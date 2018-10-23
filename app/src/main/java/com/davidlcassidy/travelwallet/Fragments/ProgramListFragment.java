@@ -94,11 +94,11 @@ public class ProgramListFragment extends Fragment {
         super.onResume();
 
 		// Gets all loyalty programs sorted by field defined in user preferences
-        ItemField sortField = userPreferences.getSetting_ProgramSortField();
+        ItemField sortField = userPreferences.getCustom_ProgramSortField();
         fullProgramList = programDS.getAll(null, sortField, false);
 
         if (userPreferences.getProgramFiltersUpdateRequired() == true) {
-            if (userPreferences.getSetting_ProgramFilters() == true) {
+            if (userPreferences.getCustom_ProgramFilters() == true) {
                 filterLayout.setVisibility(LinearLayout.VISIBLE);
                 setFilters(true);
                 filterPrograms();

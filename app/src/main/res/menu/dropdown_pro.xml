@@ -8,11 +8,14 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/Settings"
-        android:title="Settings"/>
-    <item
         android:id="@+id/Summary"
         android:title="Summary"/>
+    <item
+        android:id="@+id/Customize"
+        android:title="Customize"/>
+    <item
+        android:id="@+id/Settings"
+        android:title="Settings"/>
     <item
         android:id="@+id/DeveloperNote"
         android:title="Developer's Note"/>

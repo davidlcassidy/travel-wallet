@@ -40,6 +40,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.OwnerAddEditActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.CustomizeActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activities.SettingsActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.DevelopersNoteActivity"

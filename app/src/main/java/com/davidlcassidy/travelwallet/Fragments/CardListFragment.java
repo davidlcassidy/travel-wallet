@@ -96,11 +96,11 @@ public class CardListFragment extends Fragment {
         super.onResume();
 
 		// Gets all credit cards sorted by field defined in user preferences
-        ItemField sortField = userPreferences.getSetting_CardSortField();
+        ItemField sortField = userPreferences.getCustom_CardSortField();
         fullCardList = cardDS.getAll(null, sortField,false,false);
 
         if (userPreferences.getCardFiltersUpdateRequired() == true) {
-            if (userPreferences.getSetting_CardFilters() == true) {
+            if (userPreferences.getCustom_CardFilters() == true) {
                 filterLayout.setVisibility(LinearLayout.VISIBLE);
                 setFilters(true);
                 filterCards();

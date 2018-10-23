@@ -42,7 +42,7 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
         }
 
         SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
-        final ItemField primaryField = userPreferences.getSetting_CardPrimaryField();
+        final ItemField primaryField = userPreferences.getCustom_CardPrimaryField();
         
 		// Gets the item at this position
 		CreditCard card = getItem(position);

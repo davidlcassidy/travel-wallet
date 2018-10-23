@@ -42,7 +42,7 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
-        final ItemField primaryField = userPreferences.getSetting_ProgramPrimaryField();
+        final ItemField primaryField = userPreferences.getCustom_ProgramPrimaryField();
         DecimalFormat numberFormat = NumberPattern.COMMADOT.getNumberFormat();
         SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
 

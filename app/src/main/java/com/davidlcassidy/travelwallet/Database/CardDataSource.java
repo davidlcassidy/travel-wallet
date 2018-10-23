@@ -346,7 +346,7 @@ public class CardDataSource {
 
 		// Calculates number of days before annual fee to send notification to user
         Integer notificationDays = null;
-        String[] notificationPeriodArray = userPreferences.getSetting_CardNotificationPeriod().split(" ");
+        String[] notificationPeriodArray = userPreferences.getCustom_CardNotificationPeriod().split(" ");
         Integer value = Integer.valueOf(notificationPeriodArray[0]);
         String period = notificationPeriodArray[1];
         switch (period) {

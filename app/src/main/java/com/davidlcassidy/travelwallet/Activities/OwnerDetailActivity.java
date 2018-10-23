@@ -11,6 +11,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
@@ -18,6 +20,7 @@ import com.davidlcassidy.travelwallet.Classes.Owner;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
+import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
@@ -37,6 +40,7 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
     private Currency currency;
     private Integer ownerId;
 
+    private LinearLayout cardChaseStatusLayout, cardChaseStatusDateLayout;
     private TextView nameText, notesField, programCountField, programValueField,
             cardCountField, cardAFField, cardCreditLimitField, cardChaseStatusField,
             cardChaseStatusDateField;
@@ -54,8 +58,7 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
 
         ownerId = Integer.parseInt(getIntent().getStringExtra("OWNER_ID"));
         final Owner owner = ownerDS.getSingle(ownerId, programDS, cardDS);
-        
-		// Adds owner name to list header and notification button to list footer
+
         nameText = (TextView) findViewById(R.id.nameText);
         notesField = (TextView) findViewById(R.id.notesField);
         programCountField  = (TextView) findViewById(R.id.programCountField);
@@ -65,6 +68,9 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
         cardCreditLimitField = (TextView) findViewById(R.id.cardCreditLimitField);
         cardChaseStatusField = (TextView) findViewById(R.id.cardChaseStatusField);
         cardChaseStatusDateField = (TextView) findViewById(R.id.cardChaseStatusDateField);
+
+        cardChaseStatusLayout = (LinearLayout) findViewById(R.id.cardChaseStatusLayout);
+        cardChaseStatusDateLayout = (LinearLayout) findViewById(R.id.cardChaseStatusDateLayout);
     }
 
     protected void onResume() {
@@ -79,9 +85,6 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
         String numCards = String.valueOf(owner.getCardCount());
         String totalAF = currency.numToString(owner.getTotalAF(), NumberPattern.COMMADOT);
         String creditLimit = currency.numToString(owner.getCreditLimit(), NumberPattern.COMMADOT);
-        String chaseStatus = owner.getChase524Status();
-        String chaseEligibilityDateString = owner.getChase524StatusEligibilityDate();
-
 
         // Set owner field values
         nameText.setText(name);
@@ -96,8 +99,19 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
         cardCountField.setText(numCards);
         cardAFField.setText(totalAF);
         cardCreditLimitField.setText(creditLimit);
-        cardChaseStatusField.setText(chaseStatus);
-        cardChaseStatusDateField.setText(chaseEligibilityDateString);
+
+        Country country = userPreferences.getSetting_Country();
+        if (country == Country.USA) {
+            cardChaseStatusLayout.setVisibility(View.VISIBLE);
+            cardChaseStatusDateLayout.setVisibility(View.VISIBLE);
+            String chaseStatus = owner.getChase524Status();
+            String chaseEligibilityDateString = owner.getChase524StatusEligibilityDate();
+            cardChaseStatusField.setText(chaseStatus);
+            cardChaseStatusDateField.setText(chaseEligibilityDateString);
+        } else {
+            cardChaseStatusLayout.setVisibility(View.GONE);
+            cardChaseStatusDateLayout.setVisibility(View.GONE);
+        }
     }
 
 	// Runs when edit button is clicked

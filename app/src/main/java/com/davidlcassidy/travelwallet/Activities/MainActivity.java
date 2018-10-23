@@ -234,10 +234,15 @@ public class MainActivity extends BaseActivity_Main {
                 String selectedItemName = (String) item.getTitle();
 
                 switch (selectedItemName) {
+                    case "Customize":
+                        // Opens Customize Activity
+                        Intent customizeIntent = new Intent(MainActivity.this, CustomizeActivity.class);
+                        startActivity(customizeIntent);
+                        break;
                     case "Settings":
                         // Opens Settings Activity
-                        Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
-                        startActivity(intent1);
+                        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                        startActivity(settingsIntent);
                         break;
                     case "Summary":
                         // Opens Summary Popup
@@ -245,13 +250,13 @@ public class MainActivity extends BaseActivity_Main {
                         break;
                     case "Developer's Note":
                         // Opens DevelopersNote Activity
-                        Intent intent2 = new Intent(MainActivity.this, DevelopersNoteActivity.class);
-                        startActivity(intent2);
+                        Intent developersNoteIntent = new Intent(MainActivity.this, DevelopersNoteActivity.class);
+                        startActivity(developersNoteIntent);
                         break;
                     case "Upgrade to Pro":
                         // Opens PurchasePro Activity
-                        Intent intent3 = new Intent(MainActivity.this, PurchaseProActivity.class);
-                        startActivity(intent3);
+                        Intent purchaseProIntent = new Intent(MainActivity.this, PurchaseProActivity.class);
+                        startActivity(purchaseProIntent);
                         break;
                 }
                 return true;

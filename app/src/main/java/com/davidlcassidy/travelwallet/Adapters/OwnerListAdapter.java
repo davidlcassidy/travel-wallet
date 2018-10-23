@@ -53,7 +53,7 @@ public class OwnerListAdapter extends ArrayAdapter<Owner> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
-        final ItemField primaryField = userPreferences.getSetting_OwnerPrimaryField();
+        final ItemField primaryField = userPreferences.getCustom_OwnerPrimaryField();
         
 		// Gets the item at this position
 		Owner owner = getItem(position);
