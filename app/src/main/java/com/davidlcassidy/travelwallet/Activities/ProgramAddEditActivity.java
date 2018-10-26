@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Owner;
@@ -196,35 +198,96 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         }
     }
 
-    // Displays list of owners for user selection
-    private void ownerFieldClick () {
-        String title = "Select Owner";
-        ArrayList<String> types = ownerDS.getAllNames();
-        fieldSelectDialog(title, types, "owner");
-    }
 
-    // Displays list of program types for user selection
-    private void typeFieldClick () {
-        String title = "Select Program Type";
-        ArrayList<String> types = programDS.getAvailableTypes(true);
-        fieldSelectDialog(title, types, "type");
-    }
+    // Creates selection dialog
+    private void fieldSelectDialog(final String saveField) {
 
-	// Displays list of program types for user selection
-    private void nameFieldClick () {
-        String type = typeField.getText().toString();
-        ArrayList<String> programs = programDS.getAvailablePrograms(type, true);
-        if (programs.size() > 0){
-			String title = "Select " + type + " Program";
-            fieldSelectDialog(title, programs, "program");
-        } else {
-			
-			// Sends user a message if no program type was selected
-            Toast.makeText(this, "Please select a program type.", Toast.LENGTH_LONG).show();
+        // Set dialog title and selection items
+        String title = null;
+        ArrayList<String> selectionList = null;
+        switch (saveField) {
+            case "owner":
+                title = "Select Owner";
+                selectionList = ownerDS.getAllNames();
+                break;
+            case "type":
+                title = "Select Program Type";
+                selectionList = programDS.getAvailableTypes(true);
+                break;
+            case "program":
+                String type = typeField.getText().toString();
+                selectionList = programDS.getAvailablePrograms(type, true);
+                if (selectionList.size() > 0) {
+                    title = "Select " + type + " Program";
+                } else {
+                    // Sends user a message if no program type was selected
+                    Toast.makeText(this, "Please select a program type.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                break;
         }
+        final ArrayList<String> finalSelectionList = selectionList;
+
+        // Set adapter to listview in layout
+        View layout = getLayoutInflater().inflate(R.layout.list_singlechoice, null);
+        final ListView listView = layout.findViewById(R.id.listview_singlechoice);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        final SingleChoiceAdapter adapter = new SingleChoiceAdapter(this, selectionList);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedIndex(position);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        // Creates dialog and set properties
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ProgramAddEditActivity.this);
+        builder.setTitle(title);
+        builder.setCancelable(false);
+        builder.setView(layout);
+
+        // Sets button actions
+        builder.setNeutralButton("Cancel", null);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int selected) {
+                selected = listView.getCheckedItemPosition();
+                if (selected != -1) {
+
+                    // Sets field text to selected value
+                    String selectedItem = finalSelectionList.get(selected);
+                    switch (saveField) {
+                        case "owner":
+                            ownerField.setText(selectedItem);
+                            break;
+                        case "type":
+                            String currentType = typeField.getText().toString();
+                            if (!currentType.equals(selectedItem)) {
+                                typeField.setText(selectedItem);
+                                nameField.setText("");
+                            }
+                            updateLastActivityFieldVisibility();
+                            break;
+                        case "program":
+                            String selectedItem1 = selectedItem.split(SingleChoiceAdapter.getDelimiter())[0];
+                            nameField.setText(selectedItem1);
+                            updateLastActivityFieldVisibility();
+                            break;
+                    }
+                }
+            }});
+
+        // Creates dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Dims background while dialog is active
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-	// Displays date picker dialog for user selection of last activity date
+    // Displays date picker dialog for user selection of last activity date
     private void lastActivityDateFieldClick(){
 
         // Sets currently selected date in dialog to the date in the field
@@ -245,7 +308,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        // Create date picker
+        // Creates date picker
         DatePickerDialog datePicker =
                 new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
@@ -260,7 +323,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
                         Date pickedDate = cal.getTime();
                         lastActivityField.setText(dateFormat.format(pickedDate));
                     }
-                }, year, month, day); // set date picker to current date
+                }, year, month, day); // Sets date picker to current date
 
         datePicker.show();
 
@@ -270,68 +333,6 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
                 dialog.dismiss();
             }
         });
-    }
-
-	// Creates standard list selection dialog
-    private void fieldSelectDialog(String title, ArrayList<String> items, final String saveField) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ProgramAddEditActivity.this);
-		builder.setTitle(title);
-		builder.setCancelable(false);
-        
-		// Sets items available for selection
-		final String [] itemsArray = items.toArray(new String[items.size()]);
-        builder.setSingleChoiceItems(itemsArray, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
-            }
-        });
-
-        // Runs with "Ok" button is clicked
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ListView lw = ((AlertDialog) dialog).getListView();
-                selected = lw.getCheckedItemPosition();
-                if (selected != -1) {
-					
-					// Sets field text to selected value
-                    String selectedItem = itemsArray[selected];
-                    switch (saveField) {
-                        case "owner":
-                            ownerField.setText(selectedItem);
-                            break;
-                        case "type":
-                            String currentType = typeField.getText().toString();
-                            if (!currentType.equals(selectedItem)) {
-                                typeField.setText(selectedItem);
-                                nameField.setText("");
-                            }
-                            break;
-                        case "program":
-                            nameField.setText(selectedItem);
-                            break;
-                    }
-
-                    updateLastActivityFieldVisibility();
-                }
-            }});
-
-		// Runs with "Cancel" button is clicked
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            // Dialog closes with no further action
-			@Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
-            }
-        });
-
-		// Creates dialog
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-		// Dims background while dialog is active
-        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
 	// Sets all click listeners so all label clicks match actions of field clicks
@@ -345,7 +346,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                ownerFieldClick();
+                fieldSelectDialog("owner");
             }
         });
 
@@ -355,7 +356,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                typeFieldClick();
+                fieldSelectDialog("type");
             }
         });
 
@@ -365,7 +366,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                nameFieldClick();
+                fieldSelectDialog("program");
             }
         });
 

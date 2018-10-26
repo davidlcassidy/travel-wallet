@@ -1,79 +1,80 @@
 v1.4.5 : XXXX-XX-XX
 Feature Release
 
- - Reduce size of logos/icons (reduces size of app by 18%)
- - Add support for second country (Canada)
- - Reference database update
+ - Reduced size of logos/icons (reduces size of app by 18%)
+ - Added support for second country (Canada)
+ - Created custom single choice dialog layouts
+ - Updated reference database
 
 v1.4.4 : 2018-10-17
 Feature Release
 
- - Update PurchasePro features description
+ - Updated PurchasePro features description
 
 v1.4.3 : 2018-10-17
 Patch Release
 
- - Fix summary next date calculations
- - Fix bug with notification month plurals ("1 months")
- - Update screenshots
+ - Fixed summary next date calculations
+ - Fixed bug with notification month plurals ("1 months")
+ - Updated screenshots
  
 
 v1.4.2 : 2018-10-17
 Feature Release
 
- - Add color schemes in settings
- - Update IAB for dynamic pricing
- - Update developer's notes
- - Reference database update
+ - Added color scheme setting
+ - Updated IAB for dynamic pricing
+ - Updated developer's notes
+ - Updated reference database
 
 v1.4.1 : 2018-10-12
 Patch Release
 
- - Fix IAB bug, due to incorrect public key
+ - Fixed IAB bug, due to incorrect public key
 
 v1.4.0 : 2018-10-11
 Minor Release
 
- - Add fully-featured pro app version
- - Add In-app Billing ability
+ - Added fully-featured pro app version
+ - Added In-app Billing ability
 
 v1.3.3 : 2018-07-22
 Feature Release
 
- - Fix bug with program type filter
- - Add ability to toggle filters on/off in settings
- - Update notification button to change color when clicked
- - Reorganize settings items
+ - Fixed bug with program type filter
+ - Added ability to toggle filters on/off in settings
+ - Updated notification button to change color when clicked
+ - Reorganized settings items
 
 v1.3.2 : 2018-06-29
 Feature Release
 
- - Update database indexing and cursors
- - Adde 13 new credit cards as requested by users
+ - Updated database indexing and cursors
+ - Added 13 new credit cards as requested by users
 
 v1.3.1 : 2018-06-25
 Feature Release
 
- - Update owners detail activity layout
- - Update summary report (minor)
+ - Updated owners detail activity layout
+ - Updated summary report (minor)
 
 v1.3.0 : 2018-06-24
 Minor Release
 
- - Adde owners interface allowing for multiple program/card owners
- - Adde Chase 5/24 status support
- - Adde program/card filters
- - Adde support for custom program/card notes
+ - Added owners interface allowing for multiple program/card owners
+ - Added Chase 5/24 status support
+ - Added program/card filters
+ - Added support for custom program/card notes
  
 v1.2 : 2018-06-15
 Patch Release
 
- - Fix bug with popup date picker dialog causing stability issues
+ - Fixed bug with popup date picker dialog causing stability issues
  
 v1.1 : 2018-06-14
 Patch Release
 
- - Fix bug with the reference database creation causing stability issues
+ - Fixed bug with the reference database creation causing stability issues
  
 v1.0 : 2018-06-09
 Major Release

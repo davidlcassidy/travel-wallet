@@ -11,11 +11,13 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
@@ -25,8 +27,7 @@ import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.Language;
 import com.davidlcassidy.travelwallet.R;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 /*
 SettingsActivity is use to allow user to view and modify the settings UserPreferencess. It is
@@ -135,68 +136,69 @@ public class SettingsActivity extends BaseActivity_Save {
         }
     }
 
-    // Displays list of countries for user selection
-    private void countryFieldClick () {
-        String title = "Set Country";
-        List<String> selectionList = Arrays.asList(
-                Country.USA.getName(),
-                Country.CANADA.getName());
-        fieldSelectDialog(title, selectionList, "country");
-    }
+    // Creates selection dialog
+    private void fieldSelectDialog(final String saveField) {
 
-	// Displays list of languages for user selection
-    private void languageFieldClick () {
-        String title = "Set Language";
-        List<String> selectionList = Language.getAllNames();
-        fieldSelectDialog(title, selectionList, "language");
-    }
+        // Set dialog title and selection items
+        String title = null;
+        ArrayList<String> selectionList = null;
+        switch (saveField) {
+            case "country":
+                title = "Set Country";
+                selectionList = new ArrayList<String>() {{
+                    add(Country.USA.getName());
+                    add(Country.CANADA.getName());
+                }};
+                break;
+            case "language":
+                title = "Set Language";
+                selectionList = Language.getAllNames();
+                break;
+            case "currency":
+                title = "Set Currency";
+                selectionList = Currency.getAllNames();
+                break;
+            case "date":
+                title = "Set Date Format";
+                selectionList = DatePattern.getAllSampleDates();
+                break;
+            case "color":
+                title = "Set Color Scheme";
+                selectionList = ColorScheme.getAllNames();
+                break;
+        }
+        final ArrayList<String> finalSelectionList = selectionList;
 
-	// Displays list of currencies for user selection
-    private void currencyFieldClick () {
-        String title = "Set Currency";
-        List<String> selectionList = Currency.getAllNames();
-        fieldSelectDialog(title, selectionList, "currency");
-    }
-
-	// Displays list of date formats for user selection
-    private void dateFieldClick () {
-        String title = "Set Date Format";
-        List<String> selectionList = DatePattern.getAllSampleDates();
-        fieldSelectDialog(title, selectionList, "date");
-    }
-
-    // Displays list of color schemes for user selection
-    private void colorFieldClick () {
-        String title = "Set Color Scheme";
-        List<String> selectionList = ColorScheme.getAllNames();
-        fieldSelectDialog(title, selectionList, "color");
-    }
-
-	// Creates standard list selection dialog
-    private void fieldSelectDialog(String title, List<String> items, final String saveField) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-        builder.setTitle(title);
-		builder.setCancelable(false);
-        
-		// Sets items available for selection
-		final String [] itemsArray = items.toArray(new String[items.size()]);
-		builder.setSingleChoiceItems(itemsArray, -1, new DialogInterface.OnClickListener() {
+        // Set adapter to listview in layout
+        View layout = getLayoutInflater().inflate(R.layout.list_singlechoice, null);
+        final ListView listView = layout.findViewById(R.id.listview_singlechoice);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        final SingleChoiceAdapter adapter = new SingleChoiceAdapter(this, selectionList);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedIndex(position);
+                adapter.notifyDataSetChanged();
             }
         });
 
-		// Runs with "Ok" button is clicked
+        // Creates dialog and set properties
+        final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+        builder.setTitle(title);
+        builder.setCancelable(false);
+        builder.setView(layout);
+
+        // Sets button actions
+        builder.setNeutralButton("Cancel", null);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
-                ListView lw = ((AlertDialog) dialog).getListView();
-                selected = lw.getCheckedItemPosition();
+                selected = listView.getCheckedItemPosition();
                 if (selected != -1) {
-					
-					// Sets field text to selected value
-                    String selectedItem = itemsArray[selected];
+
+                    // Sets field text to selected value
+                    String selectedItem = finalSelectionList.get(selected);
                     switch (saveField) {
                         case "country":
                             countryField.setText(selectedItem);
@@ -219,22 +221,14 @@ public class SettingsActivity extends BaseActivity_Save {
                             break;
                     }
                 }
-            }});
-
-		// Runs with "Cancel" button is clicked
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-			// Dialog closes with no further action
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-				;
-			}
+            }
         });
 
-		// Creates dialog
+        // Creates dialog
         AlertDialog dialog = builder.create();
         dialog.show();
 
-		// Dims background while dialog is active
+        // Dims background while dialog is active
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
@@ -259,35 +253,35 @@ public class SettingsActivity extends BaseActivity_Save {
         countryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countryFieldClick();
+                fieldSelectDialog("country");
             }});
 
         LinearLayout languageLayout = (LinearLayout) findViewById(R.id.languageLayout);
         languageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                languageFieldClick();
+                fieldSelectDialog("language");
             }});
 
         LinearLayout currencyLayout = (LinearLayout) findViewById(R.id.currencyLayout);
         currencyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currencyFieldClick();
+                fieldSelectDialog("currency");
             }});
 
         LinearLayout dateLayout = (LinearLayout) findViewById(R.id.dateLayout);
         dateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dateFieldClick();
+                fieldSelectDialog("date");
             }});
 
         LinearLayout colorLayout = (LinearLayout) findViewById(R.id.colorSchemeLayout);
         colorLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                colorFieldClick();
+                fieldSelectDialog("color");
             }});
     }
 }

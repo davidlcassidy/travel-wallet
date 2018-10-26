@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Owner;
@@ -244,35 +246,94 @@ public class CardAddEditActivity extends BaseActivity_Save {
         }
     }
 
-    // Displays list of owners for user selection
-    private void ownerFieldClick () {
-        String title = "Select Owner";
-        ArrayList<String> types = ownerDS.getAllNames();
-        fieldSelectDialog(title, types, "owner");
-    }
+    // Creates selection dialog
+    private void fieldSelectDialog(final String saveField) {
 
-	// Displays list of banks for user selection
-    private void bankFieldClick () {
-        String title = "Select Issuing Bank";
-        ArrayList<String> types = cardDS.getAvailableBanks(country, true);
-        fieldSelectDialog(title, types, "bank");
-    }
-
-	// Displays list of credit cards for user selection
-    private void nameFieldClick () {
-        String bank = bankField.getText().toString();
-        ArrayList<String> cards = cardDS.getAvailableCards(country, bank, true);
-        if (cards.size() > 0){
-			String title = "Select " + bank + " Card";
-            fieldSelectDialog(title, cards, "card");
-        } else {
-			
-			// Sends user a message if no bank was selected
-            Toast.makeText(this, "Please select a bank.", Toast.LENGTH_LONG).show();
+        // Set dialog title and selection items
+        String title = null;
+        ArrayList<String> selectionList = null;
+        switch (saveField) {
+            case "owner":
+                title = "Select Owner";
+                selectionList = ownerDS.getAllNames();
+                break;
+            case "bank":
+                title = "Select Issuing Bank";
+                selectionList = cardDS.getAvailableBanks(country, true);
+                break;
+            case "card":
+                String bank = bankField.getText().toString();
+                selectionList = cardDS.getAvailableCards(country, bank, true);
+                if (selectionList.size() > 0){
+                    title = "Select " + bank + " Card";
+                } else {
+                    // Sends user a message if no bank was selected
+                    Toast.makeText(this, "Please select a bank.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                break;
         }
+        final ArrayList<String> finalSelectionList = selectionList;
+
+        // Set adapter to listview in layout
+        View layout = getLayoutInflater().inflate(R.layout.list_singlechoice, null);
+        final ListView listView = layout.findViewById(R.id.listview_singlechoice);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        final SingleChoiceAdapter adapter = new SingleChoiceAdapter(this, selectionList);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedIndex(position);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        // Creates dialog and set properties
+        final AlertDialog.Builder builder = new AlertDialog.Builder(CardAddEditActivity.this);
+        builder.setTitle(title);
+        builder.setCancelable(false);
+        builder.setView(layout);
+
+        // Sets button actions
+        builder.setNeutralButton("Cancel", null);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int selected) {
+                selected = listView.getCheckedItemPosition();
+                if (selected != -1) {
+
+                    // Sets field text to selected value
+                    String selectedItem = finalSelectionList.get(selected);
+                    switch (saveField) {
+                        case "owner":
+                            ownerField.setText(selectedItem);
+                            break;
+                        case "bank":
+                            String currentBank = bankField.getText().toString();
+                            if (!currentBank.equals(selectedItem)) {
+                                bankField.setText(selectedItem);
+                                nameField.setText("");
+                            }
+                            updateAnnualFeeDateFieldVisibility();
+                            break;
+                        case "card":
+                            nameField.setText(selectedItem);
+                            updateAnnualFeeDateFieldVisibility();
+                            break;
+                    }
+                }
+            }});
+
+        // Creates dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Dims background while dialog is active
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-    // Displays list of card statuses for user selection
+    // Toggles between card statuses
     private void statusFieldClick () {
         CardStatus currentValue = CardStatus.fromName(statusField.getText().toString());
         if (currentValue == CardStatus.OPEN){
@@ -282,7 +343,6 @@ public class CardAddEditActivity extends BaseActivity_Save {
         }
         updateCloseDateFieldVisibility();
     }
-
 
 	// Displays date picker dialog for user selection of card open date
     private void openDateFieldClick (){
@@ -320,7 +380,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
                         Date pickedDate = cal.getTime();
                         openDateField.setText(dateFormat.format(pickedDate));
 
-                        // If annual fee field is blank, set to one year after open date
+                        // If annual fee field is blank, sets to one year after open date
                         String currentAfDate = afDateField.getText().toString();
                         if (currentAfDate.equals("")) {
                             cal.add(Calendar.YEAR, 1);
@@ -328,7 +388,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
                             afDateField.setText(dateFormat.format(newAfDate));
                         }
                     }
-                }, year, month, day); // set date picker to current date
+                }, year, month, day); // Sets date picker to current date
 
         datePicker.show();
 
@@ -436,67 +496,6 @@ public class CardAddEditActivity extends BaseActivity_Save {
         });
     }
 
-	// Creates standard list selection dialog
-    private void fieldSelectDialog(String title, ArrayList<String> items, final String saveField) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(CardAddEditActivity.this);
-		builder.setTitle(title);
-        builder.setCancelable(false);
-        
-		// Sets items available for selection
-		final String [] itemsArray = items.toArray(new String[items.size()]);
-        builder.setSingleChoiceItems(itemsArray, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
-            }
-        });
-		
-        // Runs with "Ok" button is clicked
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ListView lw = ((AlertDialog) dialog).getListView();
-                selected = lw.getCheckedItemPosition();
-                if (selected != -1) {
-                    
-					// Sets field text to selected value
-					String selectedItem = itemsArray[selected];
-                    switch (saveField) {
-                        case "owner":
-                            ownerField.setText(selectedItem);
-                            break;
-                        case "bank":
-                            String currentBank = bankField.getText().toString();
-                            if (!currentBank.equals(selectedItem)) {
-                                bankField.setText(selectedItem);
-                                nameField.setText("");
-                            }
-                            break;
-                        case "card":
-                            nameField.setText(selectedItem);
-                            break;
-                    }
-                    updateAnnualFeeDateFieldVisibility();
-                }
-            }});
-
-		// Runs with "Cancel" button is clicked
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            // Dialog closes with no further action
-			@Override
-            public void onClick(DialogInterface dialog, int selected) {
-				;
-            }
-        });
-
-		// Creates dialog
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-		// Dims background while dialog is active
-        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-    }
-
 	// Sets all click listeners so all label clicks match actions of field clicks
     private void setClickListeners(){
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -508,7 +507,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(CardAddEditActivity.this);
-                ownerFieldClick();
+                fieldSelectDialog("owner");
             }
         });
 
@@ -518,7 +517,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(CardAddEditActivity.this);
-                bankFieldClick();
+                fieldSelectDialog("bank");
             }
         });
 
@@ -528,7 +527,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(CardAddEditActivity.this);
-                nameFieldClick();
+                fieldSelectDialog("card");
             }
         });
 

@@ -41,6 +41,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     public static final String TABLE_LP_REF = "loyaltyprograms_ref";
     public static final String COLUMN_LP_ID = "_id";
     public static final String COLUMN_LP_TYPE = "type";
+    public static final String COLUMN_LP_COMPANY = "company";
     public static final String COLUMN_LP_NAME = "name";
     public static final String COLUMN_LP_POINTVALUE = "pointValue";
     public static final String COLUMN_LP_INACTIVITYEXPIRATION = "inactivityExpiration";

@@ -100,6 +100,7 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
         cardAFField.setText(totalAF);
         cardCreditLimitField.setText(creditLimit);
 
+        // Only show Chase 524 status in US
         Country country = userPreferences.getSetting_Country();
         if (country == Country.USA) {
             cardChaseStatusLayout.setVisibility(View.VISIBLE);

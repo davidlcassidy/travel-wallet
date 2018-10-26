@@ -11,6 +11,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Classes.Owner;
@@ -269,33 +270,35 @@ public class ProgramDataSource {
         return typeList;
     }
 
-	// Returns list of programs with option to ignore depreciated programs
+    // Returns list of programs with option to ignore depreciated programs
     public ArrayList<String> getAvailablePrograms(String type, boolean ignoreDeprecated) {
         ArrayList<String> programList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_LP_TYPE, dbHelperRef.COLUMN_LP_NAME, dbHelperRef.COLUMN_LP_DEPRECIATED},
+                        {dbHelperRef.COLUMN_LP_COMPANY, dbHelperRef.COLUMN_LP_TYPE, dbHelperRef.COLUMN_LP_NAME, dbHelperRef.COLUMN_LP_DEPRECIATED},
                 null, null, null, null, null);
         cursor.moveToFirst();
         int refIndex_type = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_TYPE);
+        int refIndex_company = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_COMPANY);
         int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_NAME);
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_DEPRECIATED);
         while (!cursor.isAfterLast()) {
             String programType = cursor.getString(refIndex_type);
+            String programCompany = cursor.getString(refIndex_company);
             String programName = cursor.getString(refIndex_name);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
 
             Boolean typeCheck = type.equals(programType);
             Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
             if (typeCheck && depreciatedCheck) {
-                programList.add(programName);
+                programList.add(programName + SingleChoiceAdapter.getDelimiter() + programCompany);
             }
             cursor.moveToNext();
         }
         cursor.close();
-		
-		// Sort alphabetically
+
+        // Sort alphabetically
         Collections.sort(programList);
-		
+
         return programList;
     }
 
@@ -480,19 +483,21 @@ public class ProgramDataSource {
         } else {
             cursorRef.moveToFirst();
             int refIndex_type = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_TYPE);
+            int refIndex_company = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_COMPANY);
             int refIndex_name = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_NAME);
             int refIndex_pointValue = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_POINTVALUE);
             int refIndex_inactivityExpiration = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_INACTIVITYEXPIRATION);
             int refIndex_expirationOverride = cursorRef.getColumnIndex(dbHelperRef.COLUMN_LP_EXPIRATIONOVERRIDE);
 
             String type = cursorRef.getString(refIndex_type);
+            String company = cursorRef.getString(refIndex_company);
             String name = cursorRef.getString(refIndex_name);
             BigDecimal pointValue = new BigDecimal(cursorRef.getString(refIndex_pointValue));
             Integer inactivityExpiration = cursorRef.getInt(refIndex_inactivityExpiration);
             String expirationOverride = cursorRef.getString(refIndex_expirationOverride);
 
             cursorRef.close();
-            LoyaltyProgram program = new LoyaltyProgram(id, refId, owner, type, name, number, points, pointValue, inactivityExpiration, expirationOverride, lastActivity, notificationStatus, notes);
+            LoyaltyProgram program = new LoyaltyProgram(id, refId, owner, type, company, name, number, points, pointValue, inactivityExpiration, expirationOverride, lastActivity, notificationStatus, notes);
             return program;
         }
     }

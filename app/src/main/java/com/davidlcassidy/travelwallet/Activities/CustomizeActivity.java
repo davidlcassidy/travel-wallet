@@ -13,21 +13,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
-import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
 import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
-import com.davidlcassidy.travelwallet.EnumTypes.Language;
 import com.davidlcassidy.travelwallet.R;
 
 import java.lang.reflect.Method;
@@ -140,63 +137,6 @@ public class CustomizeActivity extends BaseActivity_Save {
         Toast.makeText(CustomizeActivity.this, "Customizations updated.", Toast.LENGTH_SHORT).show();
     }
 
-    // Displays list of owner fields for user selection
-    private void ownerPrimaryFieldClick () {
-        String title = "Set Owner Primary Field";
-
-        Country country = userPreferences.getSetting_Country();
-        List<String> selectionList = null;
-        if (country == Country.USA) {
-            selectionList = Arrays.asList(
-                    ItemField.ITEMCOUNTS.getName(),
-                    ItemField.PROGRAMSVALUE.getName(),
-                    ItemField.CREDITLIMIT.getName(),
-                    ItemField.CHASESTATUS.getName(),
-                    ItemField.OWNERNOTES.getName());
-        } else {
-            selectionList = Arrays.asList(
-                    ItemField.ITEMCOUNTS.getName(),
-                    ItemField.PROGRAMSVALUE.getName(),
-                    ItemField.CREDITLIMIT.getName(),
-                    ItemField.OWNERNOTES.getName());
-        }
-
-        fieldSelectDialog(title, selectionList, "ownerPrimary");
-    }
-
-    // Displays list of owner fields for user selection
-    private void ownerSortFieldClick () {
-        String title = "Set Owner Sort Field";
-        List<String> selectionList = Arrays.asList(
-                ItemField.OWNERNAME.getName(),
-                ItemField.PROGRAMSVALUE.getName(),
-                ItemField.CREDITLIMIT.getName());
-        fieldSelectDialog(title, selectionList, "ownerSort");
-    }
-
-	// Displays list of program fields for user selection
-    private void programPrimaryFieldClick () {
-        String title = "Set Program Primary Field";
-        List<String> selectionList = Arrays.asList(
-                ItemField.ACCOUNTNUMBER.getName(),
-                ItemField.POINTS.getName(),
-                ItemField.VALUE.getName(),
-                ItemField.EXPIRATIONDATE.getName(),
-                ItemField.PROGRAMNOTES.getName());
-        fieldSelectDialog(title, selectionList, "programPrimary");
-    }
-
-	// Displays list of program fields for user selection
-    private void programSortFieldClick () {
-        String title = "Set Program Sort Field";
-        List<String> selectionList = Arrays.asList(
-                ItemField.PROGRAMNAME.getName(),
-                ItemField.POINTS.getName(),
-                ItemField.VALUE.getName(),
-                ItemField.EXPIRATIONDATE.getName());
-        fieldSelectDialog(title, selectionList, "programSort");
-    }
-
     // Displays time period spinner dialog for user selection
     private void programNotificationFieldClick(){
         String title = "Set Program Expiration Notice";
@@ -211,29 +151,6 @@ public class CustomizeActivity extends BaseActivity_Save {
         } else if (currentValue.equals("OFF")){
             programFiltersField.setText("ON");
         }
-    }
-
-	// Displays list of card fields for user selection
-    private void cardPrimaryFieldClick () {
-        String title = "Set Card Primary Field";
-        List<String> selectionList = Arrays.asList(
-                ItemField.ANNUALFEE.getName(),
-                ItemField.OPENDATE.getName(),
-                ItemField.AFDATE.getName(),
-                ItemField.CARDNOTES.getName());
-        fieldSelectDialog(title, selectionList, "cardPrimary");
-    }
-
-	// Displays list of card fields for user selection
-    private void cardSortFieldClick () {
-        String title = "Set Card Sort Field";
-        List<String> selectionList = Arrays.asList(
-                ItemField.CARDNAME.getName(),
-                ItemField.BANK.getName(),
-                ItemField.ANNUALFEE.getName(),
-                ItemField.OPENDATE.getName(),
-                ItemField.AFDATE.getName());
-        fieldSelectDialog(title, selectionList, "cardSort");
     }
 
     // Displays time period spinner dialog for user selection
@@ -252,33 +169,118 @@ public class CustomizeActivity extends BaseActivity_Save {
         }
     }
 
+    // Creates selection dialog
+    private void fieldSelectDialog(final String saveField) {
 
+        // Set dialog title and selection items
+        String title = null;
+        ArrayList<String> selectionList = null;
+        switch (saveField) {
+            case "ownerPrimary":
+                title = "Set Owner Primary Field";
+                Country country = userPreferences.getSetting_Country();
+                if (country == Country.USA) {
+                    selectionList = new ArrayList<String>() {{
+                        add(ItemField.ITEMCOUNTS.getName());
+                        add(ItemField.PROGRAMSVALUE.getName());
+                        add(ItemField.CREDITLIMIT.getName());
+                        add(ItemField.CHASESTATUS.getName());
+                        add(ItemField.OWNERNOTES.getName());
+                    }};
+                } else {
+                    selectionList = new ArrayList<String>() {{
+                        add(ItemField.ITEMCOUNTS.getName());
+                        add(ItemField.PROGRAMSVALUE.getName());
+                        add(ItemField.CREDITLIMIT.getName());
+                        add(ItemField.OWNERNOTES.getName());
+                    }};
+                }
+                break;
+            case "ownerSort":
+                title = "Set Owner Sort Field";
+                selectionList = new ArrayList<String>() {{
+                    add(ItemField.OWNERNAME.getName());
+                    add(ItemField.PROGRAMSVALUE.getName());
+                    add(ItemField.CREDITLIMIT.getName());
+                }};
+                break;
+            case "programPrimary":
+                title = "Set Program Primary Field";
+                selectionList = new ArrayList<String>() {{
+                    add(ItemField.ACCOUNTNUMBER.getName());
+                    add(ItemField.POINTS.getName());
+                    add(ItemField.VALUE.getName());
+                    add(ItemField.EXPIRATIONDATE.getName());
+                    add(ItemField.PROGRAMNOTES.getName());
+                }};
+                break;
+            case "programSort":
+                title = "Set Program Sort Field";
+                selectionList = new ArrayList<String>() {{
+                    add(ItemField.PROGRAMNAME.getName());
+                    add(ItemField.POINTS.getName());
+                    add(ItemField.VALUE.getName());
+                    add(ItemField.EXPIRATIONDATE.getName());
+                }};
+                break;
+            case "cardPrimary":
+                title = "Set Card Primary Field";
+                selectionList = new ArrayList<String>() {{
+                    add(ItemField.ANNUALFEE.getName());
+                    add(ItemField.OPENDATE.getName());
+                    add(ItemField.AFDATE.getName());
+                    add(ItemField.CARDNOTES.getName());
+                }};
+                break;
+            case "cardSort":
+                title = "Set Card Sort Field";
+                selectionList = new ArrayList<String>() {{
+                    add(ItemField.CARDNAME.getName());
+                    add(ItemField.BANK.getName());
+                    add(ItemField.ANNUALFEE.getName());
+                    add(ItemField.OPENDATE.getName());
+                    add(ItemField.AFDATE.getName());
+                    List<String> selectionList = Arrays.asList(
+                            ItemField.CARDNAME.getName(),
+                            ItemField.BANK.getName(),
+                            ItemField.ANNUALFEE.getName(),
+                            ItemField.OPENDATE.getName(),
+                            ItemField.AFDATE.getName());
+                }};
+                break;
+        }
+        final ArrayList<String> finalSelectionList = selectionList;
 
-	// Creates standard list selection dialog
-    private void fieldSelectDialog(String title, List<String> items, final String saveField) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeActivity.this);
-        builder.setTitle(title);
-		builder.setCancelable(false);
-        
-		// Sets items available for selection
-		final String [] itemsArray = items.toArray(new String[items.size()]);
-		builder.setSingleChoiceItems(itemsArray, -1, new DialogInterface.OnClickListener() {
+        // Set adapter to listview in layout
+        View layout = getLayoutInflater().inflate(R.layout.list_singlechoice, null);
+        final ListView listView = layout.findViewById(R.id.listview_singlechoice);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        final SingleChoiceAdapter adapter = new SingleChoiceAdapter(this, selectionList);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedIndex(position);
+                adapter.notifyDataSetChanged();
             }
         });
 
-		// Runs with "Ok" button is clicked
+        // Creates dialog and set properties
+        final AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeActivity.this);
+        builder.setTitle(title);
+        builder.setCancelable(false);
+        builder.setView(layout);
+
+        // Sets button actions
+        builder.setNeutralButton("Cancel", null);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
-                ListView lw = ((AlertDialog) dialog).getListView();
-                selected = lw.getCheckedItemPosition();
+                selected = listView.getCheckedItemPosition();
                 if (selected != -1) {
-					
-					// Sets field text to selected value
-                    String selectedItem = itemsArray[selected];
+
+                    // Sets field text to selected value
+                    String selectedItem = finalSelectionList.get(selected);
                     switch (saveField) {
                         case "ownerPrimary":
                             ownerPrimaryField.setText(selectedItem);
@@ -300,22 +302,14 @@ public class CustomizeActivity extends BaseActivity_Save {
                             break;
                     }
                 }
-            }});
-
-		// Runs with "Cancel" button is clicked
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-			// Dialog closes with no further action
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-				;
-			}
+            }
         });
 
-		// Creates dialog
+        // Creates dialog
         AlertDialog dialog = builder.create();
         dialog.show();
 
-		// Dims background while dialog is active
+        // Dims background while dialog is active
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
@@ -475,28 +469,28 @@ public class CustomizeActivity extends BaseActivity_Save {
         ownerPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ownerPrimaryFieldClick();
+                fieldSelectDialog("ownerPrimary");
             }});
 
         LinearLayout ownerSortLayout = (LinearLayout) findViewById(R.id.ownerSortLayout);
         ownerSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ownerSortFieldClick();
+                fieldSelectDialog("ownerSort");
             }});
 
         LinearLayout programPrimaryLayout = (LinearLayout) findViewById(R.id.programPrimaryLayout);
         programPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                programPrimaryFieldClick();
+                fieldSelectDialog("programPrimary");
             }});
 
         LinearLayout programSortLayout = (LinearLayout) findViewById(R.id.programSortLayout);
         programSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                programSortFieldClick();
+                fieldSelectDialog("programSort");
             }});
 
         LinearLayout programNotificationLayout = (LinearLayout) findViewById(R.id.programNotificationLayout);
@@ -517,14 +511,14 @@ public class CustomizeActivity extends BaseActivity_Save {
         cardPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cardPrimaryFieldClick();
+                fieldSelectDialog("cardPrimary");
             }});
 
         LinearLayout cardSortLayout = (LinearLayout) findViewById(R.id.cardSortLayout);
         cardSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cardSortFieldClick();
+                fieldSelectDialog("cardSort");
             }});
 
         LinearLayout cardNotificationLayout = (LinearLayout) findViewById(R.id.cardNotificationLayout);

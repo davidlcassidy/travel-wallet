@@ -37,7 +37,7 @@ public class DetailListAdapter extends ArrayAdapter<Detail> {
         TextView name = (TextView) convertView.findViewById(R.id.fieldName);
         TextView value = (TextView) convertView.findViewById(R.id.fieldValue);
         
-		// Sets field values,
+		// Sets field values
         name.setText(detail.getName());
         value.setText(detail.getValue());
 		

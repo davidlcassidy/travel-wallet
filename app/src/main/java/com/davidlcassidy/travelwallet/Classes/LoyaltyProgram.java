@@ -17,12 +17,13 @@ LoyaltyProgram class is created by ProgramDataSource and contains the data for a
 loyalty program from both the MainDatabase and the RefDatabase.
  */
 
-public class LoyaltyProgram {
+public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
 
     private Integer id;
     private Integer refId;
     private Owner owner;
     private String type;
+    private String company;
     private String name;
     private String accountNumber;
     private Integer points;
@@ -37,11 +38,12 @@ public class LoyaltyProgram {
     private String logoIcon;
     private String notes;
 
-    public LoyaltyProgram(Integer id, Integer refId, Owner owner, String type, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
+    public LoyaltyProgram(Integer id, Integer refId, Owner owner, String type, String company, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.refId = refId;
         this.owner = owner;
         this.type = type;
+        this.company = company;
         this.name = name;
         this.accountNumber = accountNumber;
         this.points = points;
@@ -80,6 +82,11 @@ public class LoyaltyProgram {
         this.logoIcon = new StringBuilder("program_").append(programIdString).append("_icon").toString();
     }
 
+    // Defines default sort order
+    public int compareTo(LoyaltyProgram lp) {
+        return (this.name.compareTo(lp.name));
+    }
+
     public boolean hasExpirationDate(){
         return inactivityExpiration != 999;
     }
@@ -115,6 +122,10 @@ public class LoyaltyProgram {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getCompany() {return company;}
+
+    public void setCompany(String company) {this.company = company;}
 
     public String getName() {
         return name;

@@ -36,7 +36,6 @@ public class OwnerListAdapter extends ArrayAdapter<Owner> {
     private CardDataSource cardDS;
     private UserPreferences userPreferences;
     private Currency currency;
-    private SimpleDateFormat dateFormat;
 
     public OwnerListAdapter(Context context, List<Owner> owners) {
         super(context, 0, owners);
@@ -44,7 +43,6 @@ public class OwnerListAdapter extends ArrayAdapter<Owner> {
         cardDS = CardDataSource.getInstance(context);
         userPreferences = UserPreferences.getInstance(context);
         currency = userPreferences.getSetting_Currency();
-        dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
     }
 
     @Override
