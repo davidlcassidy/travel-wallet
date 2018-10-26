@@ -18,28 +18,34 @@ WARNING : Changing ID values may change user settings to the default value withi
 public enum Currency {
 
 	// Enum members
+    // Exchange rates are hardcoded to maintain offline ability. Must update regularly.
 	// Exchange rates pulled from Google Finance on 13 OCT 2018
-    USD(1, "$", "US Dollar", 1.0),
-    CAD(2, "$", "Canadian Dollar", 1.31),
-    EUR(3, "€", "Euro", 0.87),
-    GPB(4, "£", "British Pound", 0.77),
-    AUD(5, "$", "Australian Dollar", 1.42),
-    CNY(6, "元", "Chinese Yuan", 6.95),
-    JPY(7, "¥", "Japanese Yen", 112.72),
-    INR(8, "₹", "Indian Rupee", 73.56),
-    MXN(9, "$", "Mexican Peso", 19.42);
+    AUD(11, "$", "L", "Australian Dollar", 1.42),
+    BRL(12, "$", "L", "Brazilian Real", 3.71),
+    CAD(13, "$", "L", "Canadian Dollar", 1.31),
+    CNY(14, "元", "L", "Chinese Yuan", 6.96),
+    EUR(15, "€", "R", "Euro", 0.88),
+    INR(16, "₹", "L", "Indian Rupee", 73.43),
+    JPY(17, "¥", "L", "Japanese Yen", 112.17),
+    MXN(18, "$", "L", "Mexican Peso", 19.54),
+    NZD(19, "$", "L", "New Zealand Dollar", 1.54),
+    GPB(20, "£", "L", "Pound Sterling", 0.78),
+    ZAR(21, "R", "L", "South African Rand", 14.67),
+    KRW(22, "₩", "L", "South Korean Won", 1143.76),
+    CHF(23, "Fr", "R", "Swiss Franc", 1.00),
+    USD(00, "$", "L", "United States Dollar", 1.00);
 
 	private final int id;
     private final String symbol;
+    private final String symbolSide;
     private final String name;
     private final BigDecimal exchangeRate;
 
-    private Currency(int id, String symbol, String name, Double exchangeRate) {
+    private Currency(int id, String symbol, String symbolSide, String name, Double exchangeRate) {
 		this.id = id;
         this.symbol = symbol;
+        this.symbolSide = symbolSide;
         this.name = name;
-
-        // Exchange rates are hardcoded to maintain offline ability. Must update regularly.
         this.exchangeRate = BigDecimal.valueOf(exchangeRate);
     }
 
@@ -49,19 +55,19 @@ public enum Currency {
         String currencyString;
 
         // Sets number format and includes decimals for smaller currencies
+        DecimalFormat format = null;
         if (this.exchangeRate.doubleValue() > 15.0){
-            DecimalFormat numberFormat = numberPattern.getNumberFormat();
-            currencyString = numberFormat.format(value.multiply(this.exchangeRate));
+            format = numberPattern.getNumberFormat();
         } else {
-            DecimalFormat decimalFormat = numberPattern.getDecimalFormat();
-            currencyString = decimalFormat.format(value.multiply(this.exchangeRate));
+            format = numberPattern.getDecimalFormat();
         }
+        currencyString = format.format(value.multiply(this.exchangeRate));
 
-        // Adds currency symbol - Euros on right side, all others on left
-        if (this.symbol.equals("€")){
-            currencyString = currencyString + " " + this.symbol;
-        } else {
+        // Adds currency symbol on correct side
+        if (this.symbolSide.equals("L")){
             currencyString = this.symbol + " " + currencyString;
+        } else if (this.symbolSide.equals("R")) {
+            currencyString = currencyString + " " + this.symbol;
         }
         return currencyString;
     }

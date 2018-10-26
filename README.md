@@ -7,8 +7,9 @@ Features:
 
 - Specifically designed for travelers. No internet connection required.
 - 100% Ad-free
-- Supports 40+ loyalty programs, 250+ credit cards
-- Ability to add multiple users
+- Database of 250+ credit cards from US and Canada
+- Database 40+ loyalty programs (airlines, hotels, rental cars, etc.)
+- Supports multiple users
 - Calculates Chase 5/24 status (US Only)
 
 ## Installation

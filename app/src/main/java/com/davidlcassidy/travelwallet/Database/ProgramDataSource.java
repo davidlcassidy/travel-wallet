@@ -271,7 +271,7 @@ public class ProgramDataSource {
     }
 
     // Returns list of programs with option to ignore depreciated programs
-    public ArrayList<String> getAvailablePrograms(String type, boolean ignoreDeprecated) {
+    public ArrayList<String> getAvailablePrograms(String type, boolean twoLines, boolean ignoreDeprecated) {
         ArrayList<String> programList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
                         {dbHelperRef.COLUMN_LP_COMPANY, dbHelperRef.COLUMN_LP_TYPE, dbHelperRef.COLUMN_LP_NAME, dbHelperRef.COLUMN_LP_DEPRECIATED},
@@ -283,14 +283,18 @@ public class ProgramDataSource {
         int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_LP_DEPRECIATED);
         while (!cursor.isAfterLast()) {
             String programType = cursor.getString(refIndex_type);
-            String programCompany = cursor.getString(refIndex_company);
             String programName = cursor.getString(refIndex_name);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
 
             Boolean typeCheck = type.equals(programType);
             Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
             if (typeCheck && depreciatedCheck) {
-                programList.add(programName + SingleChoiceAdapter.getDelimiter() + programCompany);
+                if (!twoLines){
+                    programList.add(programName);
+                } else {
+                    String programCompany = cursor.getString(refIndex_company);
+                    programList.add(programName + SingleChoiceAdapter.getDelimiter() + programCompany);
+                }
             }
             cursor.moveToNext();
         }

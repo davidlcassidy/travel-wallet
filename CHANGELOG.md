@@ -1,4 +1,4 @@
-v1.4.5 : XXXX-XX-XX
+v1.4.5 : 2018-10-25
 Feature Release
 
  - Reduced size of logos/icons (reduces size of app by 18%)

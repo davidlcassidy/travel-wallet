@@ -216,7 +216,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
                 break;
             case "program":
                 String type = typeField.getText().toString();
-                selectionList = programDS.getAvailablePrograms(type, true);
+                selectionList = programDS.getAvailablePrograms(type, true, true);
                 if (selectionList.size() > 0) {
                     title = "Select " + type + " Program";
                 } else {

@@ -163,7 +163,7 @@ public class NotificationsListFragment extends Fragment {
         programDS.deleteAll();
         cardDS.deleteAll();
         for (String pType : programDS.getAvailableTypes(false)) {
-            for (String pName : programDS.getAvailablePrograms(pType, false)) {
+            for (String pName : programDS.getAvailablePrograms(pType, false, false)) {
                 Integer refID = programDS.getProgramRefId(pType, pName);
                 Double pointValue = Math.random() * 100000;
                 programDS.create(refID, null, "ABC123", pointValue.intValue(), new Date(), "");

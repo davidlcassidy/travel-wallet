@@ -3,7 +3,7 @@
 #####Update App build.gradle
 
  - Increment versionCode by 1
- - Set versionName appropriately
+ - Increment versionName appropriately
  
 #####Update CHANGELOG.md
 
