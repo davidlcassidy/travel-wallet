@@ -234,8 +234,7 @@ public class CardDataSource {
         return cardList;
     }
 
-    // Returns a list of all credit cards in database that count towards Chase 5/24 status
-    // TODO Update to only include US credit cards
+    // Returns a list of all US credit cards in database that count towards Chase 5/24 status
     public ArrayList <CreditCard> getChase524StatusCards(Owner owner){
         ArrayList<CreditCard> fullCardList = getAll(owner, ItemField.OPENDATE, false,false);
         ArrayList<CreditCard> recentCardList = new ArrayList<CreditCard>();
@@ -249,11 +248,14 @@ public class CardDataSource {
 
         for (CreditCard card : fullCardList) {
             Date openDate = card.getOpenDate();
+            boolean usCard = card.getCountry().getId() == Country.USA.getId();
 
-            // Skips cards with no open date
-            if (openDate != null) {
+            // Skips foreign cards and cards with no open date
+            if (openDate != null && usCard) {
+
                 Calendar openDateCal = Calendar.getInstance();
                 openDateCal.setTime(openDate);
+
                 if (openDateCal.after(cutoffDate)) {
                     if (card.getType().equals("P")) {
                         recentCardList.add(card);
@@ -562,21 +564,21 @@ public class CardDataSource {
             int refIndex_af = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
             int refIndex_ftf = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_FTF);
 
+            Country country = Country.fromName(cursorRef.getString(refIndex_country));
             String bank = cursorRef.getString(refIndex_bank);
             String name = cursorRef.getString(refIndex_name);
             String type = cursorRef.getString(refIndex_type);
             BigDecimal annualFee = new BigDecimal(cursorRef.getString(refIndex_af));
 
             // Convert local currencies in DB to USD
-            String country = cursorRef.getString(refIndex_country);
-            if (country.equals(Country.CANADA.getName())){
+            if (country.getId() == Country.CANADA.getId()) {
                 annualFee = annualFee.divide(Currency.CAD.getExchangeRate(), 10, RoundingMode.HALF_EVEN);
             }
 
             BigDecimal foreignTransactionFee = new BigDecimal(cursorRef.getString(refIndex_ftf));
 
             cursorRef.close();
-            CreditCard card = new CreditCard(id, refId, owner, status, bank,  name, type, creditLimit, annualFee, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
+            CreditCard card = new CreditCard(id, refId, owner, status, country, bank, name, type, creditLimit, annualFee, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
             return card;
         }
     }
