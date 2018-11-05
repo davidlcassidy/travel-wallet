@@ -1,7 +1,7 @@
 v1.4.5 : 2018-10-25
 Feature Release
 
- - Reduced size of logos/icons (reduces size of app by 18%)
+ - Reduced size of logos/icons (reduced size of app by 18%)
  - Added support for second country (Canada)
  - Created custom single choice dialog layouts
  - Updated reference database
@@ -9,7 +9,7 @@ Feature Release
 v1.4.4 : 2018-10-17
 Feature Release
 
- - Updated PurchasePro features description
+ - Updated PurchasePro description
 
 v1.4.3 : 2018-10-17
 Patch Release

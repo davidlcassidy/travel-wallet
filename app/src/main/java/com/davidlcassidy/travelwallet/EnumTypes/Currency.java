@@ -56,7 +56,7 @@ public enum Currency {
 
         // Sets number format and includes decimals for smaller currencies
         DecimalFormat format = null;
-        if (this.exchangeRate.doubleValue() > 15.0){
+        if (this.exchangeRate.doubleValue() > 20.0){
             format = numberPattern.getNumberFormat();
         } else {
             format = numberPattern.getDecimalFormat();

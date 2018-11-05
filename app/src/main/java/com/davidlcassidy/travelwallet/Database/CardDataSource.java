@@ -235,6 +235,7 @@ public class CardDataSource {
     }
 
     // Returns a list of all credit cards in database that count towards Chase 5/24 status
+    // TODO Update to only include US credit cards
     public ArrayList <CreditCard> getChase524StatusCards(Owner owner){
         ArrayList<CreditCard> fullCardList = getAll(owner, ItemField.OPENDATE, false,false);
         ArrayList<CreditCard> recentCardList = new ArrayList<CreditCard>();

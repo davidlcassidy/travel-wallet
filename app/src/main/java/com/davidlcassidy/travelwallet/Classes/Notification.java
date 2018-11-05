@@ -38,36 +38,16 @@ public class Notification {
         Date today = new Date();
         int numOfDays = round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         if (numOfDays <= 0) {
-            message = "Your points have expired.";
-        } else if (0 < numOfDays && numOfDays <= 13) {
-            if (numOfDays == 1) {
-                message = "Your points will expire in 1 day.";
-            } else {
-                message = "Your points will expire in " + String.valueOf(numOfDays) + " days.";
-            }
-        } else if (13 < numOfDays && numOfDays <= 30) {
-            int numOfWeeks = (int) round(numOfDays / 7);
-            if (numOfWeeks == 1) {
-                message = "Your points will expire in 1 week.";
-            } else {
-                message = "Your points will expire in " + String.valueOf(numOfWeeks) + " weeks.";
-            }
+            message = "Points have expired.";
         } else {
-            int numOfMonths = (int) round(numOfDays / 30.4);
-            if (numOfMonths == 1) {
-                message = "Your points will expire in 1 month.";
-            } else {
-                message = "Your points will expire in " + String.valueOf(numOfMonths) + " months.";
-            }
+                message = "Points will expire in " + getDurationString(numOfDays) + ".";
         }
     }
 
     public Notification(CreditCard card) {
         this.itemType = ItemType.CREDIT_CARD;
         this.id = card.getId();
-        String bankNoSpaces = card.getBank().replaceAll("\\s","").toLowerCase();
-        String logoName = "bank_" + bankNoSpaces.substring(0, Math.min(bankNoSpaces.length(), 3)).toLowerCase() + "_icon";
-        this.icon = logoName;
+        this.icon = getBankLogoName(card);
         this.date = card.getAfDate();
         this.header = card.getName() + " Card";
 
@@ -75,28 +55,40 @@ public class Notification {
         Date today = new Date();
         int numOfDays = round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         if (numOfDays <= 0) {
-            message = "Your annual fee is past due.";
-        } else if (0 < numOfDays && numOfDays <= 13) {
-            if (numOfDays == 1) {
-                message = "Your annual fee is due in 1 day.";
-            } else {
-                message = "Your annual fee is due in " + String.valueOf(numOfDays) + " days.";
-            }
-        } else if (13 < numOfDays && numOfDays <= 30) {
-            int numOfWeeks = (int) round(numOfDays / 7);
-            if (numOfWeeks == 1) {
-                message = "Your annual fee is due in 1 week.";
-            } else {
-                message = "Your annual fee is due in " + String.valueOf(round(numOfDays/7)) + " weeks.";
-            }
+            message = "Annual fee is past due.";
         } else {
-            int numOfMonths = (int) round(numOfDays / 30.4);
-            if (numOfMonths == 1) {
-                message = "Your annual fee is due in 1 month.";
-            } else {
-                message = "Your annual fee is due in " + String.valueOf(round(numOfDays/30.4)) + " months.";
-            }
+            message = "Annual fee is due in " + getDurationString(numOfDays) + ".";
         }
+    }
+
+    private String getBankLogoName (CreditCard card){ // TODO Change naming format
+        String bankNoSpaces = card.getBank().replaceAll("\\s","").toLowerCase();
+        String logoName = "bank_" + bankNoSpaces.substring(0, Math.min(bankNoSpaces.length(), 3)).toLowerCase() + "_icon";
+        return logoName;
+    }
+
+    // Converts integer number to days to duration string
+    private String getDurationString(int numOfDays) {
+        int count;
+        String unit;
+        if (0 < numOfDays && numOfDays <= 13) {
+            count = numOfDays;
+            unit = "day";
+        } else if (13 < numOfDays && numOfDays <= 30) {
+            count = round(numOfDays / 7);
+            unit = "week";
+        } else {
+            count = (int) round(numOfDays / 30.4);
+            unit = "month";
+        }
+        String duration = String.valueOf(count) + " " + unit;
+
+        // Handles plurals
+        if (count > 1){
+            duration = duration + "s";
+        }
+
+        return duration;
     }
 
 	// Sends notification to device if configured in user settings

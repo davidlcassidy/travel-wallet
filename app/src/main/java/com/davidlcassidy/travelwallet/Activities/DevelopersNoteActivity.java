@@ -21,7 +21,7 @@ import com.davidlcassidy.travelwallet.R;
 DevelopersNoteActivity is used to allow user to view the developer's notes for the app.
  */
 
-public class DevelopersNoteActivity extends BaseActivity_BackOnly { //TODO Change text after pro purchase?
+public class DevelopersNoteActivity extends BaseActivity_BackOnly {
 
     private TextView title;
     private TextView text;
