@@ -1,3 +1,9 @@
+v1.4.6 : 2018-11-05
+Patch Release
+
+ - Fixed bug Chase 5/24 bug counting foreign cards
+ - Fixed add/edit card credit limits in foreign currencies
+
 v1.4.5 : 2018-10-25
 Feature Release
 
