@@ -32,9 +32,11 @@ import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.Country;
+import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
     private Integer cardId;
 
     private Country country;
+    private Currency currency;
     private SimpleDateFormat dateFormat;
 
     private TextView ownerField, bankField, nameField, statusField, openDateField,
@@ -113,6 +116,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
         // Gets user defined country
         country = userPreferences.getSetting_Country();
+        currency = userPreferences.getSetting_Currency();
 
 		// If edit card, sets fields to current card values
         if (cardId != -1) {
@@ -129,11 +133,18 @@ public class CardAddEditActivity extends BaseActivity_Save {
             Date cAFDate = card.getAfDate();
             Date cCloseDate = card.getCloseDate();
             String cNotes = card.getNotes();
+
             if (cOwner != null) {ownerField.setText(cOwner.getName());}
             if (cBank != null) {bankField.setText(cBank);}
             if (cName != null) {nameField.setText(cName);}
             if (cStatus != null) {statusField.setText(cStatus.getName());}
-            if (cCreditLimit != null) {creditLimitField.setText(String.valueOf(cCreditLimit));}
+
+            if (cCreditLimit != null) {
+                // Convert credit limit to user currency
+                BigDecimal cLocalCreditLimit = cCreditLimit.multiply(currency.getExchangeRate()).setScale(0, RoundingMode.HALF_EVEN);
+                creditLimitField.setText(String.valueOf(cLocalCreditLimit));
+            }
+
             if (cOpenDate != null) {openDateField.setText(dateFormat.format(cOpenDate));}
             if (cAFDate != null) {afDateField.setText(dateFormat.format(cAFDate));}
             if (cCloseDate != null) {closeDateField.setText(dateFormat.format(cCloseDate));}
@@ -192,6 +203,9 @@ public class CardAddEditActivity extends BaseActivity_Save {
             creditLimit = new BigDecimal(0);
         } else{
             creditLimit = new BigDecimal(creditLimitField.getText().toString());
+
+            // Convert to usd for database
+            creditLimit = creditLimit.divide(currency.getExchangeRate(), 8, RoundingMode.HALF_EVEN);
         }
         Date openDate;
         try {
