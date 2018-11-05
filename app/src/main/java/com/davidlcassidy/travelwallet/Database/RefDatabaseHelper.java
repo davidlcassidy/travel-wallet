@@ -30,7 +30,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     // database. This will have users re-create their local database on the next app
     // launch. Unlike the Main Database, updating database version will not result
     // in loss of user data as long as the unique ID remains unchanged
-    public static int DATABASE_VERSION = 3;
+    public static int DATABASE_VERSION = 4;
 
     private String DB_DIRECTORY;
     private static String DB_NAME;
@@ -50,6 +50,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
     public static final String TABLE_CC_REF = "creditcards_ref";
     public static final String COLUMN_CC_ID = "_id";
+    public static final String COLUMN_CC_LOGOID = "logoId";
     public static final String COLUMN_CC_COUNTRY = "country";
     public static final String COLUMN_CC_BANK = "bank";
     public static final String COLUMN_CC_NAME = "name";

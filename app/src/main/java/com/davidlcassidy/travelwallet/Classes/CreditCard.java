@@ -35,9 +35,10 @@ public class CreditCard {
     private Date afDate;
     private Date closeDate;
     private NotificationStatus notificationStatus;
+    private String logoIcon;
     private String notes;
 
-    public CreditCard(Integer id, Integer refId, Owner owner, CardStatus status, Country country, String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer refId, String logoId, Owner owner, CardStatus status, Country country, String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.refId = refId;
         this.owner = owner;
@@ -53,6 +54,7 @@ public class CreditCard {
         this.afDate = AFDate;
         this.closeDate = closeDate;
         this.notificationStatus = notificationStatus;
+        this.logoIcon = "bank_" + logoId + "_icon";
         this.notes = notes;
     }
 
@@ -175,6 +177,10 @@ public class CreditCard {
     public void setNotificationStatus(NotificationStatus notificationStatus) {
         this.notificationStatus = notificationStatus;
     }
+
+    public String getLogoIcon() {return logoIcon;}
+
+    public void setLogoIcon(String logoIcon) {this.logoIcon = logoIcon;}
 
     public String getNotes() {
         return notes;

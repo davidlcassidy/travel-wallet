@@ -47,7 +47,7 @@ public class Notification {
     public Notification(CreditCard card) {
         this.itemType = ItemType.CREDIT_CARD;
         this.id = card.getId();
-        this.icon = getBankLogoName(card);
+        this.icon = card.getLogoIcon();
         this.date = card.getAfDate();
         this.header = card.getName() + " Card";
 
@@ -59,12 +59,6 @@ public class Notification {
         } else {
             message = "Annual fee is due in " + getDurationString(numOfDays) + ".";
         }
-    }
-
-    private String getBankLogoName (CreditCard card){ // TODO Change naming format
-        String bankNoSpaces = card.getBank().replaceAll("\\s","").toLowerCase();
-        String logoName = "bank_" + bankNoSpaces.substring(0, Math.min(bankNoSpaces.length(), 3)).toLowerCase() + "_icon";
-        return logoName;
     }
 
     // Converts integer number to days to duration string

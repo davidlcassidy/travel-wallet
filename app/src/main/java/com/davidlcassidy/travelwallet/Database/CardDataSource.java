@@ -557,6 +557,7 @@ public class CardDataSource {
             return null;
         } else {
             cursorRef.moveToFirst();
+            int refIndex_logoId = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_LOGOID);
             int refIndex_country = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_COUNTRY);
             int refIndex_bank = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
             int refIndex_name = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
@@ -564,6 +565,7 @@ public class CardDataSource {
             int refIndex_af = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
             int refIndex_ftf = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_FTF);
 
+            String logoId = cursorRef.getString(refIndex_logoId);
             Country country = Country.fromName(cursorRef.getString(refIndex_country));
             String bank = cursorRef.getString(refIndex_bank);
             String name = cursorRef.getString(refIndex_name);
@@ -578,7 +580,7 @@ public class CardDataSource {
             BigDecimal foreignTransactionFee = new BigDecimal(cursorRef.getString(refIndex_ftf));
 
             cursorRef.close();
-            CreditCard card = new CreditCard(id, refId, owner, status, country, bank, name, type, creditLimit, annualFee, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
+            CreditCard card = new CreditCard(id, refId, logoId, owner, status, country, bank, name, type, creditLimit, annualFee, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
             return card;
         }
     }

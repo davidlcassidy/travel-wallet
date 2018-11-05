@@ -54,8 +54,7 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
 
 		// Gets logo resource from name
         Context context = logo.getContext();
-        String bankNoSpaces = card.getBank().replaceAll("\\s","").toLowerCase();
-        String logoName = "bank_" + bankNoSpaces.substring(0, Math.min(bankNoSpaces.length(), 3)).toLowerCase() + "_icon";
+        String logoName = card.getLogoIcon();
         int logoNum = context.getResources().getIdentifier(logoName, "drawable", context.getPackageName());
         logo.setImageResource(logoNum);
 
