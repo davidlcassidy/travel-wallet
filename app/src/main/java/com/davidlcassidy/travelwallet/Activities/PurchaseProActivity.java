@@ -83,6 +83,11 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
                 String proPrice = data.getStringExtra(GooglePlayStore.PRODUCT_PRICE);
                 // boolean proPurchased = data.getIntExtra(GooglePlayStore.PRODUCT_PURCHASED, -1)==1;
 
+                // Drop cents if zero
+                if (proPrice.substring(proPrice.length() - 3).equals(".00")){
+                    proPrice = proPrice.substring(0, proPrice.length() - 3);
+                }
+
                 text.setText(
                         "*  Add unlimited loyalty programs\n" +
                         "   (Free version limit = 10)\n\n" +
@@ -91,9 +96,8 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
                         "*  Add unlimited owners\n" +
                         "   (Free version limit = 2)\n\n" +
                         "*  Exclusive Gold color scheme\n\n" +
-                        "*  More pro features coming soon!\n\n" +
                         "\nPro features will last forever.\n" +
-                        "All for only " + proPrice + " USD."
+                        "All for only " + proPrice + " USD (plus tax)."
                 );
 
             } else if (resultCode == Activity.RESULT_CANCELED) {

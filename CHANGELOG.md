@@ -1,3 +1,8 @@
+v1.4.7 : 2018-11-07
+Feature Release
+
+ - Updated reference database
+
 v1.4.6 : 2018-11-05
 Patch Release
 

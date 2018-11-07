@@ -30,7 +30,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     // database. This will have users re-create their local database on the next app
     // launch. Unlike the Main Database, updating database version will not result
     // in loss of user data as long as the unique ID remains unchanged
-    public static int DATABASE_VERSION = 4;
+    public static int DATABASE_VERSION = 5;
 
     private String DB_DIRECTORY;
     private static String DB_NAME;

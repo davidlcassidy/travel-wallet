@@ -204,7 +204,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
         } else{
             creditLimit = new BigDecimal(creditLimitField.getText().toString());
 
-            // Convert to usd for database
+            // Convert to USD for database
             creditLimit = creditLimit.divide(currency.getExchangeRate(), 8, RoundingMode.HALF_EVEN);
         }
         Date openDate;
