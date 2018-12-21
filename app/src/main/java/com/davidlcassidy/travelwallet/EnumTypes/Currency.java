@@ -20,20 +20,20 @@ public enum Currency {
 	// Enum members
     // Exchange rates are hardcoded to maintain offline ability. Must update regularly.
 	// Exchange rates pulled from Google Finance on 13 OCT 2018
-    AUD(11, "$", "L", "Australian Dollar", 1.42),
-    BRL(12, "$", "L", "Brazilian Real", 3.71),
-    CAD(13, "$", "L", "Canadian Dollar", 1.31),
-    CNY(14, "元", "L", "Chinese Yuan", 6.96),
-    EUR(15, "€", "R", "Euro", 0.88),
-    INR(16, "₹", "L", "Indian Rupee", 73.43),
-    JPY(17, "¥", "L", "Japanese Yen", 112.17),
-    MXN(18, "$", "L", "Mexican Peso", 19.54),
-    NZD(19, "$", "L", "New Zealand Dollar", 1.54),
-    GPB(20, "£", "L", "Pound Sterling", 0.78),
-    ZAR(21, "R", "L", "South African Rand", 14.67),
-    KRW(22, "₩", "L", "South Korean Won", 1143.76),
-    CHF(23, "Fr", "R", "Swiss Franc", 1.00),
-    USD(00, "$", "L", "United States Dollar", 1.00);
+    AUD(1, "$", "L", "Australian Dollar", 1.41),
+    BRL(2, "$", "L", "Brazilian Real", 3.87),
+    CAD(3, "$", "L", "Canadian Dollar", 1.35),
+    CNY(4, "元", "L", "Chinese Yuan", 6.90),
+    EUR(5, "€", "R", "Euro", 0.88),
+    INR(6, "₹", "L", "Indian Rupee", 70.08),
+    JPY(7, "¥", "L", "Japanese Yen", 111.07),
+    MXN(8, "$", "L", "Mexican Peso", 19.90),
+    NZD(9, "$", "L", "New Zealand Dollar", 1.48),
+    GPB(10, "£", "L", "Pound Sterling", 0.79),
+    ZAR(11, "R", "L", "South African Rand", 14.35),
+    KRW(12, "₩", "L", "South Korean Won", 1124.70),
+    CHF(13, "Fr", "R", "Swiss Franc", 0.99),
+    USD(0, "$", "L", "United States Dollar", 1.00);
 
 	private final int id;
     private final String symbol;

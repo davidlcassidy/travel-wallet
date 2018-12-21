@@ -1,3 +1,8 @@
+v1.4.8 : 2018-12-21
+Feature Release
+
+ - Added "Other" country option
+
 v1.4.7 : 2018-11-07
 Feature Release
 

@@ -291,7 +291,7 @@ public class CardDataSource {
             String cardCountry = cursor.getString(refIndex_country);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
 
-            Boolean countryCheck = country == null || country.getName().equals(cardCountry);
+            Boolean countryCheck = country == null || country.getName() == Country.OTHER.getName() || country.getName().equals(cardCountry);
             Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
             if (countryCheck && depreciatedCheck) {
                 String bankName = cursor.getString(refIndex_bank);
@@ -326,7 +326,7 @@ public class CardDataSource {
             String cardName = cursor.getString(refIndex_name);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
 
-            Boolean countryCheck = country == null || country.getName().equals(cardCountry);
+            Boolean countryCheck = country == null || country.getName() == Country.OTHER.getName() || country.getName().equals(cardCountry);
             Boolean bankCheck = bank.equals(cardBank);
             Boolean depreciatedCheck = !(ignoreDeprecated && depreciated);
             if (countryCheck && bankCheck && depreciatedCheck) {

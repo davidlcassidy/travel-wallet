@@ -145,10 +145,7 @@ public class SettingsActivity extends BaseActivity_Save {
         switch (saveField) {
             case "country":
                 title = "Set Country";
-                selectionList = new ArrayList<String>() {{
-                    add(Country.USA.getName());
-                    add(Country.CANADA.getName());
-                }};
+                selectionList = Country.getAllNames();
                 break;
             case "language":
                 title = "Set Language";

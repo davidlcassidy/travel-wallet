@@ -17,7 +17,8 @@ public enum Country {
 
 	// Enum members
     USA(1, "United States"),
-    CANADA(2, "Canada");
+    CANADA(2, "Canada"),
+    OTHER(99, "Other");
 
 	private final int id;
     private final String name;
