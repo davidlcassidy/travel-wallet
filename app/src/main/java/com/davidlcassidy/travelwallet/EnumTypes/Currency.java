@@ -1,6 +1,12 @@
 /*
  * Travel Wallet Android App
  * Copyright (C) 2018 David L Cassidy. All rights reserved.
+ * Last modified 7/25/19 10:29 PM
+ */
+
+/*
+ * Travel Wallet Android App
+ * Copyright (C) 2018 David L Cassidy. All rights reserved.
  * Last modified 10/14/18 9:40 PM
  */
 
@@ -18,20 +24,20 @@ WARNING : Changing ID values may change user settings to the default value withi
 public enum Currency {
 
 	// Enum members
-    // Exchange rates are hardcoded to maintain offline ability. Must update regularly.
-	// Exchange rates pulled from Google Finance on 13 OCT 2018
-    AUD(1, "$", "L", "Australian Dollar", 1.41),
-    BRL(2, "$", "L", "Brazilian Real", 3.87),
-    CAD(3, "$", "L", "Canadian Dollar", 1.35),
-    CNY(4, "元", "L", "Chinese Yuan", 6.90),
-    EUR(5, "€", "R", "Euro", 0.88),
-    INR(6, "₹", "L", "Indian Rupee", 70.08),
-    JPY(7, "¥", "L", "Japanese Yen", 111.07),
-    MXN(8, "$", "L", "Mexican Peso", 19.90),
-    NZD(9, "$", "L", "New Zealand Dollar", 1.48),
-    GPB(10, "£", "L", "Pound Sterling", 0.79),
-    ZAR(11, "R", "L", "South African Rand", 14.35),
-    KRW(12, "₩", "L", "South Korean Won", 1124.70),
+    // Exchange rates are hardcoded to maintain 100% offline capability. Must update regularly.
+	// Exchange rates pulled from Google Finance on 25 JUL 2019
+    AUD(1, "$", "L", "Australian Dollar", 1.44),
+    BRL(2, "$", "L", "Brazilian Real", 3.78),
+    CAD(3, "$", "L", "Canadian Dollar", 1.32),
+    CNY(4, "元", "L", "Chinese Yuan", 6.88),
+    EUR(5, "€", "R", "Euro", 0.90),
+    INR(6, "₹", "L", "Indian Rupee", 69.11),
+    JPY(7, "¥", "L", "Japanese Yen", 108.62),
+    MXN(8, "$", "L", "Mexican Peso", 19.03),
+    NZD(9, "$", "L", "New Zealand Dollar", 1.50),
+    GPB(10, "£", "L", "Pound Sterling", 0.80),
+    ZAR(11, "R", "L", "South African Rand", 14.09),
+    KRW(12, "₩", "L", "South Korean Won", 1184.80),
     CHF(13, "Fr", "R", "Swiss Franc", 0.99),
     USD(0, "$", "L", "United States Dollar", 1.00);
 
