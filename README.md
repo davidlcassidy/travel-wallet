@@ -7,7 +7,7 @@ Features:
 
 - Specifically designed for travelers. No internet connection required.
 - 100% Ad-free
-- Database of 260+ credit cards from US and Canada
+- Database of 300+ credit cards from US and Canada
 - Database of 50+ loyalty programs (airlines, hotels, rental cars, etc.)
 - Supports multiple users
 - Calculates Chase 5/24 status (US Only)
