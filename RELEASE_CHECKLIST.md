@@ -12,11 +12,15 @@
  
 #####Update copyright comments
 
- - In Code menu, click the Update Copyright option to update all file copyright comments
+ - From Code menu, click the Update Copyright option to update all file copyright comments
  - Run git command: git checkout -- app/src/main/java/com/android/
+ 
+#####Confirm/Update Github user
+ - Run git command: git config --global user.name "davidlcassidy"
+ - Run git command: git config --global user.email "david@davidlcassidy.com"
  
 ##After Git Commit
  
 #####Create new Github release
 
- - Create new release versionCode from build.gradle and details from release details from CHANGELOG.md
+ - Create new release using versionCode and details from CHANGELOG.md
