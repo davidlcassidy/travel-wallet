@@ -30,21 +30,21 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_notification, parent, false);
         }
-		
-		// Gets the item at this position
-        Notification notification = getItem(position);
-        
-		// Gets adapter fields
-        ImageView logo = (ImageView) convertView.findViewById(R.id.logo);
-        TextView name = (TextView) convertView.findViewById(R.id.notification);
-        TextView message = (TextView) convertView.findViewById(R.id.message);
 
-		// Gets logo resource from name
+        // Gets the item at this position
+        Notification notification = getItem(position);
+
+        // Gets adapter fields
+        ImageView logo = convertView.findViewById(R.id.logo);
+        TextView name = convertView.findViewById(R.id.notification);
+        TextView message = convertView.findViewById(R.id.message);
+
+        // Gets logo resource from name
         Context context = logo.getContext();
         int logoNum = context.getResources().getIdentifier(notification.getIcon(), "drawable", context.getPackageName());
         logo.setImageResource(logoNum);
 
-		// Sets field values, based on user preferences
+        // Sets field values, based on user preferences
         name.setText(notification.getHeader());
         message.setText(notification.getMessage());
 

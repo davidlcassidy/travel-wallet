@@ -28,24 +28,24 @@ public class PhoneNotification {
 
     private static NotificationManager mNotificationManager;
     private static int NOTFICATION_ID;
-    private Context context;
+    private final Context context;
 
     public PhoneNotification(Context parmContext, Notification notification) {
-		
-		// Generates a unique phone notification ID
+
+        // Generates a unique phone notification ID
         if (notification.getItemType() == ItemType.LOYALTY_PROGRAM) {
             NOTFICATION_ID = notification.getId() + 10000;
         } else if (notification.getItemType() == ItemType.CREDIT_CARD) {
             NOTFICATION_ID = notification.getId() + 20000;
         }
-		
-		// Collects two icons
-		// Small Icon: Displayed in device status bar
-		// Large Icon: Displayed in device notification
-		int smallIcon = R.drawable.airplane_icon;
+
+        // Collects two icons
+        // Small Icon: Displayed in device status bar
+        // Large Icon: Displayed in device notification
+        int smallIcon = R.drawable.airplane_icon;
         String largeIconName = notification.getIcon();
 
-		// Builds notification
+        // Builds notification
         context = parmContext;
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(context, MainActivity.class);
@@ -53,25 +53,25 @@ public class PhoneNotification {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context, "channel_1")
                         .setSmallIcon(smallIcon)
-                        .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(largeIconName,"drawable", context.getPackageName())))
+                        .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(largeIconName, "drawable", context.getPackageName())))
                         .setContentTitle(notification.getHeader())
                         .setContentText(notification.getMessage())
                         .setPriority(PRIORITY_HIGH)
                         .setContentIntent(pendingIntent);
 
-		// Sends notification
+        // Sends notification
         mNotificationManager.notify(NOTFICATION_ID, mBuilder.build());
 
     }
 
-	// Removes specific phone notification, based on ID
-    public void Clear() {
-        mNotificationManager.cancel(NOTFICATION_ID);
+    // Removes all phone notifications
+    public static void ClearAll() {
+        mNotificationManager.cancelAll();
     }
 
-	// Removes all phone notifications
-    public static void ClearAll(){
-        mNotificationManager.cancelAll();
+    // Removes specific phone notification, based on ID
+    public void Clear() {
+        mNotificationManager.cancel(NOTFICATION_ID);
     }
 
 }

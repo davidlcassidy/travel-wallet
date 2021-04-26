@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
-import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
@@ -48,7 +48,7 @@ public class UserDetailActivity extends BaseActivity_EditDelete {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userdetailslist);
-		setTitle("User");
+        setTitle("User");
 
         userDS = UserDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
@@ -57,18 +57,18 @@ public class UserDetailActivity extends BaseActivity_EditDelete {
 
         userId = Integer.parseInt(getIntent().getStringExtra("USER_ID"));
 
-        nameText = (TextView) findViewById(R.id.nameText);
-        notesField = (TextView) findViewById(R.id.notesField);
-        programCountField  = (TextView) findViewById(R.id.programCountField);
-        programValueField  = (TextView) findViewById(R.id.programValueField);
-        cardCountField = (TextView) findViewById(R.id.cardCountField);
-        cardAFField  = (TextView) findViewById(R.id.cardAFField);
-        cardCreditLimitField = (TextView) findViewById(R.id.cardCreditLimitField);
-        cardChaseStatusField = (TextView) findViewById(R.id.cardChaseStatusField);
-        cardChaseStatusDateField = (TextView) findViewById(R.id.cardChaseStatusDateField);
+        nameText = findViewById(R.id.nameText);
+        notesField = findViewById(R.id.notesField);
+        programCountField = findViewById(R.id.programCountField);
+        programValueField = findViewById(R.id.programValueField);
+        cardCountField = findViewById(R.id.cardCountField);
+        cardAFField = findViewById(R.id.cardAFField);
+        cardCreditLimitField = findViewById(R.id.cardCreditLimitField);
+        cardChaseStatusField = findViewById(R.id.cardChaseStatusField);
+        cardChaseStatusDateField = findViewById(R.id.cardChaseStatusDateField);
 
-        cardChaseStatusLayout = (LinearLayout) findViewById(R.id.cardChaseStatusLayout);
-        cardChaseStatusDateLayout = (LinearLayout) findViewById(R.id.cardChaseStatusDateLayout);
+        cardChaseStatusLayout = findViewById(R.id.cardChaseStatusLayout);
+        cardChaseStatusDateLayout = findViewById(R.id.cardChaseStatusDateLayout);
     }
 
     protected void onResume() {
@@ -113,44 +113,44 @@ public class UserDetailActivity extends BaseActivity_EditDelete {
         }
     }
 
-	// Runs when edit button is clicked
+    // Runs when edit button is clicked
     @Override
     public void menuEditClicked() {
-		// Opens UserAddEdit Activity
+        // Opens UserAddEdit Activity
         Intent intent = new Intent(UserDetailActivity.this, UserAddEditActivity.class);
         intent.putExtra("USER_ID", String.valueOf(userId));
         startActivity(intent);
     }
 
-	// Runs when delete button is clicked
+    // Runs when delete button is clicked
     @Override
     public void menuDeleteClicked() {
-		
-		// Creates delete warning dialog
+
+        // Creates delete warning dialog
         User user = userDS.getSingle(userId, null, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(user.getName());
-		builder.setCancelable(false);
+        builder.setTitle(user.getName());
+        builder.setCancelable(false);
         builder.setMessage("Are you sure you want to delete?");
 
-		// Deletes user if "Yes" button selected
+        // Deletes user if "Yes" button selected
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
                 userDS.delete(userId);
                 appPreferences.setFiltersUpdateRequired(true);
                 finish();
-            }});
-
-		// Dialog closes with no further action if "Cancel" button is selected
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
             }
         });
 
-		// Creates dialog
+        // Dialog closes with no further action if "Cancel" button is selected
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int selected) {
+            }
+        });
+
+        // Creates dialog
         AlertDialog dialog = builder.create();
         dialog.show();
     }

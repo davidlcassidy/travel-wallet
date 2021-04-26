@@ -29,18 +29,18 @@ public class DetailListAdapter extends ArrayAdapter<Detail> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_detail, parent, false);
         }
-		
-		// Gets the item at this position
+
+        // Gets the item at this position
         Detail detail = getItem(position);
-		
+
         // Gets adapter fields
-        TextView name = (TextView) convertView.findViewById(R.id.fieldName);
-        TextView value = (TextView) convertView.findViewById(R.id.fieldValue);
-        
-		// Sets field values
+        TextView name = convertView.findViewById(R.id.fieldName);
+        TextView value = convertView.findViewById(R.id.fieldValue);
+
+        // Sets field values
         name.setText(detail.getName());
         value.setText(detail.getValue());
-		
+
         return convertView;
     }
 

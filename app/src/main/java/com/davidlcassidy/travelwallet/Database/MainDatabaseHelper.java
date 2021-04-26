@@ -21,19 +21,16 @@ user provided data.
 
 public class MainDatabaseHelper extends SQLiteOpenHelper {
 
-	// Database version should be incremented for structural changes to the database.
-	// This will have users re-create their local database on the next app launch.
-	//
-	// WARNING : Updating database version or date format will end backwards compatibility.
+    // Database version should be incremented for structural changes to the database.
+    // This will have users re-create their local database on the next app launch.
+    //
+    // WARNING : Updating database version or date format will end backwards compatibility.
     // Changing versions will wiping all local user data and changing the data format will make
     // date values in local database unreadable and make the app unstable. If new fields are
     // required, consider using futureText and futureInteger fields rather than making structural
     // changes to the database.
     public static final int DATABASE_VERSION = 2;
     public static final SimpleDateFormat DATABASE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private static final String DATABASE_NAME = "DatabaseMain.db";
-
     public static final String TABLE_LP = "loyaltyprograms";
     public static final String COLUMN_LP_ID = "_id";
     public static final String COLUMN_LP_REFID = "refid";
@@ -53,7 +50,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LP_FUTUREINTEGER3 = "futureInteger3";
     public static final String COLUMN_LP_FUTUREINTEGER4 = "futureInteger4";
     public static final String COLUMN_LP_FUTUREINTEGER5 = "futureInteger5";
-
     public static final String TABLE_CC = "creditcards";
     public static final String COLUMN_CC_ID = "_id";
     public static final String COLUMN_CC_REFID = "refid";
@@ -75,7 +71,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CC_FUTUREINTEGER3 = "futureInteger3";
     public static final String COLUMN_CC_FUTUREINTEGER4 = "futureInteger4";
     public static final String COLUMN_CC_FUTUREINTEGER5 = "futureInteger5";
-
     public static final String TABLE_U = "users";
     public static final String COLUMN_U_ID = "_id";
     public static final String COLUMN_U_NAME = "name";
@@ -90,7 +85,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_U_FUTUREINTEGER3 = "futureInteger3";
     public static final String COLUMN_U_FUTUREINTEGER4 = "futureInteger4";
     public static final String COLUMN_U_FUTUREINTEGER5 = "futureInteger5";
-
+    private static final String DATABASE_NAME = "DatabaseMain.db";
     private static final String TABLE_LOYALTYPROGRAMS_CREATE = "create table IF NOT EXISTS "
             + TABLE_LP + "( "
             + COLUMN_LP_ID + " integer primary key autoincrement, "
@@ -111,7 +106,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_LP_FUTUREINTEGER3 + " integer, "
             + COLUMN_LP_FUTUREINTEGER4 + " integer, "
             + COLUMN_LP_FUTUREINTEGER5 + " integer "
-            +");";
+            + ");";
 
     private static final String TABLE_CREDITCARDS_CREATE = "create table IF NOT EXISTS "
             + TABLE_CC + "( "
@@ -135,7 +130,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_CC_FUTUREINTEGER3 + " integer, "
             + COLUMN_CC_FUTUREINTEGER4 + " integer, "
             + COLUMN_CC_FUTUREINTEGER5 + " integer "
-            +");";
+            + ");";
 
     private static final String TABLE_USERS_CREATE = "create table IF NOT EXISTS "
             + TABLE_U + "( "
@@ -152,7 +147,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_U_FUTUREINTEGER3 + " integer, "
             + COLUMN_U_FUTUREINTEGER4 + " integer, "
             + COLUMN_U_FUTUREINTEGER5 + " integer "
-            +");";
+            + ");";
 
     public MainDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -171,7 +166,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1 && newVersion == 2){
+        if (oldVersion == 1 && newVersion == 2) {
             db.execSQL(TABLE_USERS_CREATE);
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_LP);

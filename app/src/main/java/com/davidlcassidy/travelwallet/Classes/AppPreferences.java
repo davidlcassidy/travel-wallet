@@ -9,12 +9,12 @@ package com.davidlcassidy.travelwallet.Classes;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
+import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
 import com.davidlcassidy.travelwallet.EnumTypes.Country;
+import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.Language;
 
 /*
@@ -30,69 +30,75 @@ public class AppPreferences {
 
 
     // Sets app preference keys
-    private static String nAppPreferences = "AppPreferences";
-    private static String nAppType = "AppType";
-    private static String nProgramFiltersUpdateRequired = "ProgramFilterUpdateRequired";
-    private static String nCardFiltersUpdateRequired = "CardFilterUpdateRequired";
+    private static final String nAppPreferences = "AppPreferences";
+    private static final String nAppType = "AppType";
+    private static final String nProgramFiltersUpdateRequired = "ProgramFilterUpdateRequired";
+    private static final String nCardFiltersUpdateRequired = "CardFilterUpdateRequired";
 
-    private static String nFilter_ProgramUser = "Filter_ProgramUser";
-    private static String nFilter_ProgramType = "Filter_ProgramType";
-    private static String nFilter_CardUser = "Filter_CardUser";
-    private static String nFilter_CardStatus = "Filter_CardStatus";
+    private static final String nFilter_ProgramUser = "Filter_ProgramUser";
+    private static final String nFilter_ProgramType = "Filter_ProgramType";
+    private static final String nFilter_CardUser = "Filter_CardUser";
+    private static final String nFilter_CardStatus = "Filter_CardStatus";
 
-    private static String nCustom_UserPrimaryField = "Custom_UserPrimaryField";
-    private static String nCustom_UserSortField = "Custom_UserSortField";
-    private static String nCustom_ProgramPrimaryField = "Custom_ProgramPrimaryField";
-    private static String nCustom_ProgramSortField = "Custom_ProgramSortField";
-    private static String nCustom_ProgramNotificationPeriod = "Custom_ProgramNotificationPeriod";
-    private static String nCustom_ProgramFilters = "Custom_ProgramFilters";
-    private static String nCustom_CardPrimaryField = "Custom_CardPrimaryField";
-    private static String nCustom_CardSortField = "Custom_CardSortField";
-    private static String nCustom_CardNotificationPeriod = "Custom_CardNotificationPeriod";
-    private static String nCustom_CardFilters = "Custom_CardFilters";
-    
-    private static String nSetting_InitialSummary = "Setting_InitialSummary";
-    private static String nSetting_PhoneNotifications = "Setting_PhoneNotifications";
-    private static String nSetting_Country = "Setting_Country";
-    private static String nSetting_Language = "Setting_Language";
-    private static String nSetting_Currency = "Setting_Currency";
-    private static String nSetting_DatePattern = "Setting_DatePattern";
-    private static String nSetting_ColorScheme = "Setting_ColorScheme";
+    private static final String nCustom_UserPrimaryField = "Custom_UserPrimaryField";
+    private static final String nCustom_UserSortField = "Custom_UserSortField";
+    private static final String nCustom_ProgramPrimaryField = "Custom_ProgramPrimaryField";
+    private static final String nCustom_ProgramSortField = "Custom_ProgramSortField";
+    private static final String nCustom_ProgramNotificationPeriod = "Custom_ProgramNotificationPeriod";
+    private static final String nCustom_ProgramFilters = "Custom_ProgramFilters";
+    private static final String nCustom_CardPrimaryField = "Custom_CardPrimaryField";
+    private static final String nCustom_CardSortField = "Custom_CardSortField";
+    private static final String nCustom_CardNotificationPeriod = "Custom_CardNotificationPeriod";
+    private static final String nCustom_CardFilters = "Custom_CardFilters";
 
-    private static String nDatabase_MainDBVersion = "Database_MainDBVersion";
-    private static String nDatabase_RefDBVersion = "Database_RefDBVersion";
+    private static final String nSetting_InitialSummary = "Setting_InitialSummary";
+    private static final String nSetting_PhoneNotifications = "Setting_PhoneNotifications";
+    private static final String nSetting_Country = "Setting_Country";
+    private static final String nSetting_Language = "Setting_Language";
+    private static final String nSetting_Currency = "Setting_Currency";
+    private static final String nSetting_DatePattern = "Setting_DatePattern";
+    private static final String nSetting_ColorScheme = "Setting_ColorScheme";
+
+    private static final String nDatabase_MainDBVersion = "Database_MainDBVersion";
+    private static final String nDatabase_RefDBVersion = "Database_RefDBVersion";
 
     // Sets user preference default values
-    private static AppType dAppType = AppType.FREE;
-    private static boolean dProgramFiltersUpdateRequired = true;
-    private static boolean dCardFiltersUpdateRequired = true;
+    private static final AppType dAppType = AppType.FREE;
+    private static final boolean dProgramFiltersUpdateRequired = true;
+    private static final boolean dCardFiltersUpdateRequired = true;
 
-    private static String dFilter_ProgramUser = "All User";
-    private static String dFilter_ProgramType = "All Types";
-    private static String dFilter_CardUser = "All User";
-    private static String dFilter_CardStatus = "All Statuses";
+    private static final String dFilter_ProgramUser = "All User";
+    private static final String dFilter_ProgramType = "All Types";
+    private static final String dFilter_CardUser = "All User";
+    private static final String dFilter_CardStatus = "All Statuses";
 
-    private static ItemField dCustom_UserPrimaryField = ItemField.ITEM_COUNTS;
-    private static ItemField dCustom_UserSortField = ItemField.USER_NAME;
-    private static ItemField dCustom_ProgramPrimaryField = ItemField.ACCOUNT_NUMBER;
-    private static ItemField dCustom_ProgramSortField = ItemField.PROGRAM_NAME;
-    private static String dCustom_ProgramNotificationPeriod = "4 W";
-    private static boolean dCustom_ProgramFilters = true;
-    private static ItemField dCustom_CardPrimaryField = ItemField.OPEN_DATE;
-    private static ItemField dCustom_CardSortField = ItemField.CARD_NAME;
-    private static String dCustom_CardNotificationPeriod = "4 W";
-    private static boolean dCustom_CardFilters = true;
-    
-    private static boolean dSetting_InitialSummary = false;
-    private static boolean dSetting_PhoneNotifications = true;
-    private static Country dSetting_Country = Country.USA;
-    private static Language dSetting_Language = Language.ENGLISH;
-    private static Currency dSetting_Currency = Currency.USD;
-    private static DatePattern dSetting_DatePattern = DatePattern.MDY_LONG;
-    private static ColorScheme dSetting_ColorScheme = ColorScheme.Blue;
+    private static final ItemField dCustom_UserPrimaryField = ItemField.ITEM_COUNTS;
+    private static final ItemField dCustom_UserSortField = ItemField.USER_NAME;
+    private static final ItemField dCustom_ProgramPrimaryField = ItemField.ACCOUNT_NUMBER;
+    private static final ItemField dCustom_ProgramSortField = ItemField.PROGRAM_NAME;
+    private static final String dCustom_ProgramNotificationPeriod = "4 W";
+    private static final boolean dCustom_ProgramFilters = true;
+    private static final ItemField dCustom_CardPrimaryField = ItemField.OPEN_DATE;
+    private static final ItemField dCustom_CardSortField = ItemField.CARD_NAME;
+    private static final String dCustom_CardNotificationPeriod = "4 W";
+    private static final boolean dCustom_CardFilters = true;
 
-    private static Integer dDatabase_MainDBVersion = 0;
-    private static Integer dDatabase_RefDBVersion = 0;
+    private static final boolean dSetting_InitialSummary = false;
+    private static final boolean dSetting_PhoneNotifications = true;
+    private static final Country dSetting_Country = Country.USA;
+    private static final Language dSetting_Language = Language.ENGLISH;
+    private static final Currency dSetting_Currency = Currency.USD;
+    private static final DatePattern dSetting_DatePattern = DatePattern.MDY_LONG;
+    private static final ColorScheme dSetting_ColorScheme = ColorScheme.Blue;
+
+    private static final Integer dDatabase_MainDBVersion = 0;
+    private static final Integer dDatabase_RefDBVersion = 0;
+
+    // Private AppPreferences constructor called by getInstance method
+    private AppPreferences(Context context) {
+        sharedPref = context.getSharedPreferences(nAppPreferences, Context.MODE_PRIVATE);
+        spEditor = sharedPref.edit();
+    }
 
     // Gets instance of AppPreferences. Creates instance if it doesn't exist.
     public static AppPreferences getInstance(Context context) {
@@ -102,16 +108,10 @@ public class AppPreferences {
         return instance;
     }
 
-    // Private AppPreferences constructor called by getInstance method
-    private AppPreferences(Context context) {
-        sharedPref = context.getSharedPreferences(nAppPreferences, Context.MODE_PRIVATE);
-        spEditor = sharedPref.edit();
-    }
-
     public AppType getAppType() {
         int id = sharedPref.getInt(nAppType, dAppType.getId());
         AppType appType = AppType.fromId(id);
-        if (appType != null){
+        if (appType != null) {
             return appType;
         } else {
             spEditor.putInt(nAppType, dAppType.getId());
@@ -189,11 +189,11 @@ public class AppPreferences {
         spEditor.putString(nFilter_CardStatus, cardStatus);
         spEditor.commit();
     }
-    
+
     public ItemField getCustom_UserPrimaryField() {
         int id = sharedPref.getInt(nCustom_UserPrimaryField, dCustom_UserPrimaryField.getId());
         ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
+        if (itemField != null) {
             return itemField;
         } else {
             spEditor.putInt(nCustom_UserPrimaryField, dCustom_UserPrimaryField.getId());
@@ -209,7 +209,7 @@ public class AppPreferences {
     public ItemField getCustom_UserSortField() {
         int id = sharedPref.getInt(nCustom_UserSortField, dCustom_UserSortField.getId());
         ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
+        if (itemField != null) {
             return itemField;
         } else {
             spEditor.putInt(nCustom_UserSortField, dCustom_UserSortField.getId());
@@ -225,7 +225,7 @@ public class AppPreferences {
     public ItemField getCustom_ProgramPrimaryField() {
         int id = sharedPref.getInt(nCustom_ProgramPrimaryField, dCustom_ProgramPrimaryField.getId());
         ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
+        if (itemField != null) {
             return itemField;
         } else {
             spEditor.putInt(nCustom_ProgramPrimaryField, dCustom_ProgramPrimaryField.getId());
@@ -241,7 +241,7 @@ public class AppPreferences {
     public ItemField getCustom_ProgramSortField() {
         int id = sharedPref.getInt(nCustom_ProgramSortField, dCustom_ProgramSortField.getId());
         ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
+        if (itemField != null) {
             return itemField;
         } else {
             spEditor.putInt(nCustom_ProgramSortField, dCustom_ProgramSortField.getId());
@@ -277,7 +277,7 @@ public class AppPreferences {
     public ItemField getCustom_CardPrimaryField() {
         int id = sharedPref.getInt(nCustom_CardPrimaryField, dCustom_CardPrimaryField.getId());
         ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
+        if (itemField != null) {
             return itemField;
         } else {
             spEditor.putInt(nCustom_CardPrimaryField, dCustom_CardPrimaryField.getId());
@@ -293,7 +293,7 @@ public class AppPreferences {
     public ItemField getCustom_CardSortField() {
         int id = sharedPref.getInt(nCustom_CardSortField, dCustom_CardSortField.getId());
         ItemField itemField = ItemField.fromId(id);
-        if (itemField != null){
+        if (itemField != null) {
             return itemField;
         } else {
             spEditor.putInt(nCustom_CardSortField, dCustom_CardSortField.getId());
@@ -351,7 +351,7 @@ public class AppPreferences {
     public Country getSetting_Country() {
         int id = sharedPref.getInt(nSetting_Country, dSetting_Country.getId());
         Country country = Country.fromId(id);
-        if (country != null){
+        if (country != null) {
             return country;
         } else {
             spEditor.putInt(nSetting_Country, dSetting_Country.getId());
@@ -367,7 +367,7 @@ public class AppPreferences {
     public Language getSetting_Language() {
         int id = sharedPref.getInt(nSetting_Language, dSetting_Language.getId());
         Language language = Language.fromId(id);
-        if (language != null){
+        if (language != null) {
             return language;
         } else {
             spEditor.putInt(nSetting_Language, dSetting_Language.getId());
@@ -383,7 +383,7 @@ public class AppPreferences {
     public Currency getSetting_Currency() {
         int id = sharedPref.getInt(nSetting_Currency, dSetting_Currency.getId());
         Currency currency = Currency.fromId(id);
-        if (currency != null){
+        if (currency != null) {
             return currency;
         } else {
             spEditor.putInt(nSetting_Currency, dSetting_Currency.getId());
@@ -399,7 +399,7 @@ public class AppPreferences {
     public DatePattern getSetting_DatePattern() {
         int id = sharedPref.getInt(nSetting_DatePattern, dSetting_DatePattern.getId());
         DatePattern datePattern = DatePattern.fromId(id);
-        if (datePattern != null){
+        if (datePattern != null) {
             return datePattern;
         } else {
             spEditor.putInt(nSetting_DatePattern, dSetting_DatePattern.getId());
@@ -415,7 +415,7 @@ public class AppPreferences {
     public ColorScheme getSetting_ColorScheme() {
         int id = sharedPref.getInt(nSetting_ColorScheme, dSetting_ColorScheme.getId());
         ColorScheme colorScheme = ColorScheme.fromId(id);
-        if (colorScheme != null){
+        if (colorScheme != null) {
             return colorScheme;
         } else {
             spEditor.putInt(nSetting_ColorScheme, dSetting_ColorScheme.getId());

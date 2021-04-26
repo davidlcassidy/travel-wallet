@@ -14,12 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
-import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class CardListAdapter extends ArrayAdapter<CreditCard> {
 
-    private AppPreferences appPreferences;
+    private final AppPreferences appPreferences;
 
     public CardListAdapter(Context context, List<CreditCard> cards) {
         super(context, 0, cards);
@@ -37,28 +37,28 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
         SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
         final ItemField primaryField = appPreferences.getCustom_CardPrimaryField();
-        
-		// Gets the item at this position
-		CreditCard card = getItem(position);
 
-		// Gets adapter fields
-        ImageView logo = (ImageView) convertView.findViewById(R.id.logo);
-        TextView cardField = (TextView) convertView.findViewById(R.id.firstField);
-        TextView messageField = (TextView) convertView.findViewById(R.id.secondField);
+        // Gets the item at this position
+        CreditCard card = getItem(position);
 
-		// Gets logo resource from name
+        // Gets adapter fields
+        ImageView logo = convertView.findViewById(R.id.logo);
+        TextView cardField = convertView.findViewById(R.id.firstField);
+        TextView messageField = convertView.findViewById(R.id.secondField);
+
+        // Gets logo resource from name
         Context context = logo.getContext();
         String logoName = card.getLogoIcon();
         int logoNum = context.getResources().getIdentifier(logoName, "drawable", context.getPackageName());
         logo.setImageResource(logoNum);
 
-		// Sets field values, based on user preferences
+        // Sets field values, based on user preferences
         cardField.setText(card.getName());
         switch (primaryField) {
             case ANNUAL_FEE:

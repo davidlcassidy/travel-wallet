@@ -24,19 +24,7 @@ will never have any insert or update queries run within the application and will
 be updated with new app versions.
  */
 
-public class RefDatabaseHelper extends SQLiteOpenHelper{
-
-	// Database version should be incremented for structural changes to the
-    // database. This will have users re-create their local database on the next app
-    // launch. Unlike the Main Database, updating database version will not result
-    // in loss of user data as long as the unique ID remains unchanged
-    public static int DATABASE_VERSION = 5;
-
-    private String DB_DIRECTORY;
-    private static String DB_NAME;
-    private String DB_PATH;
-    private SQLiteDatabase db;
-    private final Context context;
+public class RefDatabaseHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_LP_REF = "loyaltyprograms_ref";
     public static final String COLUMN_LP_ID = "_id";
@@ -47,7 +35,6 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     public static final String COLUMN_LP_INACTIVITYEXPIRATION = "inactivityExpiration";
     public static final String COLUMN_LP_EXPIRATIONOVERRIDE = "expirationOverride";
     public static final String COLUMN_LP_DEPRECIATED = "depreciated";
-
     public static final String TABLE_CC_REF = "creditcards_ref";
     public static final String COLUMN_CC_ID = "_id";
     public static final String COLUMN_CC_LOGOID = "logoId";
@@ -58,6 +45,16 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
     public static final String COLUMN_CC_AF = "annualFee";
     public static final String COLUMN_CC_FTF = "foreignTransactionFee";
     public static final String COLUMN_CC_DEPRECIATED = "depreciated";
+    // Database version should be incremented for structural changes to the
+    // database. This will have users re-create their local database on the next app
+    // launch. Unlike the Main Database, updating database version will not result
+    // in loss of user data as long as the unique ID remains unchanged
+    public static int DATABASE_VERSION = 5;
+    private static String DB_NAME;
+    private final Context context;
+    private final String DB_DIRECTORY;
+    private final String DB_PATH;
+    private SQLiteDatabase db;
 
     public RefDatabaseHelper(Context context) {
         super(context, DB_NAME, null, 1);
@@ -68,11 +65,11 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
     }
 
-    public SQLiteDatabase getDB()  {
-        if(db == null){
+    public SQLiteDatabase getDB() {
+        if (db == null) {
             createDataBaseFromAppAssetsDir();
             db = SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
-            }
+        }
         return db;
     }
 
@@ -86,7 +83,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
             byte[] buffer = new byte[1024];
             int length;
-            while ((length = myInput.read(buffer))>0){
+            while ((length = myInput.read(buffer)) > 0) {
                 myOutput.write(buffer, 0, length);
             }
 
@@ -100,7 +97,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public synchronized void close() {
-        if(db != null)
+        if (db != null)
             db.close();
         super.close();
     }
@@ -115,7 +112,7 @@ public class RefDatabaseHelper extends SQLiteOpenHelper{
         createDataBaseFromAppAssetsDir();
     }
 
-    public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy){
+    public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         return db.query("EMP_TABLE", null, null, null, null, null, null);
     }
 }

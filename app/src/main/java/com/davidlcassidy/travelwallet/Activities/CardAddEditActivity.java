@@ -69,6 +69,12 @@ public class CardAddEditActivity extends BaseActivity_Save {
     private EditText creditLimitField, notesField;
     private LinearLayout userLayout, afDateLayout, closeDateLayout;
 
+    // Hides keyboard input
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,36 +82,36 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
         cardDS = CardDataSource.getInstance(this);
         usersDS = UserDataSource.getInstance(this);
-		
-		// Gets card ID from intent. Card ID of -1 means add new card
+
+        // Gets card ID from intent. Card ID of -1 means add new card
         cardId = getIntent().getIntExtra("CARD_ID", -1);
 
         // Gets user defined data format
         dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
 
-		// Gets CardAddEdit activity fields
-        userField = (TextView) findViewById(R.id.userField);
-        bankField = (TextView) findViewById(R.id.bankField);
-        nameField = (TextView) findViewById(R.id.nameField);
-        statusField = (TextView) findViewById(R.id.statusField);
-        creditLimitField = (EditText) findViewById(R.id.creditLimitField);
-        openDateField = (TextView) findViewById(R.id.openDateField);
-        afDateField = (TextView) findViewById(R.id.afDateField);
-        closeDateField = (TextView) findViewById(R.id.closeDateField);
-        notesField = (EditText) findViewById(R.id.notesField);
+        // Gets CardAddEdit activity fields
+        userField = findViewById(R.id.userField);
+        bankField = findViewById(R.id.bankField);
+        nameField = findViewById(R.id.nameField);
+        statusField = findViewById(R.id.statusField);
+        creditLimitField = findViewById(R.id.creditLimitField);
+        openDateField = findViewById(R.id.openDateField);
+        afDateField = findViewById(R.id.afDateField);
+        closeDateField = findViewById(R.id.closeDateField);
+        notesField = findViewById(R.id.notesField);
 
         setClickListeners();
 
         // Dynamically set layout visibility
-        afDateLayout = (LinearLayout) findViewById(R.id.afDateLayout);
+        afDateLayout = findViewById(R.id.afDateLayout);
         afDateLayout.setVisibility(View.GONE);
 
-        closeDateLayout = (LinearLayout) findViewById(R.id.closeDateLayout);
+        closeDateLayout = findViewById(R.id.closeDateLayout);
         closeDateLayout.setVisibility(View.GONE);
 
-        userLayout = (LinearLayout) findViewById(R.id.userLayout);
+        userLayout = findViewById(R.id.userLayout);
         int numberOfUsers = usersDS.getAll(null, null, null).size();
-        if (numberOfUsers > 0){
+        if (numberOfUsers > 0) {
             userLayout.setVisibility(View.VISIBLE);
         } else {
             userLayout.setVisibility(View.GONE);
@@ -119,12 +125,12 @@ public class CardAddEditActivity extends BaseActivity_Save {
         country = appPreferences.getSetting_Country();
         currency = appPreferences.getSetting_Currency();
 
-		// If edit card, sets fields to current card values
+        // If edit card, sets fields to current card values
         if (cardId != -1) {
             CreditCard card = cardDS.getSingle(cardId);
             setTitle("Edit Credit Card");
 
-			// Sets activity fields
+            // Sets activity fields
             User cUser = card.getUser();
             String cBank = card.getBank();
             String cName = card.getName();
@@ -136,10 +142,17 @@ public class CardAddEditActivity extends BaseActivity_Save {
             String cNotes = card.getNotes();
 
             if (cUser != null) {
-                userField.setText(cUser.getName());}
-            if (cBank != null) {bankField.setText(cBank);}
-            if (cName != null) {nameField.setText(cName);}
-            if (cStatus != null) {statusField.setText(cStatus.getName());}
+                userField.setText(cUser.getName());
+            }
+            if (cBank != null) {
+                bankField.setText(cBank);
+            }
+            if (cName != null) {
+                nameField.setText(cName);
+            }
+            if (cStatus != null) {
+                statusField.setText(cStatus.getName());
+            }
 
             if (cCreditLimit != null) {
                 // Convert credit limit to user currency
@@ -147,10 +160,18 @@ public class CardAddEditActivity extends BaseActivity_Save {
                 creditLimitField.setText(String.valueOf(cLocalCreditLimit));
             }
 
-            if (cOpenDate != null) {openDateField.setText(dateFormat.format(cOpenDate));}
-            if (cAFDate != null) {afDateField.setText(dateFormat.format(cAFDate));}
-            if (cCloseDate != null) {closeDateField.setText(dateFormat.format(cCloseDate));}
-            if (cNotes != null) {notesField.setText(cNotes);}
+            if (cOpenDate != null) {
+                openDateField.setText(dateFormat.format(cOpenDate));
+            }
+            if (cAFDate != null) {
+                afDateField.setText(dateFormat.format(cAFDate));
+            }
+            if (cCloseDate != null) {
+                closeDateField.setText(dateFormat.format(cCloseDate));
+            }
+            if (cNotes != null) {
+                notesField.setText(cNotes);
+            }
 
             updateAnnualFeeDateFieldVisibility();
             updateCloseDateFieldVisibility();
@@ -172,7 +193,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
         }
     }
 
-	// Hides annual fee date field for cards with no annual fee or when no card is selected
+    // Hides annual fee date field for cards with no annual fee or when no card is selected
     private void updateAnnualFeeDateFieldVisibility() {
         String bankName = bankField.getText().toString();
         String cardName = nameField.getText().toString();
@@ -188,7 +209,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
         }
     }
 
-	// Runs when save button is clicked
+    // Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
         String userName = userField.getText().toString();
@@ -196,14 +217,14 @@ public class CardAddEditActivity extends BaseActivity_Save {
 
         String cardName = nameField.getText().toString();
         CardStatus cardStatus = CardStatus.fromName(statusField.getText().toString());
-        if (cardStatus == null){
+        if (cardStatus == null) {
             cardStatus = CardStatus.OPEN;
         }
         String creditLimitString = creditLimitField.getText().toString();
         BigDecimal creditLimit;
         if (creditLimitString.equals("")) {
             creditLimit = new BigDecimal(0);
-        } else{
+        } else {
             creditLimit = new BigDecimal(creditLimitField.getText().toString());
 
             // Convert to USD for database
@@ -233,17 +254,17 @@ public class CardAddEditActivity extends BaseActivity_Save {
         Integer cardRefId = cardDS.getCardRefId(bankString, cardName);
 
         // Checks that credit card is selected
-        if(cardName.equals("")) {
+        if (cardName.equals("")) {
             Toast.makeText(CardAddEditActivity.this, "Please select a credit card.", Toast.LENGTH_LONG).show();
-			
-		// Creates card if new
+
+            // Creates card if new
         } else if (cardId == -1) {
             cardDS.create(cardRefId, user, cardStatus, creditLimit, openDate, afDate, closeDate, notes);
             appPreferences.setCardFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(CardAddEditActivity.this, cardName + " card added.", Toast.LENGTH_SHORT).show();
-			
-		// Updates card if existing with new values from fields
+
+            // Updates card if existing with new values from fields
         } else {
             CreditCard card = cardDS.getSingle(cardId);
             card.setRefId(cardRefId);
@@ -280,7 +301,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             case CARD_NAME:
                 String bank = bankField.getText().toString();
                 selectionList = cardDS.getAvailableCards(country, bank, true);
-                if (selectionList.size() > 0){
+                if (selectionList.size() > 0) {
                     title = "Select " + bank + " Card";
                 } else {
                     // Sends user a message if no bank was selected
@@ -339,7 +360,8 @@ public class CardAddEditActivity extends BaseActivity_Save {
                             break;
                     }
                 }
-            }});
+            }
+        });
 
         // Creates dialog
         AlertDialog dialog = builder.create();
@@ -350,18 +372,18 @@ public class CardAddEditActivity extends BaseActivity_Save {
     }
 
     // Toggles between card statuses
-    private void statusFieldClick () {
+    private void statusFieldClick() {
         CardStatus currentValue = CardStatus.fromName(statusField.getText().toString());
-        if (currentValue == CardStatus.OPEN){
+        if (currentValue == CardStatus.OPEN) {
             statusField.setText(CardStatus.CLOSED.getName());
-        } else if (currentValue == CardStatus.CLOSED){
+        } else if (currentValue == CardStatus.CLOSED) {
             statusField.setText(CardStatus.OPEN.getName());
         }
         updateCloseDateFieldVisibility();
     }
 
-	// Displays date picker dialog for user selection of card open date
-    private void openDateFieldClick (){
+    // Displays date picker dialog for user selection of card open date
+    private void openDateFieldClick() {
 
         // Sets currently selected date in dialog to the date in the field
         Calendar cal = Calendar.getInstance();
@@ -374,7 +396,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
                 lastActivityDate = card.getOpenDate();
             }
         }
-        if (lastActivityDate != null){
+        if (lastActivityDate != null) {
             cal.setTime(lastActivityDate);
         }
         int year = cal.get(Calendar.YEAR);
@@ -416,8 +438,8 @@ public class CardAddEditActivity extends BaseActivity_Save {
         });
     }
 
-	// Displays date picker dialog for user selection of card annual fee date
-    private void annualFeeDateFieldClick(){
+    // Displays date picker dialog for user selection of card annual fee date
+    private void annualFeeDateFieldClick() {
 
         // Sets currently selected date in dialog to the date in the field
         Calendar cal = Calendar.getInstance();
@@ -430,7 +452,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
                 annualFeeDate = card.getAfDate();
             }
         }
-        if (annualFeeDate != null){
+        if (annualFeeDate != null) {
             cal.setTime(annualFeeDate);
         }
         int year = cal.get(Calendar.YEAR);
@@ -465,7 +487,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
     }
 
     // Displays date picker dialog for user selection of card close date
-    private void closeDateFieldClick(){
+    private void closeDateFieldClick() {
 
         // Sets currently selected date in dialog to the date in the field
         Calendar cal = Calendar.getInstance();
@@ -478,7 +500,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
                 closeDate = card.getCloseDate();
             }
         }
-        if (closeDate != null){
+        if (closeDate != null) {
             cal.setTime(closeDate);
         }
         int year = cal.get(Calendar.YEAR);
@@ -512,12 +534,12 @@ public class CardAddEditActivity extends BaseActivity_Save {
         });
     }
 
-	// Sets all click listeners so all label clicks match actions of field clicks
-    private void setClickListeners(){
+    // Sets all click listeners so all label clicks match actions of field clicks
+    private void setClickListeners() {
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        final RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
+        final RelativeLayout mainLayout = findViewById(R.id.mainLayout);
 
-        LinearLayout userLayout = (LinearLayout) findViewById(R.id.userLayout);
+        LinearLayout userLayout = findViewById(R.id.userLayout);
         userLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -527,7 +549,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        LinearLayout bankLayout = (LinearLayout) findViewById(R.id.bankLayout);
+        LinearLayout bankLayout = findViewById(R.id.bankLayout);
         bankLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -537,7 +559,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
+        LinearLayout nameLayout = findViewById(R.id.nameLayout);
         nameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -547,7 +569,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        LinearLayout statusLayout = (LinearLayout) findViewById(R.id.statusLayout);
+        LinearLayout statusLayout = findViewById(R.id.statusLayout);
         statusLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -557,7 +579,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        LinearLayout creditLimitLayout = (LinearLayout) findViewById(R.id.creditLimitLayout);
+        LinearLayout creditLimitLayout = findViewById(R.id.creditLimitLayout);
         creditLimitLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -573,7 +595,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        LinearLayout openDateLayout = (LinearLayout) findViewById(R.id.openDateLayout);
+        LinearLayout openDateLayout = findViewById(R.id.openDateLayout);
         openDateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -583,7 +605,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        LinearLayout afDateLayout = (LinearLayout) findViewById(R.id.afDateLayout);
+        LinearLayout afDateLayout = findViewById(R.id.afDateLayout);
         afDateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -593,7 +615,7 @@ public class CardAddEditActivity extends BaseActivity_Save {
             }
         });
 
-        LinearLayout closeDateLayout = (LinearLayout) findViewById(R.id.closeDateLayout);
+        LinearLayout closeDateLayout = findViewById(R.id.closeDateLayout);
         closeDateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -602,12 +624,6 @@ public class CardAddEditActivity extends BaseActivity_Save {
                 closeDateFieldClick();
             }
         });
-    };
-
-    // Hides keyboard input
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
 }

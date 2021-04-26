@@ -33,10 +33,10 @@ public class DevelopersNoteActivity extends BaseActivity_BackOnly {
         setContentView(R.layout.activity_textbutton);
         setTitle("Developer's Note");
 
-        title = (TextView) findViewById(R.id.title);
+        title = findViewById(R.id.title);
         title.setText(getAppName() + " " + getAppVersion());
 
-        text = (TextView) findViewById(R.id.text);
+        text = findViewById(R.id.text);
         text.setText(
                 "I hope you find this app helpful for tracking your loyalty programs and " +
                         "credit cards. Please let me know if you find any value in this app. I " +
@@ -58,7 +58,7 @@ public class DevelopersNoteActivity extends BaseActivity_BackOnly {
         );
         Linkify.addLinks(text, Linkify.ALL);
 
-        button = (Button) findViewById(R.id.button);
+        button = findViewById(R.id.button);
         button.setVisibility(View.GONE);
 
     }

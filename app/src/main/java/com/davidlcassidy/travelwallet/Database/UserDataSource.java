@@ -11,9 +11,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
-import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 
@@ -38,6 +38,18 @@ public class UserDataSource {
     private static String tableNameMain;
     private static String[] tableColumnsMain;
 
+    private UserDataSource(Context c) {
+        appPreferences = AppPreferences.getInstance(c);
+        context = c;
+        dbHelperMain = new MainDatabaseHelper(context);
+        dbMain = dbHelperMain.getDB();
+
+        tableNameMain = MainDatabaseHelper.TABLE_U;
+        Cursor dbCursor1 = dbMain.query(tableNameMain, null, null, null, null, null, null);
+        tableColumnsMain = dbCursor1.getColumnNames();
+        dbCursor1.close();
+    }
+
     public static UserDataSource getInstance(Context context) {
         if (instance == null) {
             instance = new UserDataSource(context);
@@ -45,50 +57,38 @@ public class UserDataSource {
         return instance;
     }
 
-    private UserDataSource(Context c) {
-        appPreferences = AppPreferences.getInstance(c);
-        context = c;
-        dbHelperMain = new MainDatabaseHelper(context);
-        dbMain = dbHelperMain.getDB();
-
-        tableNameMain = dbHelperMain.TABLE_U;
-        Cursor dbCursor1 = dbMain.query(tableNameMain, null, null, null, null, null, null);
-        tableColumnsMain = dbCursor1.getColumnNames();
-        dbCursor1.close();
-    }
-
-	// Creates new user and inserts into main database
+    // Creates new user and inserts into main database
     public User create(String name, String notes) {
         ContentValues values = new ContentValues();
-        values.put(dbHelperMain.COLUMN_U_NAME, name);
-        values.put(dbHelperMain.COLUMN_U_NOTES, notes);
+        values.put(MainDatabaseHelper.COLUMN_U_NAME, name);
+        values.put(MainDatabaseHelper.COLUMN_U_NOTES, notes);
 
         long insertId = dbMain.insert(tableNameMain, null, values);
-        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_CC_ID + " = " + insertId, null, null, null, null);
+        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, MainDatabaseHelper.COLUMN_CC_ID + " = " + insertId, null, null, null, null);
         cursor.moveToFirst();
         User newUser = cursorToUser(cursor);
         cursor.close();
         return newUser;
     }
 
-	// Deletes all users
-    public void deleteAll(){
+    // Deletes all users
+    public void deleteAll() {
         dbMain.delete(tableNameMain, null, null);
     }
 
-	// Deletes specific user
+    // Deletes specific user
     public void delete(User user) {
         int id = user.getId();
         delete(id);
     }
 
-	// Deletes specific user, based on user ID
+    // Deletes specific user, based on user ID
     public void delete(int userID) {
-        dbMain.delete(tableNameMain, dbHelperMain.COLUMN_U_ID + " = " + userID, null);
+        dbMain.delete(tableNameMain, MainDatabaseHelper.COLUMN_U_ID + " = " + userID, null);
     }
 
-	// Returns a list of all users in database, sorted by sortField parameter
-    public ArrayList <User> getAll(ItemField sortField, ProgramDataSource programDS, CardDataSource cardDS){
+    // Returns a list of all users in database, sorted by sortField parameter
+    public ArrayList<User> getAll(ItemField sortField, ProgramDataSource programDS, CardDataSource cardDS) {
         ArrayList<User> userList = new ArrayList<User>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
@@ -111,7 +111,7 @@ public class UserDataSource {
         cursor.close();
 
         //Defines default sort order
-        if (sortField == null || programDS == null || cardDS == null){
+        if (sortField == null || programDS == null || cardDS == null) {
             sortField = ItemField.USER_NAME;
         }
 
@@ -147,7 +147,7 @@ public class UserDataSource {
     }
 
     // Returns a list of all user names in database
-    public ArrayList <String> getAllNames(){
+    public ArrayList<String> getAllNames() {
         ArrayList<String> nameList = new ArrayList<String>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
@@ -172,9 +172,9 @@ public class UserDataSource {
         return nameList;
     }
 
-	// Returns a single user by user ID
+    // Returns a single user by user ID
     public User getSingle(int id, ProgramDataSource programDS, CardDataSource cardDS) {
-        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_U_ID + " = " + id, null, null, null, null);
+        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, MainDatabaseHelper.COLUMN_U_ID + " = " + id, null, null, null, null);
         User user = null;
         if (cursor.moveToFirst()) {
             user = cursorToUser(cursor);
@@ -194,11 +194,11 @@ public class UserDataSource {
     public User getSingle(String userName, ProgramDataSource programDS, CardDataSource cardDS) {
         Integer userId = null;
         Cursor cursor = dbMain.query(tableNameMain, new String[]
-                {dbHelperMain.COLUMN_U_ID, dbHelperMain.COLUMN_U_NAME},
+                        {MainDatabaseHelper.COLUMN_U_ID, MainDatabaseHelper.COLUMN_U_NAME},
                 null, null, null, null, null);
         if (cursor.moveToFirst()) {
-            int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_U_ID);
-            int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_U_NAME);
+            int mainIndex_id = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_U_ID);
+            int mainIndex_name = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_U_NAME);
             while (!cursor.isAfterLast()) {
                 Integer id = cursor.getInt(mainIndex_id);
                 String name = cursor.getString(mainIndex_name);
@@ -214,25 +214,25 @@ public class UserDataSource {
     }
 
 
-	// Update all fields for an individual user in the main database
-    public int update(User user)  {
+    // Update all fields for an individual user in the main database
+    public int update(User user) {
         Integer ID = user.getId();
         String name = user.getName();
         String notes = user.getNotes();
 
         ContentValues values = new ContentValues();
-        values.put(dbHelperMain.COLUMN_U_NAME, name);
-        values.put(dbHelperMain.COLUMN_CC_NOTES, notes);
+        values.put(MainDatabaseHelper.COLUMN_U_NAME, name);
+        values.put(MainDatabaseHelper.COLUMN_CC_NOTES, notes);
 
-        int numOfRows = dbMain.update(tableNameMain, values, dbHelperMain.COLUMN_CC_ID + "=" + ID, null);
+        int numOfRows = dbMain.update(tableNameMain, values, MainDatabaseHelper.COLUMN_CC_ID + "=" + ID, null);
         return numOfRows;
     }
 
     // Converts database cursor to user
-    private User cursorToUser(Cursor cursor)  {
-        int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_U_ID);
-        int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_U_NAME);
-        int mainIndex_notes = cursor.getColumnIndex(dbHelperMain.COLUMN_U_NOTES);
+    private User cursorToUser(Cursor cursor) {
+        int mainIndex_id = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_U_ID);
+        int mainIndex_name = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_U_NAME);
+        int mainIndex_notes = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_U_NOTES);
 
         Integer id = cursor.getInt(mainIndex_id);
         String name = cursor.getString(mainIndex_name);

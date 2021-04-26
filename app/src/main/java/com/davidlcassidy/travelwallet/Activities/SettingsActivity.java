@@ -51,16 +51,16 @@ public class SettingsActivity extends BaseActivity_Save {
         setContentView(R.layout.activity_settings);
         setTitle("Settings");
 
-		// Gets Settings activity fields
-        initialSummaryField = (TextView) findViewById(R.id.initialSummaryField);
-        phoneNotificationsField = (TextView) findViewById(R.id.phoneNotificationsField);
-        countryField = (TextView) findViewById(R.id.countryField);
-        languageField = (TextView) findViewById(R.id.languageField);
-        currencyField = (TextView) findViewById(R.id.currencyField);
-        dateField = (TextView) findViewById(R.id.dateField);
-        colorSchemeField = (TextView) findViewById(R.id.colorSchemeField);
+        // Gets Settings activity fields
+        initialSummaryField = findViewById(R.id.initialSummaryField);
+        phoneNotificationsField = findViewById(R.id.phoneNotificationsField);
+        countryField = findViewById(R.id.countryField);
+        languageField = findViewById(R.id.languageField);
+        currencyField = findViewById(R.id.currencyField);
+        dateField = findViewById(R.id.dateField);
+        colorSchemeField = findViewById(R.id.colorSchemeField);
 
-		// Sets activity click listeners
+        // Sets activity click listeners
         setClickListeners();
 
     }
@@ -68,7 +68,7 @@ public class SettingsActivity extends BaseActivity_Save {
     protected void onResume() {
         super.onResume();
 
-		// Gets values from user preferences
+        // Gets values from user preferences
         String initialSummary = appPreferences.getSetting_InitialSummary() ? "ON" : "OFF";
         String phoneNotifications = appPreferences.getSetting_PhoneNotifications() ? "ON" : "OFF";
         Country country = appPreferences.getSetting_Country();
@@ -77,7 +77,7 @@ public class SettingsActivity extends BaseActivity_Save {
         DatePattern datePattern = appPreferences.getSetting_DatePattern();
         ColorScheme colorScheme = appPreferences.getSetting_ColorScheme();
 
-		// Sets activity fields to values from user preferences
+        // Sets activity fields to values from user preferences
         initialSummaryField.setText(initialSummary);
         phoneNotificationsField.setText(phoneNotifications);
         countryField.setText(country.getName());
@@ -87,11 +87,11 @@ public class SettingsActivity extends BaseActivity_Save {
         colorSchemeField.setText(colorScheme.getName());
     }
 
-	// Runs when save button is clicked
+    // Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
 
-		// Gets values from activity fields
+        // Gets values from activity fields
         boolean initialSummary = initialSummaryField.getText().toString().equals("ON");
         boolean phoneNotifications = phoneNotificationsField.getText().toString().equals("ON");
         Country country = Country.fromName(countryField.getText().toString());
@@ -100,7 +100,7 @@ public class SettingsActivity extends BaseActivity_Save {
         DatePattern date = DatePattern.fromSampleDate(dateField.getText().toString());
         ColorScheme colorScheme = ColorScheme.fromName(colorSchemeField.getText().toString());
 
-		// Saves values from activity fields to user preferences
+        // Saves values from activity fields to user preferences
         appPreferences.setSetting_InitialSummary(initialSummary);
         appPreferences.setSetting_PhoneNotifications(phoneNotifications);
         appPreferences.setSetting_Country(country);
@@ -111,27 +111,27 @@ public class SettingsActivity extends BaseActivity_Save {
 
         appPreferences.setFiltersUpdateRequired(true);
 
-		//Closes activity and sends success message to user
+        //Closes activity and sends success message to user
         finish();
         Toast.makeText(SettingsActivity.this, "Settings updated.", Toast.LENGTH_SHORT).show();
     }
 
-	// Toggles initial summary on/off
-    private void initialSummaryFieldClick () {
+    // Toggles initial summary on/off
+    private void initialSummaryFieldClick() {
         String currentValue = initialSummaryField.getText().toString();
-        if (currentValue.equals("ON")){
+        if (currentValue.equals("ON")) {
             initialSummaryField.setText("OFF");
-        } else if (currentValue.equals("OFF")){
+        } else if (currentValue.equals("OFF")) {
             initialSummaryField.setText("ON");
         }
     }
 
     // Toggles phone notifications on/off
-    private void phoneNotificationsFieldClick () {
+    private void phoneNotificationsFieldClick() {
         String currentValue = phoneNotificationsField.getText().toString();
-        if (currentValue.equals("ON")){
+        if (currentValue.equals("ON")) {
             phoneNotificationsField.setText("OFF");
-        } else if (currentValue.equals("OFF")){
+        } else if (currentValue.equals("OFF")) {
             phoneNotificationsField.setText("ON");
         }
     }
@@ -229,56 +229,63 @@ public class SettingsActivity extends BaseActivity_Save {
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-	// Sets layout click listeners
-    private void setClickListeners (){
+    // Sets layout click listeners
+    private void setClickListeners() {
 
-        LinearLayout initialSummaryLayout = (LinearLayout) findViewById(R.id.initialSummaryLayout);
+        LinearLayout initialSummaryLayout = findViewById(R.id.initialSummaryLayout);
         initialSummaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 initialSummaryFieldClick();
-            }});
+            }
+        });
 
-        LinearLayout phoneNotificationsLayout = (LinearLayout) findViewById(R.id.phoneNotificationsLayout);
+        LinearLayout phoneNotificationsLayout = findViewById(R.id.phoneNotificationsLayout);
         phoneNotificationsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 phoneNotificationsFieldClick();
-            }});
+            }
+        });
 
-        LinearLayout countryLayout = (LinearLayout) findViewById(R.id.countryLayout);
+        LinearLayout countryLayout = findViewById(R.id.countryLayout);
         countryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("country");
-            }});
+            }
+        });
 
-        LinearLayout languageLayout = (LinearLayout) findViewById(R.id.languageLayout);
+        LinearLayout languageLayout = findViewById(R.id.languageLayout);
         languageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("language");
-            }});
+            }
+        });
 
-        LinearLayout currencyLayout = (LinearLayout) findViewById(R.id.currencyLayout);
+        LinearLayout currencyLayout = findViewById(R.id.currencyLayout);
         currencyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("currency");
-            }});
+            }
+        });
 
-        LinearLayout dateLayout = (LinearLayout) findViewById(R.id.dateLayout);
+        LinearLayout dateLayout = findViewById(R.id.dateLayout);
         dateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("date");
-            }});
+            }
+        });
 
-        LinearLayout colorLayout = (LinearLayout) findViewById(R.id.colorSchemeLayout);
+        LinearLayout colorLayout = findViewById(R.id.colorSchemeLayout);
         colorLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("color");
-            }});
+            }
+        });
     }
 }

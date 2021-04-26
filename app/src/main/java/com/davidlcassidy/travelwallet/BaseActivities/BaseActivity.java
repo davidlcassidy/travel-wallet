@@ -18,10 +18,10 @@ import android.util.TypedValue;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.davidlcassidy.travelwallet.Classes.GooglePlayStore;
 import com.davidlcassidy.travelwallet.Classes.AppPreferences;
-import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
+import com.davidlcassidy.travelwallet.Classes.GooglePlayStore;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
+import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
 import com.davidlcassidy.travelwallet.R;
 
 /*
@@ -32,8 +32,8 @@ configure the layout scheme and toolbar.
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private Toolbar toolBar;
     protected AppPreferences appPreferences;
+    private Toolbar toolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,49 +50,49 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public void setContentView(int layoutResID) {
-		
-		// Configures base activity layout
+
+        // Configures base activity layout
         LinearLayout baseActivityLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_base, null);
-        FrameLayout activityContainer = (FrameLayout) baseActivityLayout.findViewById(R.id.contentFrame);
+        FrameLayout activityContainer = baseActivityLayout.findViewById(R.id.contentFrame);
         activityContainer.setBackgroundColor(Color.WHITE);
         getLayoutInflater().inflate(layoutResID, activityContainer, true);
         super.setContentView(baseActivityLayout);
-		
-		// Configures toolbar
-        toolBar = (Toolbar) findViewById(R.id.toolbar);
+
+        // Configures toolbar
+        toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         setDisplayHomeEnabled(true);
-		
-		// Configures navigation icon (back button) on toolbar
+
+        // Configures navigation icon (back button) on toolbar
         Drawable drawable = toolBar.getNavigationIcon();
         drawable.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         boolean recreateRequired = false;
 
         // If color scheme has been changed, recreate activity with new color scheme
         String currentTheme = getCurrentColorSchemeName();
         String newTheme = appPreferences.getSetting_ColorScheme().getName();
-        if (!currentTheme.equals(newTheme)){
+        if (!currentTheme.equals(newTheme)) {
             recreateRequired = true;
         }
 
-        if (recreateRequired){
+        if (recreateRequired) {
             recreate();
         }
     }
 
-	// Sets if action bar is enabled
-	public void setDisplayHomeEnabled(boolean b) {
+    // Sets if action bar is enabled
+    public void setDisplayHomeEnabled(boolean b) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(b);
         }
     }
-	
-	// Sets title in toolbar
+
+    // Sets title in toolbar
     @Override
     public void setTitle(CharSequence title) {
         toolBar.setTitle(title);
@@ -100,15 +100,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     // Gets name of color scheme in current theme
-    private String getCurrentColorSchemeName(){
+    private String getCurrentColorSchemeName() {
         TypedValue outValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.themeName, outValue, true);
         return (String) outValue.string;
     }
 
     // Gets theme specific color of attribute
-    protected int getThemeColor(int attribute){
-        int[] attributeArray = new int[] {attribute};
+    protected int getThemeColor(int attribute) {
+        int[] attributeArray = new int[]{attribute};
         return this.getTheme().obtainStyledAttributes(attributeArray).getColor(0, 0);
     }
 
@@ -121,7 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public String getAppVersion(){
+    public String getAppVersion() {
         try {
             return "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {

@@ -57,19 +57,19 @@ public class CustomizeActivity extends BaseActivity_Save {
         setContentView(R.layout.activity_customize);
         setTitle("Customize");
 
-		// Gets Customizations activity fields
-        userPrimaryField = (TextView) findViewById(R.id.userPrimaryField);
-        userSortField = (TextView) findViewById(R.id.userSortField);
-        programPrimaryField = (TextView) findViewById(R.id.programPrimaryField);
-        programSortField = (TextView) findViewById(R.id.programSortField);
-        programNotificationField = (TextView) findViewById(R.id.programNotificationField);
-        programFiltersField = (TextView) findViewById(R.id.programFiltersField);
-        cardPrimaryField = (TextView) findViewById(R.id.cardPrimaryField);
-        cardSortField = (TextView) findViewById(R.id.cardSortField);
-        cardNotificationField = (TextView) findViewById(R.id.cardNotificationField);
-        cardFiltersField = (TextView) findViewById(R.id.cardFiltersField);
+        // Gets Customizations activity fields
+        userPrimaryField = findViewById(R.id.userPrimaryField);
+        userSortField = findViewById(R.id.userSortField);
+        programPrimaryField = findViewById(R.id.programPrimaryField);
+        programSortField = findViewById(R.id.programSortField);
+        programNotificationField = findViewById(R.id.programNotificationField);
+        programFiltersField = findViewById(R.id.programFiltersField);
+        cardPrimaryField = findViewById(R.id.cardPrimaryField);
+        cardSortField = findViewById(R.id.cardSortField);
+        cardNotificationField = findViewById(R.id.cardNotificationField);
+        cardFiltersField = findViewById(R.id.cardFiltersField);
 
-		// Sets activity click listeners
+        // Sets activity click listeners
         setClickListeners();
 
     }
@@ -77,7 +77,7 @@ public class CustomizeActivity extends BaseActivity_Save {
     protected void onResume() {
         super.onResume();
 
-		// Gets values from user preferences
+        // Gets values from user preferences
         ItemField userPrimary = appPreferences.getCustom_UserPrimaryField();
         ItemField userSort = appPreferences.getCustom_UserSortField();
         ItemField programPrimary = appPreferences.getCustom_ProgramPrimaryField();
@@ -89,7 +89,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         String cardNotificationPeriod = appPreferences.getCustom_CardNotificationPeriod();
         String cardFilters = appPreferences.getCustom_CardFilters() ? "ON" : "OFF";
 
-		// Sets activity fields to values from user preferences
+        // Sets activity fields to values from user preferences
         userPrimaryField.setText(userPrimary.getName());
         userSortField.setText(userSort.getName());
         programPrimaryField.setText(programPrimary.getName());
@@ -102,11 +102,11 @@ public class CustomizeActivity extends BaseActivity_Save {
         cardFiltersField.setText(cardFilters);
     }
 
-	// Runs when save button is clicked
+    // Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
 
-		// Gets values from activity fields
+        // Gets values from activity fields
         ItemField userPrimary = ItemField.fromName(userPrimaryField.getText().toString());
         ItemField userSort = ItemField.fromName(userSortField.getText().toString());
         ItemField programPrimary = ItemField.fromName(programPrimaryField.getText().toString());
@@ -118,7 +118,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         String cardNotificationPeriod = getNotificationField(ItemType.CREDIT_CARD);
         boolean cardFilters = cardFiltersField.getText().toString().equals("ON");
 
-		// Saves values from activity fields to user preferences
+        // Saves values from activity fields to user preferences
         appPreferences.setCustom_UserPrimaryField(userPrimary);
         appPreferences.setCustom_UserSortField(userSort);
         appPreferences.setCustom_ProgramPrimaryField(programPrimary);
@@ -132,39 +132,39 @@ public class CustomizeActivity extends BaseActivity_Save {
 
         appPreferences.setFiltersUpdateRequired(true);
 
-		//Closes activity and sends success message to user
+        //Closes activity and sends success message to user
         finish();
         Toast.makeText(CustomizeActivity.this, "Customizations updated.", Toast.LENGTH_SHORT).show();
     }
 
     // Displays time period spinner dialog for user selection
-    private void programNotificationFieldClick(){
+    private void programNotificationFieldClick() {
         String title = "Set Program Expiration Notice";
         spinnerDialog(title, ItemType.LOYALTY_PROGRAM);
     }
 
     // Toggles program filters on/off
-    private void programFiltersFieldClick () {
+    private void programFiltersFieldClick() {
         String currentValue = programFiltersField.getText().toString();
-        if (currentValue.equals("ON")){
+        if (currentValue.equals("ON")) {
             programFiltersField.setText("OFF");
-        } else if (currentValue.equals("OFF")){
+        } else if (currentValue.equals("OFF")) {
             programFiltersField.setText("ON");
         }
     }
 
     // Displays time period spinner dialog for user selection
-    private void cardNotificationFieldClick(){
+    private void cardNotificationFieldClick() {
         String selectionList = "Set Card AF Notice";
         spinnerDialog(selectionList, ItemType.CREDIT_CARD);
     }
 
     // Toggles card filters on/off
-    private void cardFiltersFieldClick () {
+    private void cardFiltersFieldClick() {
         String currentValue = cardFiltersField.getText().toString();
-        if (currentValue.equals("ON")){
+        if (currentValue.equals("ON")) {
             cardFiltersField.setText("OFF");
-        } else if (currentValue.equals("OFF")){
+        } else if (currentValue.equals("OFF")) {
             cardFiltersField.setText("ON");
         }
     }
@@ -289,26 +289,26 @@ public class CustomizeActivity extends BaseActivity_Save {
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-	// Creates standard time period spinner dialog
+    // Creates standard time period spinner dialog
     private void spinnerDialog(String title, final ItemType itemType) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeActivity.this);
-		builder.setTitle(title);
-        
-		// Gets and inflates layout
+        builder.setTitle(title);
+
+        // Gets and inflates layout
         LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View npView = inflater.inflate(R.layout.dialog_alertperiodpicker, null);
-		builder.setView(npView);
-		
-		// Creates new number picker
-        final NumberPicker numPicker = (NumberPicker) npView.findViewById(R.id.numPicker);
+        builder.setView(npView);
+
+        // Creates new number picker
+        final NumberPicker numPicker = npView.findViewById(R.id.numPicker);
         numPicker.setMinValue(1);
         numPicker.setMaxValue(50);
-        final NumberPicker periodPicker = (NumberPicker) npView.findViewById(R.id.periodPicker);
+        final NumberPicker periodPicker = npView.findViewById(R.id.periodPicker);
         final List<String> periodList = Arrays.asList("Days", "Weeks", "Months");
         periodPicker.setMinValue(0);
-        periodPicker.setMaxValue(periodList.size()-1);
+        periodPicker.setMaxValue(periodList.size() - 1);
 
-		// Sets currently selected time period in dialog to the time period in the notification field
+        // Sets currently selected time period in dialog to the time period in the notification field
         String notificationPeriod = getNotificationField(itemType);
         String[] notificationArray = notificationPeriod.split(" ");
         numPicker.setValue(Integer.valueOf(notificationArray[0]));
@@ -324,7 +324,7 @@ public class CustomizeActivity extends BaseActivity_Save {
                 break;
         }
 
-		// Sets text in period picker
+        // Sets text in period picker
         periodPicker.setFormatter(new NumberPicker.Formatter() {
             @Override
             public String format(int value) {
@@ -345,8 +345,8 @@ public class CustomizeActivity extends BaseActivity_Save {
         // Runs with "Ok" button is clicked
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which){
-				// Sets notification field text to selected time period value
+            public void onClick(DialogInterface dialog, int which) {
+                // Sets notification field text to selected time period value
                 String selectedNum = String.valueOf(numPicker.getValue());
                 String selectedPeriod = String.valueOf(periodList.get(periodPicker.getValue()));
                 if (!selectedNum.equals(-1) && !selectedPeriod.equals(-1)) {
@@ -354,29 +354,28 @@ public class CustomizeActivity extends BaseActivity_Save {
                 }
             }
         });
-		
-		// Runs with "Cancel" button is clicked
+
+        // Runs with "Cancel" button is clicked
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			// Dialog closes with no further action
+            // Dialog closes with no further action
             @Override
-            public void onClick(DialogInterface dialog, int which){
-                ;
+            public void onClick(DialogInterface dialog, int which) {
             }
         });
 
-		// Creates dialog
+        // Creates dialog
         AlertDialog dialog = builder.create();
         dialog.show();
 
-		// Dims background while dialog is active
+        // Dims background while dialog is active
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-	// Sets notification field value from string. This was created to handle plurals.
+    // Sets notification field value from string. This was created to handle plurals.
     private void setNotificationField(ItemType itemType, String value) {
         String newValue = "";
-		
-		// Format time period value
+
+        // Format time period value
         String[] fieldValueArray = value.split(" ");
         Integer num = Integer.valueOf(fieldValueArray[0]);
         switch (fieldValueArray[1]) {
@@ -403,7 +402,7 @@ public class CustomizeActivity extends BaseActivity_Save {
                 break;
         }
 
-		// Save to notification field, depending on group
+        // Save to notification field, depending on group
         switch (itemType) {
             case LOYALTY_PROGRAM:
                 programNotificationField.setText(newValue);
@@ -414,11 +413,11 @@ public class CustomizeActivity extends BaseActivity_Save {
         }
     }
 
-	// Gets string value from notification field.  This was created to handle plurals.
-    private String getNotificationField (ItemType itemType){
+    // Gets string value from notification field.  This was created to handle plurals.
+    private String getNotificationField(ItemType itemType) {
         String fieldValue = "";
 
-		// Get value from notification field, depending on group
+        // Get value from notification field, depending on group
         switch (itemType) {
             case LOYALTY_PROGRAM:
                 fieldValue = programNotificationField.getText().toString();
@@ -428,83 +427,93 @@ public class CustomizeActivity extends BaseActivity_Save {
                 break;
         }
 
-		// Format time period value
+        // Format time period value
         String[] fieldValueArray = fieldValue.split(" ");
         fieldValueArray[1] = String.valueOf(fieldValueArray[1].charAt(0));
         return fieldValueArray[0] + " " + fieldValueArray[1];
     }
 
-	// Sets layout click listeners
-    private void setClickListeners (){
+    // Sets layout click listeners
+    private void setClickListeners() {
 
-        LinearLayout userPrimaryLayout = (LinearLayout) findViewById(R.id.userPrimaryLayout);
+        LinearLayout userPrimaryLayout = findViewById(R.id.userPrimaryLayout);
         userPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("userPrimary");
-            }});
+            }
+        });
 
-        LinearLayout userSortLayout = (LinearLayout) findViewById(R.id.userSortLayout);
+        LinearLayout userSortLayout = findViewById(R.id.userSortLayout);
         userSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("userSort");
-            }});
+            }
+        });
 
-        LinearLayout programPrimaryLayout = (LinearLayout) findViewById(R.id.programPrimaryLayout);
+        LinearLayout programPrimaryLayout = findViewById(R.id.programPrimaryLayout);
         programPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("programPrimary");
-            }});
+            }
+        });
 
-        LinearLayout programSortLayout = (LinearLayout) findViewById(R.id.programSortLayout);
+        LinearLayout programSortLayout = findViewById(R.id.programSortLayout);
         programSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("programSort");
-            }});
+            }
+        });
 
-        LinearLayout programNotificationLayout = (LinearLayout) findViewById(R.id.programNotificationLayout);
+        LinearLayout programNotificationLayout = findViewById(R.id.programNotificationLayout);
         programNotificationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 programNotificationFieldClick();
-            }});
+            }
+        });
 
-        LinearLayout programFiltersLayout = (LinearLayout) findViewById(R.id.programFiltersLayout);
+        LinearLayout programFiltersLayout = findViewById(R.id.programFiltersLayout);
         programFiltersLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 programFiltersFieldClick();
-            }});
+            }
+        });
 
-        LinearLayout cardPrimaryLayout = (LinearLayout) findViewById(R.id.cardPrimaryLayout);
+        LinearLayout cardPrimaryLayout = findViewById(R.id.cardPrimaryLayout);
         cardPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("cardPrimary");
-            }});
+            }
+        });
 
-        LinearLayout cardSortLayout = (LinearLayout) findViewById(R.id.cardSortLayout);
+        LinearLayout cardSortLayout = findViewById(R.id.cardSortLayout);
         cardSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("cardSort");
-            }});
+            }
+        });
 
-        LinearLayout cardNotificationLayout = (LinearLayout) findViewById(R.id.cardNotificationLayout);
+        LinearLayout cardNotificationLayout = findViewById(R.id.cardNotificationLayout);
         cardNotificationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardNotificationFieldClick();
-            }});
+            }
+        });
 
-        LinearLayout cardFiltersLayout = (LinearLayout) findViewById(R.id.cardFiltersLayout);
+        LinearLayout cardFiltersLayout = findViewById(R.id.cardFiltersLayout);
         cardFiltersLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardFiltersFieldClick();
-            }});
+            }
+        });
     }
 }

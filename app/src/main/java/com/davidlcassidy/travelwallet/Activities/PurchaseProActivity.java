@@ -45,18 +45,20 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
         setContentView(R.layout.activity_textbutton);
         setTitle("Upgrade to Pro");
 
-        title = (TextView) findViewById(R.id.title);
+        title = findViewById(R.id.title);
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         title.setText("Travel Wallet Pro features:");
 
-        text = (TextView) findViewById(R.id.text);
+        text = findViewById(R.id.text);
         text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
-        button = (Button) findViewById(R.id.button);
+        button = findViewById(R.id.button);
         button.setText("Close");
         button.setBackgroundColor(getResources().getColor(R.color.gray));
         button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) { finish(); }
+            public void onClick(View arg0) {
+                finish();
+            }
         });
 
         // Get pro price from store and add to text field

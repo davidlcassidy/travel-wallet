@@ -29,7 +29,9 @@ import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Main;
 import com.davidlcassidy.travelwallet.Classes.Constants;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
+import com.davidlcassidy.travelwallet.Classes.NotificationTimerService;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
+import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
@@ -37,10 +39,8 @@ import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.Fragments.CardListFragment;
 import com.davidlcassidy.travelwallet.Fragments.NotificationsListFragment;
-import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Fragments.ProgramListFragment;
 import com.davidlcassidy.travelwallet.R;
-import com.davidlcassidy.travelwallet.Classes.NotificationTimerService;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -70,42 +70,44 @@ public class MainActivity extends BaseActivity_Main {
         cardDS = CardDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
 
-		// Starts Notification Timer Service
+        // Starts Notification Timer Service
         startService(new Intent(this, NotificationTimerService.class));
 
-		// Attaches fragments to main activity
-        viewPager = (ViewPager) findViewById(R.id.mainView);
+        // Attaches fragments to main activity
+        viewPager = findViewById(R.id.mainView);
         setupViewPagerAdapter(viewPager);
 
         // Creates tab layout for navigation between fragments
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setBackgroundColor(getThemeColor(R.attr.colorPrimaryLight));
 
         // Hide FAB by default
-        fab = (FloatingActionButton) findViewById(R.id.fabPlus);
+        fab = findViewById(R.id.fabPlus);
         fab.hide();
 
         // Opens summary dialog if configured in user settings
-        if (appPreferences.getSetting_InitialSummary()){
+        if (appPreferences.getSetting_InitialSummary()) {
             showSummary();
         }
 
-		// Sets actions of floating "plus" button, depending on displayed fragment
+        // Sets actions of floating "plus" button, depending on displayed fragment
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
             @Override
             public void onPageSelected(int position) {
-				// Position indicates fragment position. Note that position has a zero index.
+                // Position indicates fragment position. Note that position has a zero index.
                 switch (position) {
 
-					//Loyalty Program Fragment
+                    //Loyalty Program Fragment
                     case 1:
                         fab.show();
                         fab.setOnClickListener(new View.OnClickListener() {
-							// Clicking floating "plus" button opens ProgramAddEdit Activity.
-							// Program ID of -1 indicates a adding a new program instead of editing an existing one
+                            // Clicking floating "plus" button opens ProgramAddEdit Activity.
+                            // Program ID of -1 indicates a adding a new program instead of editing an existing one
                             @Override
                             public void onClick(View v) {
                                 AppType appType = appPreferences.getAppType();
@@ -127,12 +129,12 @@ public class MainActivity extends BaseActivity_Main {
                         });
                         break;
 
-					// Credit Card Fragment
+                    // Credit Card Fragment
                     case 2:
                         fab.show();
                         fab.setOnClickListener(new View.OnClickListener() {
-							// Clicking floating "plus" button opens CardAddEdit Activity.
-							// Card ID of -1 indicates a adding a new card instead of editing an existing one
+                            // Clicking floating "plus" button opens CardAddEdit Activity.
+                            // Card ID of -1 indicates a adding a new card instead of editing an existing one
                             @Override
                             public void onClick(View v) {
                                 AppType appType = appPreferences.getAppType();
@@ -154,9 +156,9 @@ public class MainActivity extends BaseActivity_Main {
                         });
                         break;
 
-					// Default (Should only apply to Notifications Fragment)
+                    // Default (Should only apply to Notifications Fragment)
                     default:
-						// Floating "plus" button will be hidden and not user accessible.
+                        // Floating "plus" button will be hidden and not user accessible.
                         fab.hide();
                         break;
                 }
@@ -164,7 +166,6 @@ public class MainActivity extends BaseActivity_Main {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-				;
             }
         });
 
@@ -177,36 +178,6 @@ public class MainActivity extends BaseActivity_Main {
         adapter.addFragment(new ProgramListFragment(), "Loyalty\nPrograms");
         adapter.addFragment(new CardListFragment(), "Credit\nCards");
         viewPager.setAdapter(adapter);
-    }
-
-	// Adapter used to add fragments to viewPager
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 
     // Runs when users button is clicked
@@ -223,7 +194,7 @@ public class MainActivity extends BaseActivity_Main {
         View menuView = findViewById(R.id.menu_dropdown);
         PopupMenu popupMenu = new PopupMenu(this, menuView);
         AppType appType = appPreferences.getAppType();
-        if (appType == AppType.FREE){
+        if (appType == AppType.FREE) {
             popupMenu.inflate(R.menu.dropdown_pro);
         } else {
             popupMenu.inflate(R.menu.dropdown_free);
@@ -276,28 +247,28 @@ public class MainActivity extends BaseActivity_Main {
         Date today = new Date();
 
         // Gets dialog layout
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.dialog_summary, null);
 
         // Creates dialog
         final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
 
         // Gets summary layout fields
-        TextView programCount = (TextView) v.findViewById(R.id.programCountField);
-        TextView programNotifications = (TextView) v.findViewById(R.id.programNotificationsField);
-        TextView programValue = (TextView) v.findViewById(R.id.programValueField);
-        TextView cardCount = (TextView) v.findViewById(R.id.cardCountField);
-        TextView cardNotifications = (TextView) v.findViewById(R.id.cardNotificationsField);
-        TextView cardAF = (TextView) v.findViewById(R.id.cardAFField);
+        TextView programCount = v.findViewById(R.id.programCountField);
+        TextView programNotifications = v.findViewById(R.id.programNotificationsField);
+        TextView programValue = v.findViewById(R.id.programValueField);
+        TextView cardCount = v.findViewById(R.id.cardCountField);
+        TextView cardNotifications = v.findViewById(R.id.cardNotificationsField);
+        TextView cardAF = v.findViewById(R.id.cardAFField);
 
         // Sets title in dialog toolbar on top
-        Toolbar toolBar2 = (Toolbar) v.findViewById(R.id.toolbar);
+        Toolbar toolBar2 = v.findViewById(R.id.toolbar);
         toolBar2.setTitle("Summary");
 
         // Retrieves programs total value data and saves to summary dialog fields
         SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
         programCount.setText(String.valueOf(programDS.getAll(null, null, false).size()));
-        programNotifications.setText(String.valueOf(programDS.getAll(null,null,true).size()));
+        programNotifications.setText(String.valueOf(programDS.getAll(null, null, true).size()));
         ArrayList<LoyaltyProgram> programs = programDS.getAll(null, null, false);
         BigDecimal total = BigDecimal.valueOf(0);
         for (LoyaltyProgram p : programs) {
@@ -312,12 +283,12 @@ public class MainActivity extends BaseActivity_Main {
             NotificationStatus notificationStatus = program.getNotificationStatus();
             Date expDate = program.getExpirationDate();
             boolean hasExpirationDate = program.hasExpirationDate() && expDate != null;
-            if (notificationStatus != NotificationStatus.UNMONITORED && hasExpirationDate){
+            if (notificationStatus != NotificationStatus.UNMONITORED && hasExpirationDate) {
 
                 // Checks program if expiration date is in future and program has points
                 int points = program.getPoints();
                 if (expDate.compareTo(today) > 0 && points > 0) {
-                    TextView  programNextExpire = (TextView) v.findViewById(R.id.programNextExpireField);
+                    TextView programNextExpire = v.findViewById(R.id.programNextExpireField);
                     programNextExpire.setText(dateFormat.format(program.getExpirationDate()));
                     break;
                 }
@@ -325,7 +296,7 @@ public class MainActivity extends BaseActivity_Main {
         }
 
         // Retrieves cards total AF data and saves to summary dialog field
-        cardCount.setText(String.valueOf(cardDS.getAll(null, null, false,false).size()));
+        cardCount.setText(String.valueOf(cardDS.getAll(null, null, false, false).size()));
         cardNotifications.setText(String.valueOf(cardDS.getAll(null, null, true, true).size()));
         ArrayList<CreditCard> cardList = cardDS.getAll(null, null, false, true);
         BigDecimal totalAF = BigDecimal.valueOf(0);
@@ -341,11 +312,11 @@ public class MainActivity extends BaseActivity_Main {
             NotificationStatus notificationStatus = card.getNotificationStatus();
             Date annualFeeDate = card.getAfDate();
             boolean hasAnnualFee = card.hasAnnualFee() && annualFeeDate != null;
-            if (notificationStatus != NotificationStatus.UNMONITORED && hasAnnualFee){
+            if (notificationStatus != NotificationStatus.UNMONITORED && hasAnnualFee) {
 
                 // Checks program if annual fee date is in future
                 if (annualFeeDate.compareTo(today) > 0) {
-                    TextView  cardNextAF = (TextView) v.findViewById(R.id.cardNextAFField);
+                    TextView cardNextAF = v.findViewById(R.id.cardNextAFField);
                     cardNextAF.setText(dateFormat.format(card.getAfDate()));
                     break;
                 }
@@ -353,7 +324,7 @@ public class MainActivity extends BaseActivity_Main {
         }
 
         // Runs with "Close" button is clicked
-        Button closeButton2 = (Button) v.findViewById(R.id.closeButton);
+        Button closeButton2 = v.findViewById(R.id.closeButton);
         closeButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -369,26 +340,25 @@ public class MainActivity extends BaseActivity_Main {
         diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-
     // Opens User Limit Popup
     public void showLimitPopup(String limitTitle, String limitText) {
         // Gets dialog layout
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.dialog_upgrade, null);
 
         // Creates dialog
         final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
 
         // Sets title in dialog toolbar on top
-        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
+        Toolbar toolBar1 = v.findViewById(R.id.toolbar);
         toolBar1.setTitle(limitTitle);
 
         // Sets text in dialog
-        TextView mainText = (TextView) v.findViewById(R.id.text);
+        TextView mainText = v.findViewById(R.id.text);
         mainText.setText(limitText);
 
         // Runs with "Upgrade" button is clicked
-        Button upgradeButton = (Button) v.findViewById(R.id.upgradeButton);
+        Button upgradeButton = v.findViewById(R.id.upgradeButton);
         upgradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -399,7 +369,7 @@ public class MainActivity extends BaseActivity_Main {
         });
 
         // Runs with "Close" button is clicked
-        Button closeButton = (Button) v.findViewById(R.id.closeButton);
+        Button closeButton = v.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -421,5 +391,35 @@ public class MainActivity extends BaseActivity_Main {
 
         //Set toolbar title
         setTitle(getAppName());
+    }
+
+    // Adapter used to add fragments to viewPager
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

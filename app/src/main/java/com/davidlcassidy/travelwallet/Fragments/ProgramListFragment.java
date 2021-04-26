@@ -7,9 +7,9 @@
 package com.davidlcassidy.travelwallet.Fragments;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +19,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.davidlcassidy.travelwallet.Activities.ProgramDetailActivity;
 import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
 import com.davidlcassidy.travelwallet.Adapters.ProgramListAdapter;
-import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.AppPreferences;
+import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.User;
+import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
-import com.davidlcassidy.travelwallet.Activities.ProgramDetailActivity;
 import com.davidlcassidy.travelwallet.R;
 
 import java.util.ArrayList;
@@ -65,14 +65,14 @@ public class ProgramListFragment extends Fragment {
         programDS = ProgramDataSource.getInstance(getContext());
         userDS = UserDataSource.getInstance(getContext());
 
-		// Sets the text used when loyalty program list is empty
-        emptyListText = (TextView) view.findViewById(R.id.emptyListText);
+        // Sets the text used when loyalty program list is empty
+        emptyListText = view.findViewById(R.id.emptyListText);
         emptyListText.setText("Click the + button below to add a loyalty program.");
 
-		// Sets loyalty program click listener
-        lv = (ListView) view.findViewById(R.id.fragmentList);
+        // Sets loyalty program click listener
+        lv = view.findViewById(R.id.fragmentList);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			// Opens ProgramDetail Activity
+            // Opens ProgramDetail Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Integer programID = filteredProgramList.get(position).getId();
@@ -82,9 +82,9 @@ public class ProgramListFragment extends Fragment {
             }
         });
 
-        filterLayout = (LinearLayout) view.findViewById(R.id.filterLayout);
-        filter1 = (Spinner) view.findViewById(R.id.spinner1);
-        filter2 = (Spinner) view.findViewById(R.id.spinner2);
+        filterLayout = view.findViewById(R.id.filterLayout);
+        filter1 = view.findViewById(R.id.spinner1);
+        filter2 = view.findViewById(R.id.spinner2);
         setFilters(false);
 
         return view;
@@ -93,7 +93,7 @@ public class ProgramListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-		// Gets all loyalty programs sorted by field defined in user preferences
+        // Gets all loyalty programs sorted by field defined in user preferences
         ItemField sortField = appPreferences.getCustom_ProgramSortField();
         fullProgramList = programDS.getAll(null, sortField, false);
 
@@ -109,8 +109,8 @@ public class ProgramListFragment extends Fragment {
             appPreferences.setProgramFiltersUpdateRequired(false);
         }
 
-		// Hides list and shows empty list text if there are no loyalty programs
-        if (fullProgramList.size() == 0){
+        // Hides list and shows empty list text if there are no loyalty programs
+        if (fullProgramList.size() == 0) {
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
             filter1.setVisibility(View.GONE);
@@ -118,20 +118,20 @@ public class ProgramListFragment extends Fragment {
 
         } else {
 
-			// Add loyalty programs to list view
+            // Add loyalty programs to list view
             emptyListText.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);
             filter1.setVisibility(View.VISIBLE);
             filter2.setVisibility(View.VISIBLE);
 
-			// Sets adaptor to list view
+            // Sets adaptor to list view
             ProgramListAdapter adapter = new ProgramListAdapter(activity, filteredProgramList);
             lv.setAdapter(adapter);
         }
 
     }
 
-    private void setFilters(boolean onlySetUserFilter){
+    private void setFilters(boolean onlySetUserFilter) {
 
         // Creates program user filter with values
         ArrayList<String> users = userDS.getAllNames();
@@ -201,7 +201,7 @@ public class ProgramListFragment extends Fragment {
         }
     }
 
-    private void filterPrograms(){
+    private void filterPrograms() {
         filteredProgramList = new ArrayList<LoyaltyProgram>();
 
         String filter1value = appPreferences.getFilter_ProgramUser();

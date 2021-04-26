@@ -11,6 +11,7 @@ import android.content.Context;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
 
 import java.util.Date;
+
 import static java.lang.Math.round;
 
 /*
@@ -34,13 +35,13 @@ public class Notification {
         this.date = program.getExpirationDate();
         this.header = program.getName() + " Program";
 
-		// Generates notification text of time remaining until program points expiring
+        // Generates notification text of time remaining until program points expiring
         Date today = new Date();
         int numOfDays = round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         if (numOfDays <= 0) {
             message = "Points have expired.";
         } else {
-                message = "Points will expire in " + getDurationString(numOfDays) + ".";
+            message = "Points will expire in " + getDurationString(numOfDays) + ".";
         }
     }
 
@@ -51,7 +52,7 @@ public class Notification {
         this.date = card.getAfDate();
         this.header = card.getName() + " Card";
 
-		// Generates notification text of time remaining until card annual fee
+        // Generates notification text of time remaining until card annual fee
         Date today = new Date();
         int numOfDays = round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         if (numOfDays <= 0) {
@@ -75,23 +76,23 @@ public class Notification {
             count = (int) round(numOfDays / 30.4);
             unit = "month";
         }
-        String duration = String.valueOf(count) + " " + unit;
+        String duration = count + " " + unit;
 
         // Handles plurals
-        if (count > 1){
+        if (count > 1) {
             duration = duration + "s";
         }
 
         return duration;
     }
 
-	// Sends notification to device if configured in user settings
-    public PhoneNotification sendPhoneNotification(Context context){
+    // Sends notification to device if configured in user settings
+    public PhoneNotification sendPhoneNotification(Context context) {
         AppPreferences appPreferences = AppPreferences.getInstance(context);
         if (appPreferences.getSetting_PhoneNotifications()) {
             PhoneNotification pn = new PhoneNotification(context, this);
             return pn;
-        } else{
+        } else {
             return null;
         }
     }

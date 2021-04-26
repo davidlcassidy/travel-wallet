@@ -20,9 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.Activities.CardDetailActivity;
-import com.davidlcassidy.travelwallet.Activities.MainActivity;
 import com.davidlcassidy.travelwallet.Adapters.CardListAdapter;
 import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
@@ -30,7 +30,6 @@ import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.R;
-import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,7 +58,7 @@ public class CardListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        activity = (MainActivity) getActivity();
+        activity = getActivity();
 
         appPreferences = AppPreferences.getInstance(getContext());
         appPreferences.setCardFiltersUpdateRequired(true);
@@ -67,14 +66,14 @@ public class CardListFragment extends Fragment {
         cardDS = CardDataSource.getInstance(getContext());
         userDS = UserDataSource.getInstance(getContext());
 
-		// Sets the text used when credit card list is empty
-        emptyListText = (TextView) view.findViewById(R.id.emptyListText);
+        // Sets the text used when credit card list is empty
+        emptyListText = view.findViewById(R.id.emptyListText);
         emptyListText.setText("Click the + button below to add a credit card.");
 
-		// Sets credit card click listener
-        lv = (ListView) view.findViewById(R.id.fragmentList);
+        // Sets credit card click listener
+        lv = view.findViewById(R.id.fragmentList);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			// Opens CardDetail Activity
+            // Opens CardDetail Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Integer cardID = filteredCardList.get(position).getId();
@@ -84,9 +83,9 @@ public class CardListFragment extends Fragment {
             }
         });
 
-        filterLayout = (LinearLayout) view.findViewById(R.id.filterLayout);
-        filter1 = (Spinner) view.findViewById(R.id.spinner1);
-        filter2 = (Spinner) view.findViewById(R.id.spinner2);
+        filterLayout = view.findViewById(R.id.filterLayout);
+        filter1 = view.findViewById(R.id.spinner1);
+        filter2 = view.findViewById(R.id.spinner2);
         setFilters(false);
 
         return view;
@@ -95,9 +94,9 @@ public class CardListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-		// Gets all credit cards sorted by field defined in user preferences
+        // Gets all credit cards sorted by field defined in user preferences
         ItemField sortField = appPreferences.getCustom_CardSortField();
-        fullCardList = cardDS.getAll(null, sortField,false,false);
+        fullCardList = cardDS.getAll(null, sortField, false, false);
 
         if (appPreferences.getCardFiltersUpdateRequired() == true) {
             if (appPreferences.getCustom_CardFilters() == true) {
@@ -111,8 +110,8 @@ public class CardListFragment extends Fragment {
             appPreferences.setCardFiltersUpdateRequired(false);
         }
 
-		// Hides list and shows empty list text if there are no credit cards
-        if (fullCardList.size() == 0){
+        // Hides list and shows empty list text if there are no credit cards
+        if (fullCardList.size() == 0) {
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
             filter1.setVisibility(View.GONE);
@@ -120,19 +119,19 @@ public class CardListFragment extends Fragment {
 
         } else {
 
-			// Add credit cards to list view
+            // Add credit cards to list view
             emptyListText.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);
             filter1.setVisibility(View.VISIBLE);
             filter2.setVisibility(View.VISIBLE);
 
-			// Sets adaptor to list view
+            // Sets adaptor to list view
             CardListAdapter adapter = new CardListAdapter(activity, filteredCardList);
             lv.setAdapter(adapter);
         }
     }
 
-    private void setFilters(boolean onlySetUserFilter){
+    private void setFilters(boolean onlySetUserFilter) {
 
         // Creates card user filter with values
         ArrayList<String> users = userDS.getAllNames();
@@ -145,7 +144,7 @@ public class CardListFragment extends Fragment {
             filter1.setEnabled(true);
             filter1.setClickable(true);
         }
-        FilterSpinnerAdapter usersSpinnerAdapter =new FilterSpinnerAdapter(activity, users);
+        FilterSpinnerAdapter usersSpinnerAdapter = new FilterSpinnerAdapter(activity, users);
         filter1.setAdapter(usersSpinnerAdapter);
         filter1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -205,7 +204,7 @@ public class CardListFragment extends Fragment {
         }
     }
 
-    private void filterCards(){
+    private void filterCards() {
         filteredCardList = new ArrayList<CreditCard>();
 
         String filter1value = appPreferences.getFilter_CardUser();

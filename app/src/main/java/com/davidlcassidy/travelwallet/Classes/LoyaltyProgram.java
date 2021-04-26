@@ -48,10 +48,10 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
         this.accountNumber = accountNumber;
         this.points = points;
         this.pointValue = pointValue;
-		
-		// Calculates total program value by multiplying the number of points with the point value
+
+        // Calculates total program value by multiplying the number of points with the point value
         this.totalValue = pointValue.multiply(new BigDecimal(points)).divide(BigDecimal.valueOf(100));
-		
+
         this.inactivityExpiration = inactivityExpiration;
         this.lastActivityDate = lastActivityDate;
         updateExpirationDate();
@@ -61,11 +61,11 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
         this.notes = notes;
     }
 
-	// Sets expiration date is set by taking the last activity date and adding the program specific
-	// monthsExpire which indicates the time period allowed of inactivity by each program before
-	// closing the account
+    // Sets expiration date is set by taking the last activity date and adding the program specific
+    // monthsExpire which indicates the time period allowed of inactivity by each program before
+    // closing the account
     public void updateExpirationDate() {
-		if (lastActivityDate == null || hasExpirationDate() == false){
+        if (lastActivityDate == null || hasExpirationDate() == false) {
             expirationDate = null;
         } else {
             Calendar c = Calendar.getInstance();
@@ -75,7 +75,7 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
         }
     }
 
-	// Generates standard icon and header image names from program ID
+    // Generates standard icon and header image names from program ID
     private void setLogos() {
         String programIdString = String.format("%03d", this.refId);
         this.logoImage = new StringBuilder("program_").append(programIdString).append("_image").toString();
@@ -87,7 +87,7 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
         return (this.name.compareTo(lp.name));
     }
 
-    public boolean hasExpirationDate(){
+    public boolean hasExpirationDate() {
         return inactivityExpiration != 999;
     }
 
@@ -123,9 +123,13 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
         this.type = type;
     }
 
-    public String getCompany() {return company;}
+    public String getCompany() {
+        return company;
+    }
 
-    public void setCompany(String company) {this.company = company;}
+    public void setCompany(String company) {
+        this.company = company;
+    }
 
     public String getName() {
         return name;
@@ -148,7 +152,7 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
     }
 
     public void setPoints(Integer points) {
-        this.points = Math.max(points,0);
+        this.points = Math.max(points, 0);
     }
 
     public BigDecimal getPointValue() {

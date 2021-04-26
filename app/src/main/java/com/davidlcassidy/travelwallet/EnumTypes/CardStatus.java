@@ -15,32 +15,24 @@ import java.util.ArrayList;
 
 public enum CardStatus {
 
-	// Enum members
+    // Enum members
     OPEN(1, "Open"),
     CLOSED(2, "Closed");
 
-	private final int id;
+    private final int id;
     private final String name;
 
-    private CardStatus(int id, String name) {
-		this.id = id;
+    CardStatus(int id, String name) {
+        this.id = id;
         this.name = name;
     }
-	
-	// Returns card status ID
-    public int getId() {
-        return id;
-    }
 
-    // Returns card status name
-    public String getName() {
-        return name;
-    }
-
-	// Returns card status from ID
+    // Returns card status from ID
     public static CardStatus fromId(int id) {
         for (CardStatus cardStatus : CardStatus.values()) {
-            if (cardStatus.getId() == id) {return cardStatus;}
+            if (cardStatus.getId() == id) {
+                return cardStatus;
+            }
         }
         return null;
     }
@@ -48,17 +40,29 @@ public enum CardStatus {
     // Returns card status from name
     public static CardStatus fromName(String name) {
         for (CardStatus cardStatus : CardStatus.values()) {
-            if (cardStatus.getName().equals(name)) {return cardStatus;}
+            if (cardStatus.getName().equals(name)) {
+                return cardStatus;
+            }
         }
         return null;
     }
 
     // Returns the names of every card status
     public static ArrayList<String> getAllNames() {
-        ArrayList<String> list = new ArrayList <String>();
+        ArrayList<String> list = new ArrayList<String>();
         for (CardStatus cardStatus : CardStatus.values()) {
             list.add(cardStatus.getName());
         }
         return list;
+    }
+
+    // Returns card status ID
+    public int getId() {
+        return id;
+    }
+
+    // Returns card status name
+    public String getName() {
+        return name;
     }
 }

@@ -19,15 +19,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.Activities.CardDetailActivity;
+import com.davidlcassidy.travelwallet.Activities.ProgramDetailActivity;
 import com.davidlcassidy.travelwallet.Adapters.NotificationListAdapter;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
+import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
-import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
-import com.davidlcassidy.travelwallet.Activities.ProgramDetailActivity;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -62,37 +62,37 @@ public class NotificationsListFragment extends Fragment {
         programDS = ProgramDataSource.getInstance(getContext());
         cardDS = CardDataSource.getInstance(getContext());
         notificationList = new ArrayList<Notification>();
-		
-		// TEST MODE:
-		// Launches app with one of every available loyalty program and credit card
+
+        // TEST MODE:
+        // Launches app with one of every available loyalty program and credit card
         boolean testMode = false;
         if (testMode) {
             addAllCardsAndPrograms();
         }
 
         // Hides filters
-        LinearLayout filterLayout = (LinearLayout) view.findViewById(R.id.filterLayout);
+        LinearLayout filterLayout = view.findViewById(R.id.filterLayout);
         filterLayout.setVisibility(LinearLayout.GONE);
 
-		// Set's text used when notification list is empty
-		emptyListText = (TextView) view.findViewById(R.id.emptyListText);
+        // Set's text used when notification list is empty
+        emptyListText = view.findViewById(R.id.emptyListText);
         emptyListText.setText("Yay!\n\nYou don't have any notifications.");
-		
-		// Sets notification click listener
-		lv = (ListView) view.findViewById(R.id.fragmentList);
+
+        // Sets notification click listener
+        lv = view.findViewById(R.id.fragmentList);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Notification selection = notificationList.get(position);
                 ItemType selectionType = selection.getItemType();
-				
-				// If loyalty program notification is clicked, ProgramDetailActivity activity opens
+
+                // If loyalty program notification is clicked, ProgramDetailActivity activity opens
                 if (selectionType == ItemType.LOYALTY_PROGRAM) {
                     Intent intent = new Intent(view.getContext(), ProgramDetailActivity.class);
                     intent.putExtra("PROGRAM_ID", selection.getId());
                     startActivity(intent);
-					
-				// If credit card notification is clicked, CardDetailActivity activity opens
+
+                    // If credit card notification is clicked, CardDetailActivity activity opens
                 } else if (selectionType == ItemType.CREDIT_CARD) {
                     Intent intent = new Intent(view.getContext(), CardDetailActivity.class);
                     intent.putExtra("CARD_ID", selection.getId());
@@ -107,31 +107,31 @@ public class NotificationsListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-		// Update all notifications
+        // Update all notifications
         notificationList.clear();
         programDS.updateProgramsNotifications();
         cardDS.updateCardsNotifications();
-		
-		// Hides list and shows empty list text if there are no notifications
-        ArrayList<LoyaltyProgram> programsWithNotifications = programDS.getAll(null,null,true);
-        ArrayList<CreditCard> cardsWithNotifications = cardDS.getAll(null,null,true,true);
-        if (programsWithNotifications.size() + cardsWithNotifications.size() == 0){
+
+        // Hides list and shows empty list text if there are no notifications
+        ArrayList<LoyaltyProgram> programsWithNotifications = programDS.getAll(null, null, true);
+        ArrayList<CreditCard> cardsWithNotifications = cardDS.getAll(null, null, true, true);
+        if (programsWithNotifications.size() + cardsWithNotifications.size() == 0) {
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
 
         } else {
 
-			// Add notifications to list view
+            // Add notifications to list view
             emptyListText.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);
-            for(LoyaltyProgram lp : programsWithNotifications ) {
+            for (LoyaltyProgram lp : programsWithNotifications) {
                 notificationList.add(new Notification(lp));
             }
-            for(CreditCard cc :cardsWithNotifications ) {
+            for (CreditCard cc : cardsWithNotifications) {
                 notificationList.add(new Notification(cc));
             }
 
-			// Sorts notifications by event date
+            // Sorts notifications by event date
             Collections.sort(notificationList, new Comparator<Notification>() {
                 @Override
                 public int compare(Notification n1, Notification n2) {
@@ -153,13 +153,13 @@ public class NotificationsListFragment extends Fragment {
                 }
             });
 
-			// Sets adaptor to list view
+            // Sets adaptor to list view
             NotificationListAdapter adapter = new NotificationListAdapter(activity, notificationList);
             lv.setAdapter(adapter);
         }
     }
 
-    private void addAllCardsAndPrograms(){
+    private void addAllCardsAndPrograms() {
         programDS.deleteAll();
         cardDS.deleteAll();
         for (String pType : programDS.getAvailableTypes(false)) {

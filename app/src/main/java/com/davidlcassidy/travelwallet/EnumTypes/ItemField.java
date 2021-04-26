@@ -13,7 +13,7 @@ WARNING : Changing ID values may change app settings to the default value within
 
 public enum ItemField {
 
-	// Enum members
+    // Enum members
     TYPE(11, ItemType.LOYALTY_PROGRAM, "Program Name"),
     PROGRAM_NAME(12, ItemType.LOYALTY_PROGRAM, "Program Name"),
     ACCOUNT_NUMBER(13, ItemType.LOYALTY_PROGRAM, "Account Number"),
@@ -21,8 +21,8 @@ public enum ItemField {
     VALUE(15, ItemType.LOYALTY_PROGRAM, "Value"),
     EXPIRATION_DATE(16, ItemType.LOYALTY_PROGRAM, "Expiration Date"),
     PROGRAM_NOTES(17, ItemType.LOYALTY_PROGRAM, "Notes"),
-	
-	BANK(21, ItemType.CREDIT_CARD, "Bank"),
+
+    BANK(21, ItemType.CREDIT_CARD, "Bank"),
     CARD_NAME(22, ItemType.CREDIT_CARD, "Card Name"),
     OPEN_DATE(23, ItemType.CREDIT_CARD, "Open Date"),
     AF_DATE(24, ItemType.CREDIT_CARD, "Annual Fee Date"),
@@ -36,31 +36,23 @@ public enum ItemField {
     CHASE_STATUS(35, ItemType.USER, "Chase 5/24 Status"),
     USER_NOTES(36, ItemType.USER, "Notes");
 
-	private final int id;
+    private final int id;
     private final ItemType itemType;
     private final String name;
 
 
-    private ItemField(int id, ItemType itemType, String name) {
-		this.id = id;
-		this.itemType = itemType;
+    ItemField(int id, ItemType itemType, String name) {
+        this.id = id;
+        this.itemType = itemType;
         this.name = name;
     }
-	
-	// Returns item field ID
-    public int getId() {
-        return id;
-    }
 
-    // Returns item field name
-    public String getName() {
-        return name;
-    }
-
-	// Returns item status from ID
+    // Returns item status from ID
     public static ItemField fromId(int id) {
         for (ItemField itemField : ItemField.values()) {
-            if (itemField.getId() == id) {return itemField;}
+            if (itemField.getId() == id) {
+                return itemField;
+            }
         }
         return null;
     }
@@ -68,8 +60,20 @@ public enum ItemField {
     // Returns item field from name
     public static ItemField fromName(String name) {
         for (ItemField itemField : ItemField.values()) {
-            if (itemField.getName().equals(name)) {return itemField;}
+            if (itemField.getName().equals(name)) {
+                return itemField;
+            }
         }
         return null;
+    }
+
+    // Returns item field ID
+    public int getId() {
+        return id;
+    }
+
+    // Returns item field name
+    public String getName() {
+        return name;
     }
 }

@@ -24,12 +24,11 @@ import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 
-import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
 
 /*
 GooglePlayStore is a wrapper exposing purchasing functionality of Google Play Billing Library. It
@@ -38,11 +37,21 @@ is use to query details and purchase the items from the Google Play Store.
 
 public class GooglePlayStore implements PurchasesUpdatedListener {
 
-    private Context context;
-    private AppPreferences appPreferences;
-    protected BillingClient billingClient;
-
     public static final String PRO_PRODUCT_ID = "travelwallet.pro";
+    protected BillingClient billingClient;
+    private final Context context;
+    private final AppPreferences appPreferences;
+    AcknowledgePurchaseResponseListener acknowledgePurchase = new AcknowledgePurchaseResponseListener() {
+        @Override
+        public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                // After purchase is acknowledged, update app type and restart activity
+                appPreferences.setAppType(AppType.PRO);
+                Activity activity = (Activity) context;
+                activity.recreate();
+            }
+        }
+    };
 
     public GooglePlayStore(final Context context) {
         this.context = context;
@@ -53,7 +62,7 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(BillingResult billingResult) {
-                if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     Purchase.PurchasesResult queryPurchase = billingClient.queryPurchases(INAPP);
                     List<Purchase> queryPurchases = queryPurchase.getPurchasesList();
                     handleCurrentPurchases(queryPurchases);
@@ -62,7 +71,7 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
 
             @Override
             public void onBillingServiceDisconnected() {
-                Toast.makeText(context.getApplicationContext(),"Service Disconnected",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), "Service Disconnected", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -74,7 +83,7 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
         }
 
         // Establish connection to billing client
-        else{
+        else {
             billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(this).build();
             billingClient.startConnection(new BillingClientStateListener() {
                 @Override
@@ -82,12 +91,13 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         initiateNewPurchase(productID);
                     } else {
-                        Toast.makeText(context.getApplicationContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context.getApplicationContext(), "Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onBillingServiceDisconnected() {
-                    Toast.makeText(context.getApplicationContext(),"Service Disconnected ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context.getApplicationContext(), "Service Disconnected ", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -104,7 +114,7 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
         }
 
         // Establish connection to billing client
-        else{
+        else {
             billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(this).build();
             billingClient.startConnection(new BillingClientStateListener() {
                 @Override
@@ -112,12 +122,13 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         billingClient.querySkuDetailsAsync(params.build(), listener);
                     } else {
-                        Toast.makeText(context.getApplicationContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context.getApplicationContext(), "Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onBillingServiceDisconnected() {
-                    Toast.makeText(context.getApplicationContext(),"Service Disconnected ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context.getApplicationContext(), "Service Disconnected ", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -151,7 +162,7 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
     }
 
     private void handleCurrentPurchases(List<Purchase> purchases) {
-        if(purchases.size() == 0){
+        if (purchases.size() == 0) {
             appPreferences.setAppType(AppType.FREE);
         } else {
             for (Purchase purchase : purchases) {
@@ -199,31 +210,19 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
         else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
             Purchase.PurchasesResult queryAlreadyPurchasesResult = billingClient.queryPurchases(INAPP);
             List<Purchase> alreadyPurchases = queryAlreadyPurchasesResult.getPurchasesList();
-            if(alreadyPurchases != null){
+            if (alreadyPurchases != null) {
                 handleCurrentPurchases(alreadyPurchases);
             }
         }
         // Canceled purchase
         else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Toast.makeText(context.getApplicationContext(),"Purchase Canceled",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context.getApplicationContext(), "Purchase Canceled", Toast.LENGTH_SHORT).show();
         }
         // Any other errors
         else {
-            Toast.makeText(context.getApplicationContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(context.getApplicationContext(), "Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-    AcknowledgePurchaseResponseListener acknowledgePurchase = new AcknowledgePurchaseResponseListener() {
-        @Override
-        public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
-            if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
-                // After purchase is acknowledged, update app type and restart activity
-                appPreferences.setAppType(AppType.PRO);
-                Activity activity = (Activity) context;
-                activity.recreate();
-            }
-        }
-    };
 
     private boolean verifyValidSignature(String signedData, String signature) {
         try {
@@ -233,7 +232,7 @@ public class GooglePlayStore implements PurchasesUpdatedListener {
             String base64Key4 = "/W/GrmayRcCnJgA4C7tOLGfIrtPOfQrTcacM2OEqpv5EI/Mkwjw6vGhvka9Oa55IOH9bP9WZmOesN";
             String base64Key5 = "yyKS/xA0+F5jFkfHvg4a9Qx+/g4/MnDz5PYolde5eBYfo67ArX9ES7daAChVmkTljZKMi1eonZNJg8E1Q";
             String base64Key6 = "KKINupsOuaeDWgctdR3qYjcl2MOtbiTf98aSLkXN/QIDAQAB";
-            String base64Key =  base64Key1 + base64Key2 + base64Key3 + base64Key4  + base64Key5 + base64Key6;
+            String base64Key = base64Key1 + base64Key2 + base64Key3 + base64Key4 + base64Key5 + base64Key6;
 
             return Security.verifyPurchase(base64Key, signedData, signature);
         } catch (IOException e) {

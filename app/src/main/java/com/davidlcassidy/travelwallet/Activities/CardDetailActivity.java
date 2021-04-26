@@ -16,12 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.davidlcassidy.travelwallet.Adapters.DetailListAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Detail;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
-import com.davidlcassidy.travelwallet.Adapters.DetailListAdapter;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
@@ -59,37 +59,37 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailslist);
-		setTitle("Credit Card");
+        setTitle("Credit Card");
 
         cardDS = CardDataSource.getInstance(this);
         cardId = getIntent().getIntExtra("CARD_ID", -1);
         detailList = new ArrayList<Detail>();
         final CreditCard card = cardDS.getSingle(cardId);
-        
-		// Adds image to list header and notification button to list footer
+
+        // Adds image to list header and notification button to list footer
         View header = getLayoutInflater().inflate(R.layout.detaillist_header, null);
-        logo = (ImageView) header.findViewById(R.id.Logo);
-        logoText = (TextView) header.findViewById(R.id.LogoText);
+        logo = header.findViewById(R.id.Logo);
+        logoText = header.findViewById(R.id.LogoText);
         View footer = getLayoutInflater().inflate(R.layout.detaillist_footer, null);
-        lv = (ListView) findViewById(R.id.detailsList);
+        lv = findViewById(R.id.detailsList);
         lv.addHeaderView(header);
         lv.addFooterView(footer);
 
-		// Sets text and colors for notification button
-        notificationButton = (ToggleButton) footer.findViewById(R.id.notificationButton);
+        // Sets text and colors for notification button
+        notificationButton = footer.findViewById(R.id.notificationButton);
         notificationButton.setTextOn("Monitoring : ON");
         notificationButton.setTextOff("Monitoring : OFF");
-        if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
+        if (card.getNotificationStatus() == NotificationStatus.UNMONITORED) {
             notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
         } else {
             notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
         }
-		
-		// Sets click listener for notification button. When clicked, the card's notification status
-		// will be updated and notification button text will change to reflect.
+
+        // Sets click listener for notification button. When clicked, the card's notification status
+        // will be updated and notification button text will change to reflect.
         notificationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
+                if (card.getNotificationStatus() == NotificationStatus.UNMONITORED) {
                     cardDS.changeCardNotificationStatus(card, NotificationStatus.OFF);
                     notificationButton.setChecked(true);
                     notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
@@ -101,7 +101,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
             }
         });
 
-        notesField = (TextView) footer.findViewById(R.id.notesField);
+        notesField = footer.findViewById(R.id.notesField);
     }
 
     protected void onResume() {
@@ -121,26 +121,26 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         BigDecimal creditlimit = card.getCreditLimit();
         String creditLimitString = currency.numToString(creditlimit, numberPattern);
 
-		// Sets card image and card name text for list header
+        // Sets card image and card name text for list header
         int logoNum = this.getResources().getIdentifier("card_000_image", "drawable", this.getPackageName());
         logo.setImageResource(logoNum);
         logoText.setText(card.getName());
 
-		// Creates list of credit card field/value pairs
+        // Creates list of credit card field/value pairs
         detailList.clear();
         User user = card.getUser();
-        if (user != null){
+        if (user != null) {
             detailList.add(new Detail("User", user.getName()));
         }
         detailList.add(new Detail("Name", card.getName()));
         detailList.add(new Detail("Bank", card.getBank()));
         CardStatus status = card.getStatus();
         detailList.add(new Detail("Status", status.getName()));
-        if (creditlimit.compareTo(BigDecimal.ZERO)!=0) {
+        if (creditlimit.compareTo(BigDecimal.ZERO) != 0) {
             detailList.add(new Detail("Credit Limit", creditLimitString));
         }
         detailList.add(new Detail("Annual Fee", cardAFString));
-		Date openDate = card.getOpenDate();
+        Date openDate = card.getOpenDate();
         if (openDate != null) {
             detailList.add(new Detail("Open Date", dateFormat.format(openDate)));
         }
@@ -155,16 +155,12 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         }
         detailList.add(new Detail("Foreign Fee", decimalFormat.format(card.getForeignTransactionFee()) + " %"));
 
-		// Creates adapter using card details list and sets to list
+        // Creates adapter using card details list and sets to list
         DetailListAdapter adapter = new DetailListAdapter(this, detailList);
         lv.setAdapter(adapter);
 
-		// Updates notification button test and visability
-        if (card.getNotificationStatus() == NotificationStatus.UNMONITORED){
-            notificationButton.setChecked(false);
-        } else {
-            notificationButton.setChecked(true);
-        }
+        // Updates notification button test and visability
+        notificationButton.setChecked(card.getNotificationStatus() != NotificationStatus.UNMONITORED);
         notificationButton.setVisibility(View.VISIBLE);
         if (!hasAnnualFee || card.getStatus() == CardStatus.CLOSED) {
             notificationButton.setVisibility(View.GONE);
@@ -179,44 +175,44 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         }
     }
 
-	// Runs when edit button is clicked
+    // Runs when edit button is clicked
     @Override
     public void menuEditClicked() {
-		// Opens CardAddEdit Activity
+        // Opens CardAddEdit Activity
         Intent intent = new Intent(CardDetailActivity.this, CardAddEditActivity.class);
         intent.putExtra("CARD_ID", cardId);
         startActivity(intent);
     }
 
-	// Runs when delete button is clicked
+    // Runs when delete button is clicked
     @Override
     public void menuDeleteClicked() {
-		
-		// Creates delete warning dialog
+
+        // Creates delete warning dialog
         CreditCard card = cardDS.getSingle(cardId);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(card.getName());
-		builder.setCancelable(false);
+        builder.setTitle(card.getName());
+        builder.setCancelable(false);
         builder.setMessage("Are you sure you want to delete?");
-		
-		// Deletes card if "Yes" button selected
+
+        // Deletes card if "Yes" button selected
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
                 cardDS.delete(cardId);
                 appPreferences.setCardFiltersUpdateRequired(true);
                 finish();
-            }});
-
-		// Dialog closes with no further action if "Cancel" button is selected
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
             }
         });
 
-		// Creates dialog
+        // Dialog closes with no further action if "Cancel" button is selected
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int selected) {
+            }
+        });
+
+        // Creates dialog
         AlertDialog dialog = builder.create();
         dialog.show();
     }

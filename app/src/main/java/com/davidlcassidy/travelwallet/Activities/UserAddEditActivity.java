@@ -41,12 +41,12 @@ public class UserAddEditActivity extends BaseActivity_Save {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_useraddedit);
 
-		// Gets user ID from intent User ID of -1 means add new card
+        // Gets user ID from intent User ID of -1 means add new card
         userDS = UserDataSource.getInstance(this);
         userId = Integer.parseInt(getIntent().getStringExtra("USER_ID"));
 
-		// Gets UserAddEdit activity fields
-        nameField = (TextView) findViewById(R.id.nameField);
+        // Gets UserAddEdit activity fields
+        nameField = findViewById(R.id.nameField);
         notesField = (EditText) findViewById(R.id.notesField);
 
         setClickListeners();
@@ -55,38 +55,41 @@ public class UserAddEditActivity extends BaseActivity_Save {
     protected void onResume() {
         super.onResume();
 
-		// If edit user, sets fields to current user values
+        // If edit user, sets fields to current user values
         if (userId != -1) {
             User user = userDS.getSingle(userId, null, null);
             setTitle("Edit User");
 
-			// Sets activity fields
+            // Sets activity fields
             String oName = user.getName();
             String oNotes = user.getNotes();
-            if (oName != null) {nameField.setText(oName);}
-            if (oNotes != null) {notesField.setText(oNotes);}
+            if (oName != null) {
+                nameField.setText(oName);
+            }
+            if (oNotes != null) {
+                notesField.setText(oNotes);
+            }
 
         } else {
             setTitle("Add User");
         }
     }
 
-	// Runs when save button is clicked
+    // Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
         String userName = nameField.getText().toString().trim();
         String notes = notesField.getText().toString();
 
-        if (userName.equals("")){
+        if (userName.equals("")) {
             Toast.makeText(UserAddEditActivity.this, "Please type a name.", Toast.LENGTH_LONG).show();
-        }
-		else if (userId == -1){
+        } else if (userId == -1) {
             userDS.create(userName, notes);
             appPreferences.setFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(UserAddEditActivity.this, userName + " user added.", Toast.LENGTH_SHORT).show();
-			
-		// Updates user if existing with new values from fields
+
+            // Updates user if existing with new values from fields
         } else {
             User user = userDS.getSingle(userId, null, null);
             user.setName(userName);
@@ -99,10 +102,10 @@ public class UserAddEditActivity extends BaseActivity_Save {
     }
 
     // Sets all click listeners so all label clicks match actions of field clicks
-    private void setClickListeners(){
+    private void setClickListeners() {
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
+        LinearLayout nameLayout = findViewById(R.id.nameLayout);
         nameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,5 +120,6 @@ public class UserAddEditActivity extends BaseActivity_Save {
                 imm.showSoftInput(nameField, InputMethodManager.SHOW_IMPLICIT);
             }
         });
-    };
+    }
+
 }

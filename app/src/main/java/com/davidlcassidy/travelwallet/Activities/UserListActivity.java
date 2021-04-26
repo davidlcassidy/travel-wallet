@@ -25,8 +25,8 @@ import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_BackOnly;
 import com.davidlcassidy.travelwallet.Classes.Constants;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
-import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.R;
@@ -63,11 +63,11 @@ public class UserListActivity extends BaseActivity_BackOnly {
         cardDS = CardDataSource.getInstance(this);
 
         // Sets the text used when user list is empty
-        emptyListText = (TextView) findViewById(R.id.emptyListText);
+        emptyListText = findViewById(R.id.emptyListText);
         emptyListText.setText("Click the + button below to add a user.");
 
         // Sets user click listener
-        lv = (ListView) findViewById(R.id.userList);
+        lv = findViewById(R.id.userList);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Opens CardDetail Activity
             @Override
@@ -79,7 +79,7 @@ public class UserListActivity extends BaseActivity_BackOnly {
             }
         });
 
-        fab = (FloatingActionButton) findViewById(R.id.fabPlus);
+        fab = findViewById(R.id.fabPlus);
         fab.setOnClickListener(new View.OnClickListener() {
             // Clicking floating "plus" button opens ProgramAddEdit Activity.
             // Program ID of -1 indicates a adding a new program instead of editing an existing one
@@ -105,7 +105,7 @@ public class UserListActivity extends BaseActivity_BackOnly {
         userList = userDS.getAll(sortField, programDS, cardDS);
 
         // Hides list and shows empty list text if there are no users
-        if (userList.size() == 0){
+        if (userList.size() == 0) {
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
 
@@ -124,18 +124,18 @@ public class UserListActivity extends BaseActivity_BackOnly {
     // Opens User Limit Popup
     public void showUserLimitPopup() {
         // Gets dialog layout
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.dialog_upgrade, null);
 
         // Creates dialog
         final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
 
         // Sets title in dialog toolbar on top
-        Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
+        Toolbar toolBar1 = v.findViewById(R.id.toolbar);
         toolBar1.setTitle("User Limit Reached");
 
         // Sets text in dialog
-        TextView mainText = (TextView) v.findViewById(R.id.text);
+        TextView mainText = v.findViewById(R.id.text);
         String text =
                 "Travel Wallet it limited to only " + Constants.FREE_USER_LIMIT +
                         " users.\n\nTo add additional users and support the ongoing app " +
@@ -143,7 +143,7 @@ public class UserListActivity extends BaseActivity_BackOnly {
         mainText.setText(text);
 
         // Runs with "Upgrade" button is clicked
-        Button upgradeButton = (Button) v.findViewById(R.id.upgradeButton);
+        Button upgradeButton = v.findViewById(R.id.upgradeButton);
         upgradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,7 +154,7 @@ public class UserListActivity extends BaseActivity_BackOnly {
         });
 
         // Runs with "Close" button is clicked
-        Button closeButton = (Button) v.findViewById(R.id.closeButton);
+        Button closeButton = v.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

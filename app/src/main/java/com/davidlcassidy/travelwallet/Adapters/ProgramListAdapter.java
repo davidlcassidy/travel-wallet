@@ -14,12 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
+import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
-import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -29,7 +29,7 @@ import java.util.List;
 
 public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
 
-    private AppPreferences appPreferences;
+    private final AppPreferences appPreferences;
 
     public ProgramListAdapter(Context context, List<LoyaltyProgram> programs) {
         super(context, 0, programs);
@@ -38,7 +38,7 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
@@ -46,20 +46,20 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
         DecimalFormat numberFormat = NumberPattern.COMMADOT.getNumberFormat();
         SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
 
-		// Gets the item at this position
+        // Gets the item at this position
         LoyaltyProgram program = getItem(position);
 
-		// Gets adapter fields
-        ImageView logo = (ImageView) convertView.findViewById(R.id.logo);
-        TextView programField = (TextView) convertView.findViewById(R.id.firstField);
-        TextView messageField = (TextView) convertView.findViewById(R.id.secondField);
+        // Gets adapter fields
+        ImageView logo = convertView.findViewById(R.id.logo);
+        TextView programField = convertView.findViewById(R.id.firstField);
+        TextView messageField = convertView.findViewById(R.id.secondField);
 
-		// Gets logo resource from name
+        // Gets logo resource from name
         Context context = logo.getContext();
         int logoNum = context.getResources().getIdentifier(program.getLogoIcon(), "drawable", context.getPackageName());
         logo.setImageResource(logoNum);
 
-		// Sets field values, based on user preferences
+        // Sets field values, based on user preferences
         programField.setText(program.getName());
         switch (primaryField) {
             case ACCOUNT_NUMBER:
@@ -80,8 +80,8 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
                 String expirationOverride = program.getExpirationOverride();
                 String message = null;
 
-				// Uses expiration override value if there is no expiration date
-                if (program.hasExpirationDate() == false && expirationOverride != null){
+                // Uses expiration override value if there is no expiration date
+                if (program.hasExpirationDate() == false && expirationOverride != null) {
                     message = expirationOverride;
                 } else if (expirationDate != null && lastActivityDate != null) {
                     message = dateFormat.format(expirationDate);

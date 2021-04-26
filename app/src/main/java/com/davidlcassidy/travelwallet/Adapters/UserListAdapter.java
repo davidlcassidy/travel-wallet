@@ -14,9 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
-import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
@@ -32,10 +32,10 @@ import java.util.List;
 
 public class UserListAdapter extends ArrayAdapter<User> {
 
-    private ProgramDataSource programDS;
-    private CardDataSource cardDS;
-    private AppPreferences appPreferences;
-    private Currency currency;
+    private final ProgramDataSource programDS;
+    private final CardDataSource cardDS;
+    private final AppPreferences appPreferences;
+    private final Currency currency;
 
     public UserListAdapter(Context context, List<User> users) {
         super(context, 0, users);
@@ -47,21 +47,21 @@ public class UserListAdapter extends ArrayAdapter<User> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
         final ItemField primaryField = appPreferences.getCustom_UserPrimaryField();
-        
-		// Gets the item at this position
-		User user = getItem(position);
 
-		// Gets adapter fields
-        ImageView logo = (ImageView) convertView.findViewById(R.id.logo);
-        TextView userField = (TextView) convertView.findViewById(R.id.firstField);
-        TextView messageField = (TextView) convertView.findViewById(R.id.secondField);
+        // Gets the item at this position
+        User user = getItem(position);
 
-		// Sets field values, based on user preferences
+        // Gets adapter fields
+        ImageView logo = convertView.findViewById(R.id.logo);
+        TextView userField = convertView.findViewById(R.id.firstField);
+        TextView messageField = convertView.findViewById(R.id.secondField);
+
+        // Sets field values, based on user preferences
         logo.setVisibility(View.GONE);
         userField.setText(user.getName());
 

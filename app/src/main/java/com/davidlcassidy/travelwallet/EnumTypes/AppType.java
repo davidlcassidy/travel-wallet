@@ -13,28 +13,30 @@ WARNING : Changing ID values may change app settings to the default value within
 
 public enum AppType {
 
-	// Enum members
+    // Enum members
     FREE(1, "Free"),
     PRO(2, "Pro");
 
-	private final int id;
+    private final int id;
     private final String text;
 
-    private AppType(int id, String text) {
-		this.id = id;
+    AppType(int id, String text) {
+        this.id = id;
         this.text = text;
     }
-	
-	// Returns app type ID
-    public int getId() {
-        return id;
-    }
 
-	// Returns app type from ID
+    // Returns app type from ID
     public static AppType fromId(int id) {
         for (AppType at : AppType.values()) {
-            if (at.getId() == id) {return at;}
+            if (at.getId() == id) {
+                return at;
+            }
         }
         return null;
+    }
+
+    // Returns app type ID
+    public int getId() {
+        return id;
     }
 }

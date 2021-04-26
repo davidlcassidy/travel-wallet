@@ -19,9 +19,9 @@ the menu items on the toolbar.
 
 public abstract class BaseActivity_Save extends BaseActivity {
 
-	public abstract void menuSaveClicked();
+    public abstract void menuSaveClicked();
 
-	// Sets menu layout
+    // Sets menu layout
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.save, menu);
         return true;
@@ -30,22 +30,21 @@ public abstract class BaseActivity_Save extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-			
-			// Back button click closes current activity
+
+            // Back button click closes current activity
             case android.R.id.home:
                 finish();
                 return true;
-				
-			// Save button click executes abstract menuSaveClicked() method
+
+            // Save button click executes abstract menuSaveClicked() method
             case R.id.menu_save:
                 menuSaveClicked();
                 return true;
-				
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    
 
 }

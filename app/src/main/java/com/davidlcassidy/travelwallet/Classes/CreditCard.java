@@ -58,7 +58,7 @@ public class CreditCard {
         this.notes = notes;
     }
 
-    public boolean hasAnnualFee(){
+    public boolean hasAnnualFee() {
         return this.annualFee.compareTo(BigDecimal.ZERO) != 0;
     }
 
@@ -94,9 +94,13 @@ public class CreditCard {
         this.status = status;
     }
 
-    public Country getCountry() {return country;}
+    public Country getCountry() {
+        return country;
+    }
 
-    public void setCountry(Country country) {this.country = country;}
+    public void setCountry(Country country) {
+        this.country = country;
+    }
 
     public String getBank() {
         return bank;
@@ -178,9 +182,13 @@ public class CreditCard {
         this.notificationStatus = notificationStatus;
     }
 
-    public String getLogoIcon() {return logoIcon;}
+    public String getLogoIcon() {
+        return logoIcon;
+    }
 
-    public void setLogoIcon(String logoIcon) {this.logoIcon = logoIcon;}
+    public void setLogoIcon(String logoIcon) {
+        this.logoIcon = logoIcon;
+    }
 
     public String getNotes() {
         return notes;

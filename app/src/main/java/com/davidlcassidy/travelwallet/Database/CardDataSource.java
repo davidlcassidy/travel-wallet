@@ -11,15 +11,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
+import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Classes.User;
+import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
-import com.davidlcassidy.travelwallet.Classes.Notification;
-import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,7 +32,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 
 /*
 CardDataSource is used to manage and access all local Credit Card data, via access
@@ -50,14 +49,7 @@ public class CardDataSource {
     private static RefDatabaseHelper dbHelperRef;
     private static String tableNameMain, tableNameRef;
     private static String[] tableColumnsMain, tableColumnsRef;
-    private static SimpleDateFormat dbDateFormat = dbHelperMain.DATABASE_DATE_FORMAT;
-
-    public static CardDataSource getInstance(Context context) {
-        if (instance == null) {
-            instance = new CardDataSource(context);
-        }
-        return instance;
-    }
+    private static final SimpleDateFormat dbDateFormat = MainDatabaseHelper.DATABASE_DATE_FORMAT;
 
     private CardDataSource(Context c) {
         context = c;
@@ -68,23 +60,31 @@ public class CardDataSource {
         dbRef = dbHelperRef.getDB();
         checkDbVersion(dbMain, dbRef);
 
-        tableNameMain = dbHelperMain.TABLE_CC;
-        tableNameRef = dbHelperRef.TABLE_CC_REF;
+        tableNameMain = MainDatabaseHelper.TABLE_CC;
+        tableNameRef = RefDatabaseHelper.TABLE_CC_REF;
         Cursor dbCursor1 = dbMain.query(tableNameMain, null, null, null, null, null, null);
         tableColumnsMain = dbCursor1.getColumnNames();
         Cursor dbCursor2 = dbRef.query(tableNameRef, null, null, null, null, null, null);
         tableColumnsRef = dbCursor2.getColumnNames();
-        dbCursor1.close(); dbCursor2.close();
+        dbCursor1.close();
+        dbCursor2.close();
 
         userDS = UserDataSource.getInstance(context);
     }
 
-	// Check and update local database version if necessary
+    public static CardDataSource getInstance(Context context) {
+        if (instance == null) {
+            instance = new CardDataSource(context);
+        }
+        return instance;
+    }
+
+    // Check and update local database version if necessary
     public void checkDbVersion(SQLiteDatabase mainDB, SQLiteDatabase refDB) {
         int userMainDbVersion = appPreferences.getDatabase_MainDBVersion();
         int userRefDbVersion = appPreferences.getDatabase_RefDBVersion();
-        int currentMainDbVersion = dbHelperMain.DATABASE_VERSION;
-        int currentRefDbVersion = dbHelperRef.DATABASE_VERSION;
+        int currentMainDbVersion = MainDatabaseHelper.DATABASE_VERSION;
+        int currentRefDbVersion = RefDatabaseHelper.DATABASE_VERSION;
 
         if (userMainDbVersion != currentMainDbVersion) {
             dbHelperMain.onUpgrade(mainDB, userMainDbVersion, currentMainDbVersion);
@@ -96,53 +96,53 @@ public class CardDataSource {
         }
     }
 
-	// Creates new user created credit card and inserts card into main database
+    // Creates new user created credit card and inserts card into main database
     public CreditCard create(Integer cardRefId, User user, CardStatus status, BigDecimal creditLimit, Date openDate, Date afDate, Date closeDate, String notes) {
         ContentValues values = new ContentValues();
-        values.put(dbHelperMain.COLUMN_CC_REFID, cardRefId);
-        if (user != null){
-            values.put(dbHelperMain.COLUMN_CC_USERID, user.getId());
+        values.put(MainDatabaseHelper.COLUMN_CC_REFID, cardRefId);
+        if (user != null) {
+            values.put(MainDatabaseHelper.COLUMN_CC_USERID, user.getId());
         }
-        values.put(dbHelperMain.COLUMN_CC_STATUS, status.getId());
-        values.put(dbHelperMain.COLUMN_CC_CREDITLIMIT, String.valueOf(creditLimit));
-        if (openDate != null){
-            values.put(dbHelperMain.COLUMN_CC_OPENDATE, dbDateFormat.format(openDate));
+        values.put(MainDatabaseHelper.COLUMN_CC_STATUS, status.getId());
+        values.put(MainDatabaseHelper.COLUMN_CC_CREDITLIMIT, String.valueOf(creditLimit));
+        if (openDate != null) {
+            values.put(MainDatabaseHelper.COLUMN_CC_OPENDATE, dbDateFormat.format(openDate));
         }
-        if (afDate != null){
-            values.put(dbHelperMain.COLUMN_CC_AFDATE, dbDateFormat.format(afDate));
+        if (afDate != null) {
+            values.put(MainDatabaseHelper.COLUMN_CC_AFDATE, dbDateFormat.format(afDate));
         }
-        if (closeDate != null){
-            values.put(dbHelperMain.COLUMN_CC_CLOSEDATE, dbDateFormat.format(closeDate));
+        if (closeDate != null) {
+            values.put(MainDatabaseHelper.COLUMN_CC_CLOSEDATE, dbDateFormat.format(closeDate));
         }
-        values.put(dbHelperMain.COLUMN_CC_NOTIFICATIONSTATUS, String.valueOf(NotificationStatus.OFF.getId()));
-        values.put(dbHelperMain.COLUMN_CC_NOTES, notes);
+        values.put(MainDatabaseHelper.COLUMN_CC_NOTIFICATIONSTATUS, String.valueOf(NotificationStatus.OFF.getId()));
+        values.put(MainDatabaseHelper.COLUMN_CC_NOTES, notes);
 
         long insertId = dbMain.insert(tableNameMain, null, values);
-        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_CC_ID + " = " + insertId, null, null, null, null);
+        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, MainDatabaseHelper.COLUMN_CC_ID + " = " + insertId, null, null, null, null);
         cursor.moveToFirst();
         CreditCard newCard = cursorToCard(cursor);
         cursor.close();
         return newCard;
     }
 
-	// Deletes all credit cards
-    public void deleteAll(){
+    // Deletes all credit cards
+    public void deleteAll() {
         dbMain.delete(tableNameMain, null, null);
     }
 
-	// Deletes specific credit card
+    // Deletes specific credit card
     public void delete(CreditCard card) {
         int id = card.getId();
         delete(id);
     }
 
-	// Deletes specific credit card, based on ref ID
+    // Deletes specific credit card, based on ref ID
     public void delete(int refID) {
-        dbMain.delete(tableNameMain, dbHelperMain.COLUMN_CC_ID + " = " + refID, null);
+        dbMain.delete(tableNameMain, MainDatabaseHelper.COLUMN_CC_ID + " = " + refID, null);
     }
 
-	// Returns a list of all credit cards in database, sorted by sortField parameter
-    public ArrayList <CreditCard> getAll(User user, ItemField sortField, boolean onlyWithNotifications, boolean excludeClosed){
+    // Returns a list of all credit cards in database, sorted by sortField parameter
+    public ArrayList<CreditCard> getAll(User user, ItemField sortField, boolean onlyWithNotifications, boolean excludeClosed) {
         ArrayList<CreditCard> cardList = new ArrayList<CreditCard>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
@@ -150,15 +150,15 @@ public class CardDataSource {
             CreditCard card = cursorToCard(cursor);
             if (card != null) {
                 User cardUser = card.getUser();
-                if (user != null && (cardUser == null || cardUser.getId() != user.getId()) ) {
+                if (user != null && (cardUser == null || cardUser.getId() != user.getId())) {
                     cursor.moveToNext();
                     continue;
                 } else if (onlyWithNotifications && card.getNotificationStatus() != NotificationStatus.ON) {
                     cursor.moveToNext();
                     continue;
-                } else if (excludeClosed && card.getStatus() == CardStatus.CLOSED){
-                        cursor.moveToNext();
-                        continue;
+                } else if (excludeClosed && card.getStatus() == CardStatus.CLOSED) {
+                    cursor.moveToNext();
+                    continue;
                 } else {
                     cardList.add(card);
                     cursor.moveToNext();
@@ -167,12 +167,12 @@ public class CardDataSource {
         }
         cursor.close();
 
-		//Defines default sort order
-        if (sortField == null){
+        //Defines default sort order
+        if (sortField == null) {
             sortField = ItemField.CARD_NAME;
         }
 
-		// Sorts cards by selected sort field
+        // Sorts cards by selected sort field
         final ItemField finalSortField = sortField;
         Collections.sort(cardList, new Comparator<CreditCard>() {
             @Override
@@ -236,8 +236,8 @@ public class CardDataSource {
     }
 
     // Returns a list of all US credit cards in database that count towards Chase 5/24 status
-    public ArrayList <CreditCard> getChase524StatusCards(User user){
-        ArrayList<CreditCard> fullCardList = getAll(user, ItemField.OPEN_DATE, false,false);
+    public ArrayList<CreditCard> getChase524StatusCards(User user) {
+        ArrayList<CreditCard> fullCardList = getAll(user, ItemField.OPEN_DATE, false, false);
         ArrayList<CreditCard> recentCardList = new ArrayList<CreditCard>();
 
         // Establish cutoff date 24 months before today
@@ -245,7 +245,7 @@ public class CardDataSource {
         cutoffDate.add(Calendar.MONTH, -24);
 
         // List of issuers whose business cards also count towards 5/24 status
-        List<String> businessCardsCreditCheck = Arrays.asList(new String[]{"Capital One", "Discover"});
+        List<String> businessCardsCreditCheck = Arrays.asList("Capital One", "Discover");
 
         for (CreditCard card : fullCardList) {
             Date openDate = card.getOpenDate();
@@ -269,25 +269,25 @@ public class CardDataSource {
         return recentCardList;
     }
 
-	// Returns a single credit card by card ID
+    // Returns a single credit card by card ID
     public CreditCard getSingle(int id) {
-        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_CC_ID + " = " + id, null, null, null, null);
+        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, MainDatabaseHelper.COLUMN_CC_ID + " = " + id, null, null, null, null);
         cursor.moveToFirst();
         CreditCard card = cursorToCard(cursor);
         cursor.close();
         return card;
     }
 
-	// Returns list of banks with option to ignore depreciated cards
+    // Returns list of banks with option to ignore depreciated cards
     public ArrayList<String> getAvailableBanks(Country country, boolean ignoreDeprecated) {
         ArrayList<String> bankList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_COUNTRY, dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                        {RefDatabaseHelper.COLUMN_CC_COUNTRY, RefDatabaseHelper.COLUMN_CC_BANK, RefDatabaseHelper.COLUMN_CC_DEPRECIATED},
                 null, null, null, null, null);
         cursor.moveToFirst();
-        int refIndex_country = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_COUNTRY);
-        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
-        int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
+        int refIndex_country = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_COUNTRY);
+        int refIndex_bank = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_BANK);
+        int refIndex_depreciated = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
             String cardCountry = cursor.getString(refIndex_country);
             Boolean depreciated = cursor.getInt(refIndex_depreciated) == 1;
@@ -301,26 +301,26 @@ public class CardDataSource {
             cursor.moveToNext();
         }
         cursor.close();
-		
-		// Sort alphabetically and remove duplicates
+
+        // Sort alphabetically and remove duplicates
         Collections.sort(bankList);
         bankList = new ArrayList<String>(new LinkedHashSet<String>(bankList));
-		
+
         return bankList;
     }
 
-	// Returns list of cards with option to ignore depreciated cards
+    // Returns list of cards with option to ignore depreciated cards
     public ArrayList<String> getAvailableCards(Country country, String bank, boolean ignoreDeprecated) {
         ArrayList<String> cardList = new ArrayList<>();
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_COUNTRY, dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_DEPRECIATED},
+                        {RefDatabaseHelper.COLUMN_CC_COUNTRY, RefDatabaseHelper.COLUMN_CC_BANK, RefDatabaseHelper.COLUMN_CC_NAME, RefDatabaseHelper.COLUMN_CC_DEPRECIATED},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
-        int refIndex_country = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_COUNTRY);
-        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
-        int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
-        int refIndex_depreciated = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_DEPRECIATED);
+        int refIndex_country = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_COUNTRY);
+        int refIndex_bank = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_BANK);
+        int refIndex_name = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_NAME);
+        int refIndex_depreciated = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_DEPRECIATED);
         while (!cursor.isAfterLast()) {
             String cardCountry = cursor.getString(refIndex_country);
             String cardBank = cursor.getString(refIndex_bank);
@@ -336,19 +336,19 @@ public class CardDataSource {
             cursor.moveToNext();
         }
         cursor.close();
-		
-		// Sort alphabetically
+
+        // Sort alphabetically
         Collections.sort(cardList);
-		
+
         return cardList;
     }
 
-	// Update cards notifications
-    public void updateCardsNotifications(){
+    // Update cards notifications
+    public void updateCardsNotifications() {
         NotificationStatus newStatus;
         NotificationStatus currentStatus;
 
-		// Calculates number of days before annual fee to send notification to user
+        // Calculates number of days before annual fee to send notification to user
         Integer notificationDays = null;
         String[] notificationPeriodArray = appPreferences.getCustom_CardNotificationPeriod().split(" ");
         Integer value = Integer.valueOf(notificationPeriodArray[0]);
@@ -372,8 +372,8 @@ public class CardDataSource {
             if (card != null) {
                 currentStatus = card.getNotificationStatus();
                 Date annualFeeDate = card.getAfDate();
-                if (card.getStatus() == CardStatus.CLOSED || card.hasAnnualFee() == false || annualFeeDate == null){
-                    if (currentStatus == NotificationStatus.ON){
+                if (card.getStatus() == CardStatus.CLOSED || card.hasAnnualFee() == false || annualFeeDate == null) {
+                    if (currentStatus == NotificationStatus.ON) {
                         card.setNotificationStatus(NotificationStatus.OFF);
                         update(card);
                     }
@@ -404,8 +404,8 @@ public class CardDataSource {
         cursor.close();
     }
 
-	// Updates notification status for an individual card
-    public void changeCardNotificationStatus(CreditCard card, NotificationStatus newStatus){
+    // Updates notification status for an individual card
+    public void changeCardNotificationStatus(CreditCard card, NotificationStatus newStatus) {
         NotificationStatus currentStatus = card.getNotificationStatus();
         if (newStatus != currentStatus) {
             card.setNotificationStatus(newStatus);
@@ -413,8 +413,8 @@ public class CardDataSource {
         }
     }
 
-	// Update all fields for an individual card in the main database
-    public int update(CreditCard card)  {
+    // Update all fields for an individual card in the main database
+    public int update(CreditCard card) {
         Integer ID = card.getId();
         Integer refId = card.getRefId();
         User user = card.getUser();
@@ -427,46 +427,46 @@ public class CardDataSource {
         String notes = card.getNotes();
 
         ContentValues values = new ContentValues();
-        values.put(dbHelperMain.COLUMN_CC_REFID, refId);
+        values.put(MainDatabaseHelper.COLUMN_CC_REFID, refId);
         if (user != null) {
-            values.put(dbHelperMain.COLUMN_CC_USERID, user.getId());
+            values.put(MainDatabaseHelper.COLUMN_CC_USERID, user.getId());
         } else {
-            values.put(dbHelperMain.COLUMN_CC_USERID, "");
+            values.put(MainDatabaseHelper.COLUMN_CC_USERID, "");
         }
-        values.put(dbHelperMain.COLUMN_CC_STATUS, status.getId());
-        values.put(dbHelperMain.COLUMN_CC_CREDITLIMIT, String.valueOf(creditLimit));
-        if (openDate != null){
-            values.put(dbHelperMain.COLUMN_CC_OPENDATE, dbDateFormat.format(openDate));
+        values.put(MainDatabaseHelper.COLUMN_CC_STATUS, status.getId());
+        values.put(MainDatabaseHelper.COLUMN_CC_CREDITLIMIT, String.valueOf(creditLimit));
+        if (openDate != null) {
+            values.put(MainDatabaseHelper.COLUMN_CC_OPENDATE, dbDateFormat.format(openDate));
         }
-        if (afDate != null){
-            values.put(dbHelperMain.COLUMN_CC_AFDATE, dbDateFormat.format(afDate));
+        if (afDate != null) {
+            values.put(MainDatabaseHelper.COLUMN_CC_AFDATE, dbDateFormat.format(afDate));
         }
-        if (closeDate != null){
-            values.put(dbHelperMain.COLUMN_CC_CLOSEDATE, dbDateFormat.format(closeDate));
+        if (closeDate != null) {
+            values.put(MainDatabaseHelper.COLUMN_CC_CLOSEDATE, dbDateFormat.format(closeDate));
         }
-        values.put(dbHelperMain.COLUMN_CC_NOTIFICATIONSTATUS, String.valueOf(notificationStatus.getId()));
-        values.put(dbHelperMain.COLUMN_CC_NOTES, notes);
+        values.put(MainDatabaseHelper.COLUMN_CC_NOTIFICATIONSTATUS, String.valueOf(notificationStatus.getId()));
+        values.put(MainDatabaseHelper.COLUMN_CC_NOTES, notes);
 
-        int numOfRows = dbMain.update(tableNameMain, values, dbHelperMain.COLUMN_CC_ID + "=" + ID, null);
+        int numOfRows = dbMain.update(tableNameMain, values, MainDatabaseHelper.COLUMN_CC_ID + "=" + ID, null);
         return numOfRows;
     }
 
-	// Look up card reference ID by card name
+    // Look up card reference ID by card name
     public Integer getCardRefId(String cardBank, String cardName) {
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_ID, dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME},
+                        {RefDatabaseHelper.COLUMN_CC_ID, RefDatabaseHelper.COLUMN_CC_BANK, RefDatabaseHelper.COLUMN_CC_NAME},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
-        int refIndex_id = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_ID);
-        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
-        int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
+        int refIndex_id = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_ID);
+        int refIndex_bank = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_BANK);
+        int refIndex_name = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_NAME);
         Integer cardRefId = null;
         while (!cursor.isAfterLast()) {
             Integer id = cursor.getInt(refIndex_id);
             String bank = cursor.getString(refIndex_bank);
             String name = cursor.getString(refIndex_name);
-            if (cardBank.equals(bank) && cardName.equals(name)){
+            if (cardBank.equals(bank) && cardName.equals(name)) {
                 cardRefId = id;
                 break;
             }
@@ -476,22 +476,22 @@ public class CardDataSource {
         return cardRefId;
     }
 
-	// Look up card annual by card name
+    // Look up card annual by card name
     public BigDecimal getCardAnnualFee(String cardBank, String cardName) {
         Cursor cursor = dbRef.query(tableNameRef, new String[]
-                {dbHelperRef.COLUMN_CC_BANK, dbHelperRef.COLUMN_CC_NAME, dbHelperRef.COLUMN_CC_AF},
+                        {RefDatabaseHelper.COLUMN_CC_BANK, RefDatabaseHelper.COLUMN_CC_NAME, RefDatabaseHelper.COLUMN_CC_AF},
                 null, null, null, null, null);
 
         cursor.moveToFirst();
-        int refIndex_bank = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
-        int refIndex_name = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
-        int refIndex_af = cursor.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
+        int refIndex_bank = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_BANK);
+        int refIndex_name = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_NAME);
+        int refIndex_af = cursor.getColumnIndex(RefDatabaseHelper.COLUMN_CC_AF);
         BigDecimal cardAnnualFee = null;
         while (!cursor.isAfterLast()) {
             String bank = cursor.getString(refIndex_bank);
             String name = cursor.getString(refIndex_name);
             BigDecimal annualFee = new BigDecimal(cursor.getString(refIndex_af));
-            if (cardBank.equals(bank) && cardName.equals(name)){
+            if (cardBank.equals(bank) && cardName.equals(name)) {
                 cardAnnualFee = annualFee;
                 break;
             }
@@ -502,18 +502,18 @@ public class CardDataSource {
     }
 
     // Converts database cursor to credit card
-    private CreditCard cursorToCard(Cursor cursor)  {
-        int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_ID);
-        int mainIndex_refId = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_REFID);
-        int mainIndex_userId = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_USERID);
-        int mainIndex_status = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_STATUS);
-        int mainIndex_number = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_NUMBER);
-        int mainIndex_creditLimit = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_CREDITLIMIT);
-        int mainIndex_openDate = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_OPENDATE);
-        int mainIndex_afDate = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_AFDATE);
-        int mainIndex_closeDate = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_CLOSEDATE);
-        int mainIndex_notificationStatus = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_NOTIFICATIONSTATUS);
-        int mainIndex_notes = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_NOTES);
+    private CreditCard cursorToCard(Cursor cursor) {
+        int mainIndex_id = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_ID);
+        int mainIndex_refId = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_REFID);
+        int mainIndex_userId = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_USERID);
+        int mainIndex_status = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_STATUS);
+        int mainIndex_number = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_NUMBER);
+        int mainIndex_creditLimit = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_CREDITLIMIT);
+        int mainIndex_openDate = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_OPENDATE);
+        int mainIndex_afDate = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_AFDATE);
+        int mainIndex_closeDate = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_CLOSEDATE);
+        int mainIndex_notificationStatus = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_NOTIFICATIONSTATUS);
+        int mainIndex_notes = cursor.getColumnIndex(MainDatabaseHelper.COLUMN_CC_NOTES);
 
         Integer id = cursor.getInt(mainIndex_id);
         Integer refId = cursor.getInt(mainIndex_refId);
@@ -552,19 +552,19 @@ public class CardDataSource {
 
 
         Cursor cursorRef = dbRef.query(tableNameRef, tableColumnsRef, "_id = " + refId, null, null, null, null);
-        if (cursorRef.getCount() != 1){
+        if (cursorRef.getCount() != 1) {
             delete(id);
             cursorRef.close();
             return null;
         } else {
             cursorRef.moveToFirst();
-            int refIndex_logoId = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_LOGOID);
-            int refIndex_country = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_COUNTRY);
-            int refIndex_bank = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_BANK);
-            int refIndex_name = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_NAME);
-            int refIndex_type = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_TYPE);
-            int refIndex_af = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_AF);
-            int refIndex_ftf = cursorRef.getColumnIndex(dbHelperRef.COLUMN_CC_FTF);
+            int refIndex_logoId = cursorRef.getColumnIndex(RefDatabaseHelper.COLUMN_CC_LOGOID);
+            int refIndex_country = cursorRef.getColumnIndex(RefDatabaseHelper.COLUMN_CC_COUNTRY);
+            int refIndex_bank = cursorRef.getColumnIndex(RefDatabaseHelper.COLUMN_CC_BANK);
+            int refIndex_name = cursorRef.getColumnIndex(RefDatabaseHelper.COLUMN_CC_NAME);
+            int refIndex_type = cursorRef.getColumnIndex(RefDatabaseHelper.COLUMN_CC_TYPE);
+            int refIndex_af = cursorRef.getColumnIndex(RefDatabaseHelper.COLUMN_CC_AF);
+            int refIndex_ftf = cursorRef.getColumnIndex(RefDatabaseHelper.COLUMN_CC_FTF);
 
             String logoId = cursorRef.getString(refIndex_logoId);
             Country country = Country.fromName(cursorRef.getString(refIndex_country));

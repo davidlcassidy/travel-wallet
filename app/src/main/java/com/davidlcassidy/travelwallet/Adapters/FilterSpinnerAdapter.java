@@ -22,26 +22,23 @@ import java.util.ArrayList;
 public class FilterSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
 
     private final Context activity;
-    private ArrayList<String> items;
+    private final ArrayList<String> items;
 
     public FilterSpinnerAdapter(Context activity, ArrayList<String> items) {
-        this.items=items;
+        this.items = items;
         this.activity = activity;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return items.size();
     }
 
-    public Object getItem(int i)
-    {
+    public Object getItem(int i) {
         return items.get(i);
     }
 
-    public long getItemId(int i)
-    {
-        return (long)i;
+    public long getItemId(int i) {
+        return i;
     }
 
     @Override
@@ -52,7 +49,7 @@ public class FilterSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         txt.setGravity(Gravity.CENTER_VERTICAL);
         txt.setText(items.get(position));
         txt.setTextColor(Color.parseColor("#000000"));
-        return  txt;
+        return txt;
     }
 
     public View getView(int i, View view, ViewGroup viewgroup) {
@@ -66,7 +63,7 @@ public class FilterSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         txt.setText(items.get(i));
         txt.setMaxLines(1);
         txt.setTextColor(Color.parseColor("#000000"));
-        return  txt;
+        return txt;
     }
 
 }

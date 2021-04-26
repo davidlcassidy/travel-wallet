@@ -21,9 +21,9 @@ import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
 import com.davidlcassidy.travelwallet.Classes.Detail;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.User;
+import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
-import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
@@ -57,36 +57,36 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailslist);
-		setTitle("Loyalty Program");
+        setTitle("Loyalty Program");
 
         programDS = ProgramDataSource.getInstance(this);
         programId = getIntent().getIntExtra("PROGRAM_ID", -1);
         detailList = new ArrayList<Detail>();
         final LoyaltyProgram program = programDS.getSingle(programId);
-        
-		// Adds image to list header and notification button to list footer
+
+        // Adds image to list header and notification button to list footer
         View header = getLayoutInflater().inflate(R.layout.detaillist_header, null);
-        logo = (ImageView) header.findViewById(R.id.Logo);
+        logo = header.findViewById(R.id.Logo);
         View footer = getLayoutInflater().inflate(R.layout.detaillist_footer, null);
-        lv = (ListView) findViewById(R.id.detailsList);
+        lv = findViewById(R.id.detailsList);
         lv.addHeaderView(header);
         lv.addFooterView(footer);
 
-		// Sets text and colors for notification button
-        notificationButton = (ToggleButton) footer.findViewById(R.id.notificationButton);
+        // Sets text and colors for notification button
+        notificationButton = footer.findViewById(R.id.notificationButton);
         notificationButton.setTextOn("Monitoring : ON");
         notificationButton.setTextOff("Monitoring : OFF");
-        if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
+        if (program.getNotificationStatus() == NotificationStatus.UNMONITORED) {
             notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
         } else {
             notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
         }
 
-		// Sets click listener for notification button. When clicked, the program's notification status
-		// will be updated and notification button text will change to reflect.
+        // Sets click listener for notification button. When clicked, the program's notification status
+        // will be updated and notification button text will change to reflect.
         notificationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
+                if (program.getNotificationStatus() == NotificationStatus.UNMONITORED) {
                     programDS.changeProgramNotificationStatus(program, NotificationStatus.OFF);
                     notificationButton.setChecked(true);
                     notificationButton.setBackgroundColor(getThemeColor(R.attr.colorPrimary));
@@ -98,7 +98,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
             }
         });
 
-        notesField = (TextView) footer.findViewById(R.id.notesField);
+        notesField = footer.findViewById(R.id.notesField);
     }
 
     protected void onResume() {
@@ -114,15 +114,15 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         BigDecimal value = program.getTotalValue();
         String programValueString = currency.numToString(value, numberPattern);
 
-		// Sets program image for list header
+        // Sets program image for list header
         int logoNum = this.getResources().getIdentifier(program.getLogoImage(), "drawable", this.getPackageName());
         logo.setImageResource(logoNum);
 
-		// Creates list of loyalty program field/value pairs
+        // Creates list of loyalty program field/value pairs
         detailList.clear();
 
         User user = program.getUser();
-        if (user != null){
+        if (user != null) {
             detailList.add(new Detail("User", user.getName()));
         }
 
@@ -130,26 +130,22 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         detailList.add(new Detail("Type", program.getType()));
         detailList.add(new Detail("Account Number", program.getAccountNumber()));
         detailList.add(new Detail("Points", numberFormat.format(program.getPoints())));
-        detailList.add(new Detail("Value", programValueString));;
+        detailList.add(new Detail("Value", programValueString));
 
         // Creates adapter using program details list and sets to list
         DetailListAdapter adapter = new DetailListAdapter(this, detailList);
         lv.setAdapter(adapter);
 
-        if (program.getNotificationStatus() == NotificationStatus.UNMONITORED){
-            notificationButton.setChecked(false);
-        } else {
-            notificationButton.setChecked(true);
-        }
-		
-		// Updates notification button test and visability
-		Date lastActivityDate = program.getLastActivityDate();
+        notificationButton.setChecked(program.getNotificationStatus() != NotificationStatus.UNMONITORED);
+
+        // Updates notification button test and visability
+        Date lastActivityDate = program.getLastActivityDate();
         Date expirationDate = program.getExpirationDate();
         String expirationOverride = program.getExpirationOverride();
-		notificationButton.setVisibility(View.VISIBLE);
-        if (program.hasExpirationDate() == false){
+        notificationButton.setVisibility(View.VISIBLE);
+        if (program.hasExpirationDate() == false) {
             notificationButton.setVisibility(View.GONE);
-            if (expirationOverride != null){
+            if (expirationOverride != null) {
                 detailList.add(new Detail("Expiration", expirationOverride));
             }
         } else if (expirationDate != null && lastActivityDate != null) {
@@ -166,44 +162,44 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         }
     }
 
-	// Runs when edit button is clicked
+    // Runs when edit button is clicked
     @Override
     public void menuEditClicked() {
-		// Opens ProgramAddEdit Activity
+        // Opens ProgramAddEdit Activity
         Intent intent = new Intent(ProgramDetailActivity.this, ProgramAddEditActivity.class);
         intent.putExtra("PROGRAM_ID", programId);
         startActivity(intent);
     }
 
-	// Runs when delete button is clicked
+    // Runs when delete button is clicked
     @Override
     public void menuDeleteClicked() {
-		
-		// Creates delete warning dialog
+
+        // Creates delete warning dialog
         LoyaltyProgram program = programDS.getSingle(programId);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(program.getName());
-		builder.setCancelable(false);
+        builder.setTitle(program.getName());
+        builder.setCancelable(false);
         builder.setMessage("Are you sure you want to delete?");
 
-		// Deletes program if "Yes" button selected
+        // Deletes program if "Yes" button selected
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
                 appPreferences.setProgramFiltersUpdateRequired(true);
                 programDS.delete(programId);
                 finish();
-            }});
-
-		// Dialog closes with no further action if "Cancel" button is selected
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int selected) {
-                ;
             }
         });
 
-		// Creates dialog
+        // Dialog closes with no further action if "Cancel" button is selected
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int selected) {
+            }
+        });
+
+        // Creates dialog
         AlertDialog dialog = builder.create();
         dialog.show();
     }

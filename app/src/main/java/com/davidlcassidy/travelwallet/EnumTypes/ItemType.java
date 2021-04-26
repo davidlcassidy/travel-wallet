@@ -11,8 +11,8 @@ ID Local Cache : None
  */
 
 public enum ItemType {
-	
-	// Enum members
+
+    // Enum members
     USER(1, "User"),
     LOYALTY_PROGRAM(2, "Loyalty Program"),
     CREDIT_CARD(3, "Credit Card");
@@ -21,12 +21,22 @@ public enum ItemType {
     private final int id;
     private final String name;
 
-    private ItemType(int id, String name) {
+    ItemType(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-	// Returns item type ID
+    // Returns item type from ID
+    public static ItemType fromId(int i) {
+        for (ItemType itemType : ItemType.values()) {
+            if (itemType.getId() == i) {
+                return itemType;
+            }
+        }
+        return null;
+    }
+
+    // Returns item type ID
     public int getId() {
         return id;
     }
@@ -34,13 +44,5 @@ public enum ItemType {
     // Returns item type name
     public String getName() {
         return name;
-    }
-
-	// Returns item type from ID
-    public static ItemType fromId(int i) {
-        for (ItemType itemType : ItemType.values()) {
-            if (itemType.getId() == i) {return itemType;}
-        }
-        return null;
     }
 }

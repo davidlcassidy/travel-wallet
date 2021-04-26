@@ -19,20 +19,21 @@ used to set the menu items on the toolbar.
 public abstract class BaseActivity_Main extends BaseActivity {
 
     public abstract void menuUsersClicked();
+
     public abstract void menuDropdownClicked();
 
-	// Sets menu layout
+    // Sets menu layout
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-	// Sets toolbar button actions
+    // Sets toolbar button actions
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-			
-			// Back button click closes current activity
+
+            // Back button click closes current activity
             case android.R.id.home:
                 finish();
                 return true;
@@ -46,7 +47,7 @@ public abstract class BaseActivity_Main extends BaseActivity {
             case R.id.menu_dropdown:
                 menuDropdownClicked();
                 return true;
-				
+
             default:
                 return super.onOptionsItemSelected(item);
         }

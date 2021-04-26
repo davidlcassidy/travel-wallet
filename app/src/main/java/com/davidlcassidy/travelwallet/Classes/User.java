@@ -47,10 +47,10 @@ public class User {
 
         // Set total program value
         BigDecimal totalProgramValue = BigDecimal.valueOf(0);
-        for(LoyaltyProgram lp :userPrograms){
+        for (LoyaltyProgram lp : userPrograms) {
             totalProgramValue = totalProgramValue.add(lp.getTotalValue());
         }
-        this.totalProgramValue =totalProgramValue;
+        this.totalProgramValue = totalProgramValue;
 
         // Set total AF and credit limit
         BigDecimal totalAF = BigDecimal.valueOf(0);
@@ -66,7 +66,7 @@ public class User {
 
         // Set Chase 5/24 status
         Integer chase524count = userChase524cards.size();
-        this.chase524Status = String.valueOf(chase524count) + "/24";
+        this.chase524Status = chase524count + "/24";
         String eligibilityDateString = "";
         if (chase524count >= 5) {
             CreditCard fifthCard = userChase524cards.get(chase524count - 5);
@@ -77,7 +77,7 @@ public class User {
         } else {
             eligibilityDateString = "Now";
         }
-        this.chase524StatusEligibilityDate =  eligibilityDateString;
+        this.chase524StatusEligibilityDate = eligibilityDateString;
     }
 
     public Integer getId() {
