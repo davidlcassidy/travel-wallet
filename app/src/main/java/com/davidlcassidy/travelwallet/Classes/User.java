@@ -7,7 +7,7 @@
 package com.davidlcassidy.travelwallet.Classes;
 
 /*
-Owner class is created by OwnerDataSource and contains the data for a owner
+User class is created by UserDataSource and contains the data for a user
 from the MainDatabase.
  */
 
@@ -20,7 +20,7 @@ import java.util.Calendar;
 
 import static java.util.Calendar.MONTH;
 
-public class Owner {
+public class User {
 
     private Integer id;
     private String name;
@@ -33,7 +33,7 @@ public class Owner {
     private String chase524StatusEligibilityDate;
     private String notes;
 
-    public Owner(Integer id, String name, String notes) {
+    public User(Integer id, String name, String notes) {
         this.id = id;
         this.name = name;
         this.notes = notes;

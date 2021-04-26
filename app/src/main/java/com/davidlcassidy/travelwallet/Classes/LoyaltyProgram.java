@@ -21,7 +21,7 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
 
     private Integer id;
     private Integer refId;
-    private Owner owner;
+    private User user;
     private String type;
     private String company;
     private String name;
@@ -38,10 +38,10 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
     private String logoIcon;
     private String notes;
 
-    public LoyaltyProgram(Integer id, Integer refId, Owner owner, String type, String company, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
+    public LoyaltyProgram(Integer id, Integer refId, User user, String type, String company, String name, String accountNumber, Integer points, BigDecimal pointValue, Integer inactivityExpiration, String expirationOverride, Date lastActivityDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.refId = refId;
-        this.owner = owner;
+        this.user = user;
         this.type = type;
         this.company = company;
         this.name = name;
@@ -107,12 +107,12 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
         this.refId = refId;
     }
 
-    public Owner getOwner() {
-        return owner;
+    public User getUser() {
+        return user;
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getType() {

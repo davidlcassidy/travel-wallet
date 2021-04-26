@@ -12,14 +12,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
-import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 import com.davidlcassidy.travelwallet.Classes.Notification;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 
 /*
 CardDataSource is used to manage and access all local Credit Card data, via access
@@ -41,15 +42,15 @@ to the two Credit Card tables in MainDatabase and RefDatabase.
 public class CardDataSource {
 
     private static CardDataSource instance;
-    private static OwnerDataSource ownerDS;
+    private static UserDataSource userDS;
     private static Context context;
-    private static UserPreferences userPreferences;
+    private static AppPreferences appPreferences;
     private static SQLiteDatabase dbMain, dbRef;
     private static MainDatabaseHelper dbHelperMain;
     private static RefDatabaseHelper dbHelperRef;
     private static String tableNameMain, tableNameRef;
     private static String[] tableColumnsMain, tableColumnsRef;
-    private static SimpleDateFormat dbDateFormat = dbHelperMain.DATABASE_DATEFORMAT;
+    private static SimpleDateFormat dbDateFormat = dbHelperMain.DATABASE_DATE_FORMAT;
 
     public static CardDataSource getInstance(Context context) {
         if (instance == null) {
@@ -60,7 +61,7 @@ public class CardDataSource {
 
     private CardDataSource(Context c) {
         context = c;
-        userPreferences = UserPreferences.getInstance(context);
+        appPreferences = AppPreferences.getInstance(context);
         dbHelperMain = new MainDatabaseHelper(context);
         dbHelperRef = new RefDatabaseHelper(context);
         dbMain = dbHelperMain.getDB();
@@ -75,32 +76,32 @@ public class CardDataSource {
         tableColumnsRef = dbCursor2.getColumnNames();
         dbCursor1.close(); dbCursor2.close();
 
-        ownerDS = OwnerDataSource.getInstance(context);
+        userDS = UserDataSource.getInstance(context);
     }
 
 	// Check and update local database version if necessary
     public void checkDbVersion(SQLiteDatabase mainDB, SQLiteDatabase refDB) {
-        int userMainDbVersion = userPreferences.getDatabase_MainDBVersion();
-        int userRefDbVersion = userPreferences.getDatabase_RefDBVersion();
+        int userMainDbVersion = appPreferences.getDatabase_MainDBVersion();
+        int userRefDbVersion = appPreferences.getDatabase_RefDBVersion();
         int currentMainDbVersion = dbHelperMain.DATABASE_VERSION;
         int currentRefDbVersion = dbHelperRef.DATABASE_VERSION;
 
         if (userMainDbVersion != currentMainDbVersion) {
             dbHelperMain.onUpgrade(mainDB, userMainDbVersion, currentMainDbVersion);
-            userPreferences.setDatabase_MainDBVersion(currentMainDbVersion);
+            appPreferences.setDatabase_MainDBVersion(currentMainDbVersion);
         }
         if (userRefDbVersion != currentRefDbVersion) {
             dbHelperRef.onUpgrade(refDB, userRefDbVersion, currentRefDbVersion);
-            userPreferences.setDatabase_RefDBVersion(currentRefDbVersion);
+            appPreferences.setDatabase_RefDBVersion(currentRefDbVersion);
         }
     }
 
 	// Creates new user created credit card and inserts card into main database
-    public CreditCard create(Integer cardRefId, Owner owner, CardStatus status, BigDecimal creditLimit, Date openDate, Date afDate, Date closeDate, String notes) {
+    public CreditCard create(Integer cardRefId, User user, CardStatus status, BigDecimal creditLimit, Date openDate, Date afDate, Date closeDate, String notes) {
         ContentValues values = new ContentValues();
         values.put(dbHelperMain.COLUMN_CC_REFID, cardRefId);
-        if (owner != null){
-            values.put(dbHelperMain.COLUMN_CC_OWNERID, owner.getId());
+        if (user != null){
+            values.put(dbHelperMain.COLUMN_CC_USERID, user.getId());
         }
         values.put(dbHelperMain.COLUMN_CC_STATUS, status.getId());
         values.put(dbHelperMain.COLUMN_CC_CREDITLIMIT, String.valueOf(creditLimit));
@@ -141,15 +142,15 @@ public class CardDataSource {
     }
 
 	// Returns a list of all credit cards in database, sorted by sortField parameter
-    public ArrayList <CreditCard> getAll(Owner owner, ItemField sortField, boolean onlyWithNotifications, boolean excludeClosed){
+    public ArrayList <CreditCard> getAll(User user, ItemField sortField, boolean onlyWithNotifications, boolean excludeClosed){
         ArrayList<CreditCard> cardList = new ArrayList<CreditCard>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             CreditCard card = cursorToCard(cursor);
             if (card != null) {
-                Owner cardOwner = card.getOwner();
-                if (owner != null && (cardOwner == null || cardOwner.getId() != owner.getId()) ) {
+                User cardUser = card.getUser();
+                if (user != null && (cardUser == null || cardUser.getId() != user.getId()) ) {
                     cursor.moveToNext();
                     continue;
                 } else if (onlyWithNotifications && card.getNotificationStatus() != NotificationStatus.ON) {
@@ -168,11 +169,11 @@ public class CardDataSource {
 
 		//Defines default sort order
         if (sortField == null){
-            sortField = ItemField.CARDNAME;
+            sortField = ItemField.CARD_NAME;
         }
 
 		// Sorts cards by selected sort field
-        final String sortBy = sortField.getName();
+        final ItemField finalSortField = sortField;
         Collections.sort(cardList, new Comparator<CreditCard>() {
             @Override
             public int compare(CreditCard c1, CreditCard c2) {
@@ -183,23 +184,23 @@ public class CardDataSource {
                 Date c1Date;
                 Date c2Date;
 
-                switch (sortBy) {
-                    case "Card Name":
+                switch (finalSortField) {
+                    case CARD_NAME:
                         c = c1.getName().compareTo(c2.getName());
                         break;
-                    case "Bank":
+                    case BANK:
                         c = c1.getBank().compareTo(c2.getBank());
                         if (c == 0) {
                             c = c1.getName().compareTo(c2.getName());
                         }
                         break;
-                    case "Annual Fee":
+                    case ANNUAL_FEE:
                         c = c2.getAnnualFee().compareTo(c1.getAnnualFee());
                         if (c == 0) {
                             c = c1.getName().compareTo(c2.getName());
                         }
                         break;
-                    case "Open Date":
+                    case OPEN_DATE:
                         c1Date = c1.getOpenDate();
                         c2Date = c2.getOpenDate();
                         if (c1Date == null) {
@@ -213,7 +214,7 @@ public class CardDataSource {
                             c = c1.getName().compareTo(c2.getName());
                         }
                         break;
-                    case "Annual Fee Date":
+                    case AF_DATE:
                         c1Date = c1.getAfDate();
                         c2Date = c2.getAfDate();
                         if (c1Date == null) {
@@ -235,8 +236,8 @@ public class CardDataSource {
     }
 
     // Returns a list of all US credit cards in database that count towards Chase 5/24 status
-    public ArrayList <CreditCard> getChase524StatusCards(Owner owner){
-        ArrayList<CreditCard> fullCardList = getAll(owner, ItemField.OPENDATE, false,false);
+    public ArrayList <CreditCard> getChase524StatusCards(User user){
+        ArrayList<CreditCard> fullCardList = getAll(user, ItemField.OPEN_DATE, false,false);
         ArrayList<CreditCard> recentCardList = new ArrayList<CreditCard>();
 
         // Establish cutoff date 24 months before today
@@ -349,7 +350,7 @@ public class CardDataSource {
 
 		// Calculates number of days before annual fee to send notification to user
         Integer notificationDays = null;
-        String[] notificationPeriodArray = userPreferences.getCustom_CardNotificationPeriod().split(" ");
+        String[] notificationPeriodArray = appPreferences.getCustom_CardNotificationPeriod().split(" ");
         Integer value = Integer.valueOf(notificationPeriodArray[0]);
         String period = notificationPeriodArray[1];
         switch (period) {
@@ -416,7 +417,7 @@ public class CardDataSource {
     public int update(CreditCard card)  {
         Integer ID = card.getId();
         Integer refId = card.getRefId();
-        Owner owner = card.getOwner();
+        User user = card.getUser();
         CardStatus status = card.getStatus();
         BigDecimal creditLimit = card.getCreditLimit();
         Date openDate = card.getOpenDate();
@@ -427,10 +428,10 @@ public class CardDataSource {
 
         ContentValues values = new ContentValues();
         values.put(dbHelperMain.COLUMN_CC_REFID, refId);
-        if (owner != null) {
-            values.put(dbHelperMain.COLUMN_CC_OWNERID, owner.getId());
+        if (user != null) {
+            values.put(dbHelperMain.COLUMN_CC_USERID, user.getId());
         } else {
-            values.put(dbHelperMain.COLUMN_CC_OWNERID, "");
+            values.put(dbHelperMain.COLUMN_CC_USERID, "");
         }
         values.put(dbHelperMain.COLUMN_CC_STATUS, status.getId());
         values.put(dbHelperMain.COLUMN_CC_CREDITLIMIT, String.valueOf(creditLimit));
@@ -504,7 +505,7 @@ public class CardDataSource {
     private CreditCard cursorToCard(Cursor cursor)  {
         int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_ID);
         int mainIndex_refId = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_REFID);
-        int mainIndex_ownerId = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_OWNERID);
+        int mainIndex_userId = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_USERID);
         int mainIndex_status = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_STATUS);
         int mainIndex_number = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_NUMBER);
         int mainIndex_creditLimit = cursor.getColumnIndex(dbHelperMain.COLUMN_CC_CREDITLIMIT);
@@ -516,7 +517,7 @@ public class CardDataSource {
 
         Integer id = cursor.getInt(mainIndex_id);
         Integer refId = cursor.getInt(mainIndex_refId);
-        Owner owner = ownerDS.getSingle(cursor.getInt(mainIndex_ownerId), null, null);
+        User user = userDS.getSingle(cursor.getInt(mainIndex_userId), null, null);
         CardStatus status = CardStatus.fromId(cursor.getInt(mainIndex_status));
         Integer cardNumber = cursor.getInt(mainIndex_number);
 
@@ -580,7 +581,7 @@ public class CardDataSource {
             BigDecimal foreignTransactionFee = new BigDecimal(cursorRef.getString(refIndex_ftf));
 
             cursorRef.close();
-            CreditCard card = new CreditCard(id, refId, logoId, owner, status, country, bank, name, type, creditLimit, annualFee, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
+            CreditCard card = new CreditCard(id, refId, logoId, user, status, country, bank, name, type, creditLimit, annualFee, foreignTransactionFee, openDate, afDate, closeDate, notificationStatus, notes);
             return card;
         }
     }

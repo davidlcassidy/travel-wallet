@@ -12,13 +12,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
-import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
-import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.Country;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
@@ -26,19 +25,19 @@ import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
 /*
-OwnerDetailActivity is use to display the details of an individual owner. It is created
-by the selection of an owner in the listview in OwnerListActivity and provided with a
-OWNER_ID matching the unique owner id number in the MainDatabase. This activity is primarily
+UserDetailActivity is use to display the details of an individual user. It is created
+by the selection of an user in the listview in UserListActivity and provided with a
+USER_ID matching the unique user id number in the MainDatabase. This activity is primarily
 composed of a listview utilizing the DetailListAdapter.
  */
 
-public class OwnerDetailActivity extends BaseActivity_EditDelete {
+public class UserDetailActivity extends BaseActivity_EditDelete {
 
-    private OwnerDataSource ownerDS;
+    private UserDataSource userDS;
     private ProgramDataSource programDS;
     private CardDataSource cardDS;
     private Currency currency;
-    private Integer ownerId;
+    private Integer userId;
 
     private LinearLayout cardChaseStatusLayout, cardChaseStatusDateLayout;
     private TextView nameText, notesField, programCountField, programValueField,
@@ -48,16 +47,15 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ownerdetailslist);
-		setTitle("Owner");
+        setContentView(R.layout.activity_userdetailslist);
+		setTitle("User");
 
-        ownerDS = OwnerDataSource.getInstance(this);
+        userDS = UserDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
         cardDS = CardDataSource.getInstance(this);
-        currency = userPreferences.getSetting_Currency();
+        currency = appPreferences.getSetting_Currency();
 
-        ownerId = Integer.parseInt(getIntent().getStringExtra("OWNER_ID"));
-        final Owner owner = ownerDS.getSingle(ownerId, programDS, cardDS);
+        userId = Integer.parseInt(getIntent().getStringExtra("USER_ID"));
 
         nameText = (TextView) findViewById(R.id.nameText);
         notesField = (TextView) findViewById(R.id.notesField);
@@ -76,17 +74,17 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
     protected void onResume() {
         super.onResume();
 
-        // Get owner field values
-        Owner owner = ownerDS.getSingle(ownerId, programDS, cardDS);
-        String name = owner.getName();
-        String notes = owner.getNotes();
-        String numPrograms = String.valueOf(owner.getProgramCount());
-        String totalProgramValue = currency.numToString(owner.getTotalProgramValue(), NumberPattern.COMMADOT);
-        String numCards = String.valueOf(owner.getCardCount());
-        String totalAF = currency.numToString(owner.getTotalAF(), NumberPattern.COMMADOT);
-        String creditLimit = currency.numToString(owner.getCreditLimit(), NumberPattern.COMMADOT);
+        // Get user field values
+        User user = userDS.getSingle(userId, programDS, cardDS);
+        String name = user.getName();
+        String notes = user.getNotes();
+        String numPrograms = String.valueOf(user.getProgramCount());
+        String totalProgramValue = currency.numToString(user.getTotalProgramValue(), NumberPattern.COMMADOT);
+        String numCards = String.valueOf(user.getCardCount());
+        String totalAF = currency.numToString(user.getTotalAF(), NumberPattern.COMMADOT);
+        String creditLimit = currency.numToString(user.getCreditLimit(), NumberPattern.COMMADOT);
 
-        // Set owner field values
+        // Set user field values
         nameText.setText(name);
         if (notes == null || notes.equals("")) {
             notesField.setVisibility(View.GONE);
@@ -101,12 +99,12 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
         cardCreditLimitField.setText(creditLimit);
 
         // Only show Chase 524 status in US
-        Country country = userPreferences.getSetting_Country();
+        Country country = appPreferences.getSetting_Country();
         if (country == Country.USA) {
             cardChaseStatusLayout.setVisibility(View.VISIBLE);
             cardChaseStatusDateLayout.setVisibility(View.VISIBLE);
-            String chaseStatus = owner.getChase524Status();
-            String chaseEligibilityDateString = owner.getChase524StatusEligibilityDate();
+            String chaseStatus = user.getChase524Status();
+            String chaseEligibilityDateString = user.getChase524StatusEligibilityDate();
             cardChaseStatusField.setText(chaseStatus);
             cardChaseStatusDateField.setText(chaseEligibilityDateString);
         } else {
@@ -118,9 +116,9 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
 	// Runs when edit button is clicked
     @Override
     public void menuEditClicked() {
-		// Opens OwnerAddEdit Activity
-        Intent intent = new Intent(OwnerDetailActivity.this, OwnerAddEditActivity.class);
-        intent.putExtra("OWNER_ID", String.valueOf(ownerId));
+		// Opens UserAddEdit Activity
+        Intent intent = new Intent(UserDetailActivity.this, UserAddEditActivity.class);
+        intent.putExtra("USER_ID", String.valueOf(userId));
         startActivity(intent);
     }
 
@@ -129,18 +127,18 @@ public class OwnerDetailActivity extends BaseActivity_EditDelete {
     public void menuDeleteClicked() {
 		
 		// Creates delete warning dialog
-        Owner owner = ownerDS.getSingle(ownerId, null, null);
+        User user = userDS.getSingle(userId, null, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(owner.getName());
+		builder.setTitle(user.getName());
 		builder.setCancelable(false);
         builder.setMessage("Are you sure you want to delete?");
 
-		// Deletes owner if "Yes" button selected
+		// Deletes user if "Yes" button selected
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
-                ownerDS.delete(ownerId);
-                userPreferences.setFiltersUpdateRequired(true);
+                userDS.delete(userId);
+                appPreferences.setFiltersUpdateRequired(true);
                 finish();
             }});
 

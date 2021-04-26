@@ -20,7 +20,7 @@ import com.davidlcassidy.travelwallet.Adapters.DetailListAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
 import com.davidlcassidy.travelwallet.Classes.Detail;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
-import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
@@ -104,10 +104,10 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
     protected void onResume() {
         super.onResume();
 
-        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
         NumberPattern numberPattern = NumberPattern.COMMADOT;
         DecimalFormat numberFormat = numberPattern.getNumberFormat();
-        Currency currency = userPreferences.getSetting_Currency();
+        Currency currency = appPreferences.getSetting_Currency();
 
         // Gets loyalty program value and formats as currency string
         LoyaltyProgram program = programDS.getSingle(programId);
@@ -121,9 +121,9 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
 		// Creates list of loyalty program field/value pairs
         detailList.clear();
 
-        Owner owner = program.getOwner();
-        if (owner != null){
-            detailList.add(new Detail("Owner", owner.getName()));
+        User user = program.getUser();
+        if (user != null){
+            detailList.add(new Detail("User", user.getName()));
         }
 
         detailList.add(new Detail("Name", program.getName()));
@@ -190,7 +190,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
-                userPreferences.setProgramFiltersUpdateRequired(true);
+                appPreferences.setProgramFiltersUpdateRequired(true);
                 programDS.delete(programId);
                 finish();
             }});

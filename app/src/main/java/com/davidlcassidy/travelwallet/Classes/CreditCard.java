@@ -22,7 +22,7 @@ public class CreditCard {
 
     private Integer id;
     private Integer refId;
-    private Owner owner;
+    private User user;
     private CardStatus status;
     private Country country;
     private String bank;
@@ -38,10 +38,10 @@ public class CreditCard {
     private String logoIcon;
     private String notes;
 
-    public CreditCard(Integer id, Integer refId, String logoId, Owner owner, CardStatus status, Country country, String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
+    public CreditCard(Integer id, Integer refId, String logoId, User user, CardStatus status, Country country, String bank, String name, String type, BigDecimal creditLimit, BigDecimal annualFee, BigDecimal foreignTransactionFee, Date openDate, Date AFDate, Date closeDate, NotificationStatus notificationStatus, String notes) {
         this.id = id;
         this.refId = refId;
-        this.owner = owner;
+        this.user = user;
         this.status = status;
         this.country = country;
         this.bank = bank;
@@ -78,12 +78,12 @@ public class CreditCard {
         this.refId = refId;
     }
 
-    public Owner getOwner() {
-        return owner;
+    public User getUser() {
+        return user;
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public CardStatus getStatus() {

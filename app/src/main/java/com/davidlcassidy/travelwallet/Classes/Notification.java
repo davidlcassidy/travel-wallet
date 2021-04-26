@@ -87,8 +87,8 @@ public class Notification {
 
 	// Sends notification to device if configured in user settings
     public PhoneNotification sendPhoneNotification(Context context){
-        UserPreferences userPreferences = UserPreferences.getInstance(context);
-        if (userPreferences.getSetting_PhoneNotifications()) {
+        AppPreferences appPreferences = AppPreferences.getInstance(context);
+        if (appPreferences.getSetting_PhoneNotifications()) {
             PhoneNotification pn = new PhoneNotification(context, this);
             return pn;
         } else{

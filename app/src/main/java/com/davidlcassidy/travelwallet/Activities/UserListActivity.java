@@ -20,11 +20,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.davidlcassidy.travelwallet.Adapters.OwnerListAdapter;
+import com.davidlcassidy.travelwallet.Adapters.UserListAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_BackOnly;
-import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.Classes.Constants;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
-import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
@@ -33,20 +34,20 @@ import com.davidlcassidy.travelwallet.R;
 import java.util.ArrayList;
 
 /*
-OwnerListActivity displays a summary of the user added owners. It is primarily
-composed of a listview utilizing the OwnerListAdapter. It also contains a
-floating "add" button which creates OwnerAddEditActivity to allow new owners
+UserListActivity displays a summary of the all added users. It is primarily
+composed of a listview utilizing the UserListAdapter. It also contains a
+floating "add" button which creates UserAddEditActivity to allow new users
 to be added. Finally, there a textview that is only visible to the user when
-there are no owners (empty listview), directing users to add new owners with
+there are no users (empty listview), directing the app users to add new users with
 the "add" button.
  */
 
-public class OwnerListActivity extends BaseActivity_BackOnly {
+public class UserListActivity extends BaseActivity_BackOnly {
 
-    private OwnerDataSource ownerDS;
+    private UserDataSource userDS;
     private ProgramDataSource programDS;
     private CardDataSource cardDS;
-    private ArrayList<Owner> ownerList;
+    private ArrayList<User> userList;
     private TextView emptyListText;
     private ListView lv;
     private FloatingActionButton fab;
@@ -54,26 +55,26 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ownerlist);
-        setTitle("Current Owners");
+        setContentView(R.layout.activity_userlist);
+        setTitle("Current Users");
 
-        ownerDS = OwnerDataSource.getInstance(this);
+        userDS = UserDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
         cardDS = CardDataSource.getInstance(this);
 
-        // Sets the text used when owner list is empty
+        // Sets the text used when user list is empty
         emptyListText = (TextView) findViewById(R.id.emptyListText);
-        emptyListText.setText("Click the + button below to add a owner.");
+        emptyListText.setText("Click the + button below to add a user.");
 
-        // Sets owner click listener
-        lv = (ListView) findViewById(R.id.ownerList);
+        // Sets user click listener
+        lv = (ListView) findViewById(R.id.userList);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Opens CardDetail Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String ownerID = ownerList.get(position).getId().toString();
-                Intent intent = new Intent(OwnerListActivity.this, OwnerDetailActivity.class);
-                intent.putExtra("OWNER_ID", ownerID);
+                String userID = userList.get(position).getId().toString();
+                Intent intent = new Intent(UserListActivity.this, UserDetailActivity.class);
+                intent.putExtra("USER_ID", userID);
                 startActivity(intent);
             }
         });
@@ -84,12 +85,12 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
             // Program ID of -1 indicates a adding a new program instead of editing an existing one
             @Override
             public void onClick(View v) {
-                AppType appType = userPreferences.getAppType();
-                if (ownerList.size() >= 2 && appType == AppType.Free) {
-                    showOwnerLimitPopup();
+                AppType appType = appPreferences.getAppType();
+                if (userList.size() >= Constants.FREE_USER_LIMIT && appType == AppType.FREE) {
+                    showUserLimitPopup();
                 } else {
-                    Intent intent = new Intent(OwnerListActivity.this, OwnerAddEditActivity.class);
-                    intent.putExtra("OWNER_ID", String.valueOf(-1));
+                    Intent intent = new Intent(UserListActivity.this, UserAddEditActivity.class);
+                    intent.putExtra("USER_ID", String.valueOf(-1));
                     startActivity(intent);
                 }
             }
@@ -99,29 +100,29 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
     protected void onResume() {
         super.onResume();
 
-        // Gets all owners sorted by field defined in user preferences
-        ItemField sortField = userPreferences.getCustom_OwnerSortField();
-        ownerList = ownerDS.getAll(sortField, programDS, cardDS);
+        // Gets all users sorted by field defined in user preferences
+        ItemField sortField = appPreferences.getCustom_UserSortField();
+        userList = userDS.getAll(sortField, programDS, cardDS);
 
-        // Hides list and shows empty list text if there are no owners
-        if (ownerList.size() == 0){
+        // Hides list and shows empty list text if there are no users
+        if (userList.size() == 0){
             emptyListText.setVisibility(View.VISIBLE);
             lv.setVisibility(View.GONE);
 
         } else {
 
-            // Add owners to list view
+            // Add users to list view
             emptyListText.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);
 
             // Sets adaptor to list view
-            OwnerListAdapter adapter = new OwnerListAdapter(OwnerListActivity.this, ownerList);
+            UserListAdapter adapter = new UserListAdapter(UserListActivity.this, userList);
             lv.setAdapter(adapter);
         }
     }
 
-    // Opens Owner Limit Popup
-    public void showOwnerLimitPopup() {
+    // Opens User Limit Popup
+    public void showUserLimitPopup() {
         // Gets dialog layout
         LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.dialog_upgrade, null);
@@ -131,13 +132,14 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
 
         // Sets title in dialog toolbar on top
         Toolbar toolBar1 = (Toolbar) v.findViewById(R.id.toolbar);
-        toolBar1.setTitle("Owner Limit Reached");
+        toolBar1.setTitle("User Limit Reached");
 
         // Sets text in dialog
         TextView mainText = (TextView) v.findViewById(R.id.text);
         String text =
-                "Travel Wallet it limited to only two owners.\n\nTo add additional owners and " +
-                        "support the ongoing app development, please upgrade to Travel Wallet Pro.";
+                "Travel Wallet it limited to only " + Constants.FREE_USER_LIMIT +
+                        " users.\n\nTo add additional users and support the ongoing app " +
+                        "development, please upgrade to Travel Wallet Pro.";
         mainText.setText(text);
 
         // Runs with "Upgrade" button is clicked
@@ -146,7 +148,7 @@ public class OwnerListActivity extends BaseActivity_BackOnly {
             @Override
             public void onClick(View view) {
                 diag.dismiss();
-                Intent intent = new Intent(OwnerListActivity.this, PurchaseProActivity.class);
+                Intent intent = new Intent(UserListActivity.this, PurchaseProActivity.class);
                 startActivity(intent);
             }
         });

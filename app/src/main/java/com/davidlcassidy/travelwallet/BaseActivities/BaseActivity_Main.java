@@ -18,7 +18,7 @@ used to set the menu items on the toolbar.
 
 public abstract class BaseActivity_Main extends BaseActivity {
 
-    public abstract void menuOwnersClicked();
+    public abstract void menuUsersClicked();
     public abstract void menuDropdownClicked();
 
 	// Sets menu layout
@@ -39,7 +39,7 @@ public abstract class BaseActivity_Main extends BaseActivity {
 
             // Summary button click executes abstract menuSummaryClicked() method
             case R.id.menu_users:
-                menuOwnersClicked();
+                menuUsersClicked();
                 return true;
 
             // Settings button click executes abstract menuSettingsClicked() method

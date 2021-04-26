@@ -19,7 +19,7 @@
         android:focusableInTouchMode="true">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/ownerLayout"
+            android:id="@+id/userLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -28,18 +28,18 @@
             android:clickable="true">
 
             <TextView
-                android:id="@+id/ownerLabel"
+                android:id="@+id/userLabel"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:textStyle="bold"
-                android:text="Owner"
+                android:text="User"
                 android:gravity="left|center_vertical"
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/text"/>
 
             <TextView
-                android:id="@+id/ownerField"
+                android:id="@+id/userField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -55,7 +55,7 @@
             android:id="@+id/typeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ownerLayout"
+            android:layout_below="@+id/userLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:background="@drawable/boarder"

@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /*
-BaseActivity_BackOnly is an abstract activity that is extended by OwnerListActivity.
+BaseActivity_BackOnly is an abstract activity that is extended by UserListActivity.
 It is used to set the back menu item on the toolbar.
  */
 

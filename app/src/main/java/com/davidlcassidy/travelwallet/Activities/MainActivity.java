@@ -26,6 +26,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Main;
+import com.davidlcassidy.travelwallet.Classes.Constants;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
@@ -86,21 +87,19 @@ public class MainActivity extends BaseActivity_Main {
         fab.hide();
 
         // Opens summary dialog if configured in user settings
-        if (userPreferences.getSetting_InitialSummary()){
+        if (appPreferences.getSetting_InitialSummary()){
             showSummary();
         }
-		
+
 		// Sets actions of floating "plus" button, depending on displayed fragment
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				;
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override
             public void onPageSelected(int position) {
 				// Position indicates fragment position. Note that position has a zero index.
                 switch (position) {
-					
+
 					//Loyalty Program Fragment
                     case 1:
                         fab.show();
@@ -109,12 +108,13 @@ public class MainActivity extends BaseActivity_Main {
 							// Program ID of -1 indicates a adding a new program instead of editing an existing one
                             @Override
                             public void onClick(View v) {
-                                AppType appType = userPreferences.getAppType();
+                                AppType appType = appPreferences.getAppType();
                                 int programCount = programDS.getAll(null, null, false).size();
-                                if (programCount >= 10 && appType == AppType.Free) {
+                                if (programCount >= Constants.FREE_LOYALTY_PROGRAM_LIMIT && appType == AppType.FREE) {
                                     String limitTitle = "Program Limit Reached";
-                                    String limitText = "Travel Wallet it limited to only ten " +
-                                            "loyalty programs.\n\nTo add additional programs and support the " +
+                                    String limitText = "Travel Wallet it limited to only " +
+                                            Constants.FREE_LOYALTY_PROGRAM_LIMIT +
+                                            " loyalty programs.\n\nTo add additional programs and support the " +
                                             "ongoing app development, please upgrade to Travel Wallet " +
                                             "Pro.";
                                     showLimitPopup(limitTitle, limitText);
@@ -135,12 +135,13 @@ public class MainActivity extends BaseActivity_Main {
 							// Card ID of -1 indicates a adding a new card instead of editing an existing one
                             @Override
                             public void onClick(View v) {
-                                AppType appType = userPreferences.getAppType();
+                                AppType appType = appPreferences.getAppType();
                                 int cardCount = cardDS.getAll(null, null, false, false).size();
-                                if (cardCount >= 10 && appType == AppType.Free) {
+                                if (cardCount >= Constants.FREE_CREDIT_CARD_LIMIT && appType == AppType.FREE) {
                                     String limitTitle = "Card Limit Reached";
-                                    String limitText = "Travel Wallet it limited to only ten " +
-                                            "credit cards.\n\nTo add additional cards and support the " +
+                                    String limitText = "Travel Wallet it limited to only " +
+                                            Constants.FREE_CREDIT_CARD_LIMIT +
+                                            " credit cards.\n\nTo add additional cards and support the " +
                                             "ongoing app development, please upgrade to Travel Wallet " +
                                             "Pro.";
                                     showLimitPopup(limitTitle, limitText);
@@ -208,11 +209,11 @@ public class MainActivity extends BaseActivity_Main {
         }
     }
 
-    // Runs when owners button is clicked
+    // Runs when users button is clicked
     @Override
-    public void menuOwnersClicked() {
-        // Opens OwnerListActivity
-        Intent intent2 = new Intent(MainActivity.this, OwnerListActivity.class);
+    public void menuUsersClicked() {
+        // Opens UserListActivity
+        Intent intent2 = new Intent(MainActivity.this, UserListActivity.class);
         startActivity(intent2);
     }
 
@@ -221,8 +222,8 @@ public class MainActivity extends BaseActivity_Main {
     public void menuDropdownClicked() {
         View menuView = findViewById(R.id.menu_dropdown);
         PopupMenu popupMenu = new PopupMenu(this, menuView);
-        AppType appType = userPreferences.getAppType();
-        if (appType == AppType.Pro){
+        AppType appType = appPreferences.getAppType();
+        if (appType == AppType.FREE){
             popupMenu.inflate(R.menu.dropdown_pro);
         } else {
             popupMenu.inflate(R.menu.dropdown_free);
@@ -232,8 +233,11 @@ public class MainActivity extends BaseActivity_Main {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 String selectedItemName = (String) item.getTitle();
-
                 switch (selectedItemName) {
+                    case "Summary":
+                        // Opens Summary Popup
+                        showSummary();
+                        break;
                     case "Customize":
                         // Opens Customize Activity
                         Intent customizeIntent = new Intent(MainActivity.this, CustomizeActivity.class);
@@ -243,10 +247,6 @@ public class MainActivity extends BaseActivity_Main {
                         // Opens Settings Activity
                         Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(settingsIntent);
-                        break;
-                    case "Summary":
-                        // Opens Summary Popup
-                        showSummary();
                         break;
                     case "Developer's Note":
                         // Opens DevelopersNote Activity
@@ -269,7 +269,7 @@ public class MainActivity extends BaseActivity_Main {
     // Opens Summary Popup
     public void showSummary() {
         NumberPattern numberPattern = NumberPattern.COMMADOT;
-        Currency currency = userPreferences.getSetting_Currency();
+        Currency currency = appPreferences.getSetting_Currency();
 
         ProgramDataSource programDS = ProgramDataSource.getInstance(this);
         CardDataSource cardDS = CardDataSource.getInstance(this);
@@ -295,7 +295,7 @@ public class MainActivity extends BaseActivity_Main {
         toolBar2.setTitle("Summary");
 
         // Retrieves programs total value data and saves to summary dialog fields
-        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
         programCount.setText(String.valueOf(programDS.getAll(null, null, false).size()));
         programNotifications.setText(String.valueOf(programDS.getAll(null,null,true).size()));
         ArrayList<LoyaltyProgram> programs = programDS.getAll(null, null, false);
@@ -306,7 +306,7 @@ public class MainActivity extends BaseActivity_Main {
         programValue.setText(currency.numToString(total, numberPattern));
 
         // Retrieves programs next expiration data and saves to summary dialog fields
-        for (LoyaltyProgram program : programDS.getAll(null, ItemField.EXPIRATIONDATE, false)) {
+        for (LoyaltyProgram program : programDS.getAll(null, ItemField.EXPIRATION_DATE, false)) {
 
             // Checks if program monitoring is on and has an expiration date
             NotificationStatus notificationStatus = program.getNotificationStatus();
@@ -335,7 +335,7 @@ public class MainActivity extends BaseActivity_Main {
         cardAF.setText(currency.numToString(totalAF, numberPattern));
 
         // Retrieves cards next AF data and saves to summary dialog field
-        for (CreditCard card : cardDS.getAll(null, ItemField.AFDATE, false, true)) {
+        for (CreditCard card : cardDS.getAll(null, ItemField.AF_DATE, false, true)) {
 
             // Checks if card monitoring is on and has an annual fee
             NotificationStatus notificationStatus = card.getNotificationStatus();
@@ -370,7 +370,7 @@ public class MainActivity extends BaseActivity_Main {
     }
 
 
-    // Opens Owner Limit Popup
+    // Opens User Limit Popup
     public void showLimitPopup(String limitTitle, String limitText) {
         // Gets dialog layout
         LayoutInflater inflater = (LayoutInflater) this.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
@@ -420,11 +420,6 @@ public class MainActivity extends BaseActivity_Main {
         super.onResume();
 
         //Set toolbar title
-        AppType appType = userPreferences.getAppType();
-        if (appType == AppType.Pro) {
-            setTitle("Travel Wallet Pro");
-        } else {
-            setTitle("Travel Wallet");
-        }
+        setTitle(getAppName());
     }
 }

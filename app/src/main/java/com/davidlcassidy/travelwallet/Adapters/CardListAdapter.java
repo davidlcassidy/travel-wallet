@@ -19,7 +19,7 @@ import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -28,11 +28,11 @@ import java.util.List;
 
 public class CardListAdapter extends ArrayAdapter<CreditCard> {
 
-    private UserPreferences userPreferences;
+    private AppPreferences appPreferences;
 
     public CardListAdapter(Context context, List<CreditCard> cards) {
         super(context, 0, cards);
-        userPreferences = UserPreferences.getInstance(context);
+        appPreferences = AppPreferences.getInstance(context);
     }
 
     @Override
@@ -41,8 +41,8 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
-        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
-        final ItemField primaryField = userPreferences.getCustom_CardPrimaryField();
+        SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
+        final ItemField primaryField = appPreferences.getCustom_CardPrimaryField();
         
 		// Gets the item at this position
 		CreditCard card = getItem(position);
@@ -60,27 +60,26 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
 
 		// Sets field values, based on user preferences
         cardField.setText(card.getName());
-        switch (primaryField.getName()) {
-            case "Annual Fee":
-                Currency currency = userPreferences.getSetting_Currency();
+        switch (primaryField) {
+            case ANNUAL_FEE:
+                Currency currency = appPreferences.getSetting_Currency();
                 BigDecimal annualFee = card.getAnnualFee();
                 String annualFeeString = currency.numToString(annualFee, NumberPattern.COMMADOT);
                 messageField.setText(annualFeeString);
                 break;
-            case "Open Date":
+            case OPEN_DATE:
                 Date openDate = card.getOpenDate();
                 if (openDate != null) {
                     messageField.setText(dateFormat.format(openDate));
                 }
                 break;
-            case "Annual Fee Date":
+            case AF_DATE:
                 Date annualFeeDate = card.getAfDate();
                 if (annualFeeDate != null) {
                     messageField.setText(dateFormat.format(annualFeeDate));
                 }
                 break;
-            case "Notes":
-
+            case CARD_NOTES:
                 // Gets the first 25 characters of the first notes line
                 String notes = card.getNotes();
                 messageField.setText(notes

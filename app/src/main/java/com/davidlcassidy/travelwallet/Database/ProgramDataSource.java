@@ -14,8 +14,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
-import com.davidlcassidy.travelwallet.Classes.Owner;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
 
@@ -38,15 +38,15 @@ access to the two Loyalty Program tables in MainDatabase and RefDatabase.
 public class ProgramDataSource {
 
     private static ProgramDataSource instance;
-    private static OwnerDataSource ownerDS;
+    private static UserDataSource userDS;
     private static Context context;
-    private static UserPreferences userPreferences;
+    private static AppPreferences appPreferences;
     private static SQLiteDatabase dbMain, dbRef;
     private static MainDatabaseHelper dbHelperMain;
     private static RefDatabaseHelper dbHelperRef;
     private static String tableNameMain, tableNameRef;
     private static String[] tableColumnsMain, tableColumnsRef;
-    private static SimpleDateFormat dbDateFormat = dbHelperMain.DATABASE_DATEFORMAT;
+    private static SimpleDateFormat dbDateFormat = dbHelperMain.DATABASE_DATE_FORMAT;
 
     public static ProgramDataSource getInstance(Context context) {
         if (instance == null) {
@@ -57,7 +57,7 @@ public class ProgramDataSource {
 
     private ProgramDataSource(Context c) {
         context = c;
-        userPreferences = UserPreferences.getInstance(context);
+        appPreferences = AppPreferences.getInstance(context);
         dbHelperMain = new MainDatabaseHelper(context);
         dbHelperRef = new RefDatabaseHelper(context);
         dbMain = dbHelperMain.getDB();
@@ -72,32 +72,32 @@ public class ProgramDataSource {
         tableColumnsRef = dbCursor2.getColumnNames();
         dbCursor1.close(); dbCursor2.close();
 
-        ownerDS = OwnerDataSource.getInstance(context);
+        userDS = UserDataSource.getInstance(context);
     }
 
 	// Check and update local database version if necessary
     public void checkDbVersion(SQLiteDatabase mainDB, SQLiteDatabase refDB) {
-        int userMainDbVersion = userPreferences.getDatabase_MainDBVersion();
-        int userRefDbVersion = userPreferences.getDatabase_RefDBVersion();
+        int userMainDbVersion = appPreferences.getDatabase_MainDBVersion();
+        int userRefDbVersion = appPreferences.getDatabase_RefDBVersion();
         int currentMainDbVersion = dbHelperMain.DATABASE_VERSION;
         int currentRefDbVersion = dbHelperRef.DATABASE_VERSION;
 
         if (userMainDbVersion != currentMainDbVersion) {
             dbHelperMain.onUpgrade(mainDB, userMainDbVersion, currentMainDbVersion);
-            userPreferences.setDatabase_MainDBVersion(currentMainDbVersion);
+            appPreferences.setDatabase_MainDBVersion(currentMainDbVersion);
         }
         if (userRefDbVersion != currentRefDbVersion) {
             dbHelperRef.onUpgrade(refDB, userRefDbVersion, currentRefDbVersion);
-            userPreferences.setDatabase_RefDBVersion(currentRefDbVersion);
+            appPreferences.setDatabase_RefDBVersion(currentRefDbVersion);
         }
     }
 
 	// Creates new user created loyalty program and inserts program into main database
-    public LoyaltyProgram create(Integer programRefId, Owner owner, String number, int points, Date lastActivity, String notes) {
+    public LoyaltyProgram create(Integer programRefId, User user, String number, int points, Date lastActivity, String notes) {
         ContentValues values = new ContentValues();
         values.put(dbHelperMain.COLUMN_LP_REFID, programRefId);
-        if (owner != null){
-            values.put(dbHelperMain.COLUMN_CC_OWNERID, owner.getId());
+        if (user != null){
+            values.put(dbHelperMain.COLUMN_CC_USERID, user.getId());
         }
         values.put(dbHelperMain.COLUMN_LP_ACCOUNTNUMBER, number);
         values.put(dbHelperMain.COLUMN_LP_POINTS, points);
@@ -132,15 +132,15 @@ public class ProgramDataSource {
     }
 
 	// Returns a list of all loyalty programs in database, sorted by sortField parameter
-    public ArrayList <LoyaltyProgram> getAll(Owner owner, ItemField sortField, boolean onlyWithNotifications){
+    public ArrayList <LoyaltyProgram> getAll(User user, ItemField sortField, boolean onlyWithNotifications){
         ArrayList<LoyaltyProgram> programList = new ArrayList<LoyaltyProgram>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             LoyaltyProgram program = cursorToProgram(cursor);
-            Owner programOwner = program.getOwner();
+            User programUser = program.getUser();
             if (program != null) {
-                if (owner != null && (programOwner == null || programOwner.getId() != owner.getId()) ) {
+                if (user != null && (programUser == null || programUser.getId() != user.getId()) ) {
                     cursor.moveToNext();
                     continue;
                 } else if (onlyWithNotifications && program.getNotificationStatus() != NotificationStatus.ON){
@@ -156,36 +156,36 @@ public class ProgramDataSource {
 
 		//Defines default sort order
         if (sortField == null){
-            sortField = ItemField.PROGRAMNAME;
+            sortField = ItemField.PROGRAM_NAME;
         }
 
 		// Sorts programs by selected sort field
-        final String sortBy = sortField.getName();
+        final ItemField finalSortField = sortField;
         Collections.sort(programList, new Comparator<LoyaltyProgram>() {
             @Override
             public int compare(LoyaltyProgram p1, LoyaltyProgram p2) {
                 Integer c = null;
 
-                switch (sortBy) {
-                    case "Program Name":
+                switch (finalSortField) {
+                    case PROGRAM_NAME:
                         c = p1.getName().compareTo(p2.getName());
                         if (c == 0) {
                             c = p1.getAccountNumber().compareTo(p2.getAccountNumber());
                         }
                         break;
-                    case "Points":
+                    case POINTS:
                         c = p2.getPoints().compareTo(p1.getPoints());
                         if (c == 0) {
                             c = p1.getName().compareTo(p2.getName());
                         }
                         break;
-                    case "Value":
+                    case VALUE:
                         c = p2.getTotalValue().compareTo(p1.getTotalValue());
                         if (c == 0) {
                             c = p1.getName().compareTo(p2.getName());
                         }
                         break;
-                    case "Expiration Date":
+                    case EXPIRATION_DATE:
                         Calendar cal = Calendar.getInstance();
                         cal.add(Calendar.YEAR, 100);
                         Date farAwayDate = cal.getTime();
@@ -313,7 +313,7 @@ public class ProgramDataSource {
 
 		// Calculates number of days before program points expiration to send notification to user
         Integer notificationDays = null;
-        String[] notificationPeriodArray = userPreferences.getCustom_ProgramNotificationPeriod().split(" ");
+        String[] notificationPeriodArray = appPreferences.getCustom_ProgramNotificationPeriod().split(" ");
         Integer value = Integer.valueOf(notificationPeriodArray[0]);
         String period = notificationPeriodArray[1];
         switch (period) {
@@ -378,7 +378,7 @@ public class ProgramDataSource {
     public int update(LoyaltyProgram program)  {
         Integer ID = program.getId();
         Integer refId = program.getRefId();
-        Owner owner = program.getOwner();
+        User user = program.getUser();
         String number = program.getAccountNumber();
         Integer points = program.getPoints();
         Date lastActivity = program.getLastActivityDate();
@@ -387,10 +387,10 @@ public class ProgramDataSource {
 
         ContentValues values = new ContentValues();
         values.put(dbHelperMain.COLUMN_LP_REFID, refId);
-        if (owner != null) {
-            values.put(dbHelperMain.COLUMN_LP_OWNERID, owner.getId());
+        if (user != null) {
+            values.put(dbHelperMain.COLUMN_LP_USERID, user.getId());
         } else {
-            values.put(dbHelperMain.COLUMN_LP_OWNERID, "");
+            values.put(dbHelperMain.COLUMN_LP_USERID, "");
         }
         values.put(dbHelperMain.COLUMN_LP_ACCOUNTNUMBER, number);
         values.put(dbHelperMain.COLUMN_LP_POINTS, points);
@@ -458,7 +458,7 @@ public class ProgramDataSource {
     private LoyaltyProgram cursorToProgram(Cursor cursor)  {
         int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_LP_ID);
         int mainIndex_refId = cursor.getColumnIndex(dbHelperMain.COLUMN_LP_REFID);
-        int mainIndex_ownerId = cursor.getColumnIndex(dbHelperMain.COLUMN_LP_OWNERID);
+        int mainIndex_userId = cursor.getColumnIndex(dbHelperMain.COLUMN_LP_USERID);
         int mainIndex_number = cursor.getColumnIndex(dbHelperMain.COLUMN_LP_ACCOUNTNUMBER);
         int mainIndex_points = cursor.getColumnIndex(dbHelperMain.COLUMN_LP_POINTS);
         int mainIndex_lastActivity = cursor.getColumnIndex(dbHelperMain.COLUMN_LP_LASTACTIVITY);
@@ -467,7 +467,7 @@ public class ProgramDataSource {
         
         Integer id = cursor.getInt(mainIndex_id);
         Integer refId = cursor.getInt(mainIndex_refId);
-        Owner owner = ownerDS.getSingle(cursor.getInt(mainIndex_ownerId), null, null);
+        User user = userDS.getSingle(cursor.getInt(mainIndex_userId), null, null);
         String number = cursor.getString(mainIndex_number);
         Integer points = cursor.getInt(mainIndex_points);
         Date lastActivity = null;
@@ -501,7 +501,7 @@ public class ProgramDataSource {
             String expirationOverride = cursorRef.getString(refIndex_expirationOverride);
 
             cursorRef.close();
-            LoyaltyProgram program = new LoyaltyProgram(id, refId, owner, type, company, name, number, points, pointValue, inactivityExpiration, expirationOverride, lastActivity, notificationStatus, notes);
+            LoyaltyProgram program = new LoyaltyProgram(id, refId, user, type, company, name, number, points, pointValue, inactivityExpiration, expirationOverride, lastActivity, notificationStatus, notes);
             return program;
         }
     }

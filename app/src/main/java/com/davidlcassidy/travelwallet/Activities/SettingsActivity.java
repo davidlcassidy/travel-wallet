@@ -30,7 +30,7 @@ import com.davidlcassidy.travelwallet.R;
 import java.util.ArrayList;
 
 /*
-SettingsActivity is use to allow user to view and modify the settings UserPreferencess. It is
+SettingsActivity is use to allow user to view and modify the settings in AppPreferencess. It is
 created by the dropdown menu in the MainActivity and is comprised of several user preferences
 fields and a handful of value selection dialogs.
  */
@@ -69,13 +69,13 @@ public class SettingsActivity extends BaseActivity_Save {
         super.onResume();
 
 		// Gets values from user preferences
-        String initialSummary = userPreferences.getSetting_InitialSummary() ? "ON" : "OFF";
-        String phoneNotifications = userPreferences.getSetting_PhoneNotifications() ? "ON" : "OFF";
-        Country country = userPreferences.getSetting_Country();
-        Language language = userPreferences.getSetting_Language();
-        Currency currency = userPreferences.getSetting_Currency();
-        DatePattern datePattern = userPreferences.getSetting_DatePattern();
-        ColorScheme colorScheme = userPreferences.getSetting_ColorScheme();
+        String initialSummary = appPreferences.getSetting_InitialSummary() ? "ON" : "OFF";
+        String phoneNotifications = appPreferences.getSetting_PhoneNotifications() ? "ON" : "OFF";
+        Country country = appPreferences.getSetting_Country();
+        Language language = appPreferences.getSetting_Language();
+        Currency currency = appPreferences.getSetting_Currency();
+        DatePattern datePattern = appPreferences.getSetting_DatePattern();
+        ColorScheme colorScheme = appPreferences.getSetting_ColorScheme();
 
 		// Sets activity fields to values from user preferences
         initialSummaryField.setText(initialSummary);
@@ -101,15 +101,15 @@ public class SettingsActivity extends BaseActivity_Save {
         ColorScheme colorScheme = ColorScheme.fromName(colorSchemeField.getText().toString());
 
 		// Saves values from activity fields to user preferences
-        userPreferences.setSetting_InitialSummary(initialSummary);
-        userPreferences.setSetting_PhoneNotifications(phoneNotifications);
-        userPreferences.setSetting_Country(country);
-        userPreferences.setSetting_Language(language);
-        userPreferences.setSetting_Currency(currency);
-        userPreferences.setSetting_DatePattern(date);
-        userPreferences.setSetting_ColorScheme(colorScheme);
+        appPreferences.setSetting_InitialSummary(initialSummary);
+        appPreferences.setSetting_PhoneNotifications(phoneNotifications);
+        appPreferences.setSetting_Country(country);
+        appPreferences.setSetting_Language(language);
+        appPreferences.setSetting_Currency(currency);
+        appPreferences.setSetting_DatePattern(date);
+        appPreferences.setSetting_ColorScheme(colorScheme);
 
-        userPreferences.setFiltersUpdateRequired(true);
+        appPreferences.setFiltersUpdateRequired(true);
 
 		//Closes activity and sends success message to user
         finish();
@@ -210,9 +210,9 @@ public class SettingsActivity extends BaseActivity_Save {
                             dateField.setText(selectedItem);
                             break;
                         case "color":
-                            boolean appTypeFree = userPreferences.getAppType() == AppType.Free;
+                            boolean proApp = appPreferences.getAppType() != AppType.FREE;
                             boolean goldColorScheme = selectedItem == ColorScheme.Gold.getName();
-                            if (!(appTypeFree && goldColorScheme)) {
+                            if (proApp || !goldColorScheme) {
                                 colorSchemeField.setText(selectedItem);
                             }
                             break;

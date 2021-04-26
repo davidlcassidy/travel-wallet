@@ -6,137 +6,239 @@
 
 package com.davidlcassidy.travelwallet.Classes;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.Nullable;
+import android.widget.Toast;
 
-import com.android.vending.billing.util.IabException;
-import com.android.vending.billing.util.IabHelper;
-import com.android.vending.billing.util.IabResult;
-import com.android.vending.billing.util.Inventory;
-import com.android.vending.billing.util.Purchase;
-import com.android.vending.billing.util.SkuDetails;
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 
-import java.util.Arrays;
+import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
-GooglePlayStore is a wrapper exposing purchasing functionality of IabHelper. It is use to query
-details and purchase the item with the unique product ID of PRODUCT_ID from the Google Play Store.
+GooglePlayStore is a wrapper exposing purchasing functionality of Google Play Billing Library. It
+is use to query details and purchase the items from the Google Play Store.
  */
 
-public class GooglePlayStore extends AppCompatActivity implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
+public class GooglePlayStore implements PurchasesUpdatedListener {
 
-    private IabHelper billingHelper;
-    private String developerPayload = "Tr4v3l_W411et_PR0_4pp";
+    private Context context;
+    private AppPreferences appPreferences;
+    protected BillingClient billingClient;
 
-    public static final String INTENT_ACTION = "INTENT_ACTION";
-    public static final String ACTION_PURCHASE = "ACTION_PURCHASE";
-    public static final String ACTION_QUERY = "ACTION_QUERY";
-    public static final String PRODUCT_TITLE = "PRODUCT_TITLE";
-    public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
-    public static final String PRODUCT_TYPE = "PRODUCT_TYPE";
-    public static final String PRODUCT_PRICE = "PRODUCT_PRICE";
-    public static final String PRODUCT_PURCHASED = "PRODUCT_PURCHASED";
+    public static final String PRO_PRODUCT_ID = "travelwallet.pro";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setResult(RESULT_CANCELED);
+    public GooglePlayStore(final Context context) {
+        this.context = context;
+        this.appPreferences = AppPreferences.getInstance(context);
 
-        billingHelper = new IabHelper(this, getBase64Key());
-        billingHelper.startSetup(this);
+        // Establish connection to billing client
+        billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(this).build();
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(BillingResult billingResult) {
+                if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
+                    Purchase.PurchasesResult queryPurchase = billingClient.queryPurchases(INAPP);
+                    List<Purchase> queryPurchases = queryPurchase.getPurchasesList();
+                    handleCurrentPurchases(queryPurchases);
+                }
+            }
+
+            @Override
+            public void onBillingServiceDisconnected() {
+                Toast.makeText(context.getApplicationContext(),"Service Disconnected",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    @Override
-    public void onIabSetupFinished(IabResult result) {
-        if (result.isSuccess()) {
-            String action = getIntent().getStringExtra(INTENT_ACTION);
-            if (action.equals(ACTION_QUERY)){
-                queryItem();
-            } else if (action.equals(ACTION_PURCHASE)){
-                purchaseItem();
-            } else{
-                finish();
-            }
-        } else {
-            finish();
+    public void purchaseProduct(final String productID) {
+
+        if (billingClient.isReady()) {
+            initiateNewPurchase(productID);
+        }
+
+        // Establish connection to billing client
+        else{
+            billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(this).build();
+            billingClient.startConnection(new BillingClientStateListener() {
+                @Override
+                public void onBillingSetupFinished(BillingResult billingResult) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        initiateNewPurchase(productID);
+                    } else {
+                        Toast.makeText(context.getApplicationContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onBillingServiceDisconnected() {
+                    Toast.makeText(context.getApplicationContext(),"Service Disconnected ",Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
-    protected void queryItem() {
-        String productId = getIntent().getStringExtra("PRODUCT_ID");
+    public void getProductDetails(String productID, final SkuDetailsResponseListener listener) {
+        List<String> skuList = new ArrayList<>();
+        skuList.add(productID);
+        final SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+        params.setSkusList(skuList).setType(INAPP);
+
+        if (billingClient.isReady()) {
+            billingClient.querySkuDetailsAsync(params.build(), listener);
+        }
+
+        // Establish connection to billing client
+        else{
+            billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(this).build();
+            billingClient.startConnection(new BillingClientStateListener() {
+                @Override
+                public void onBillingSetupFinished(BillingResult billingResult) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        billingClient.querySkuDetailsAsync(params.build(), listener);
+                    } else {
+                        Toast.makeText(context.getApplicationContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onBillingServiceDisconnected() {
+                    Toast.makeText(context.getApplicationContext(),"Service Disconnected ",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void initiateNewPurchase(String productId) {
+        List<String> skuList = new ArrayList<>();
+        skuList.add(productId);
+        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+        params.setSkusList(skuList).setType(INAPP);
+        billingClient.querySkuDetailsAsync(params.build(),
+                new SkuDetailsResponseListener() {
+                    @Override
+                    public void onSkuDetailsResponse(BillingResult billingResult,
+                                                     List<SkuDetails> skuDetailsList) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            if (skuDetailsList != null && skuDetailsList.size() > 0) {
+                                BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+                                        .setSkuDetails(skuDetailsList.get(0))
+                                        .build();
+                                billingClient.launchBillingFlow((Activity) context, flowParams);
+                            } else {
+                                Toast.makeText(context.getApplicationContext(), "Item not Found", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(context.getApplicationContext(),
+                                    " Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void handleCurrentPurchases(List<Purchase> purchases) {
+        if(purchases.size() == 0){
+            appPreferences.setAppType(AppType.FREE);
+        } else {
+            for (Purchase purchase : purchases) {
+                // Item is purchased
+                if (PRO_PRODUCT_ID.equals(purchase.getSku()) && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                    if (!verifyValidSignature(purchase.getOriginalJson(), purchase.getSignature())) {
+                        // Invalid purchase
+                        Toast.makeText(context.getApplicationContext(), "Error : invalid Purchase", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    // Item is purchased but not acknowledged
+                    if (!purchase.isAcknowledged()) {
+                        AcknowledgePurchaseParams acknowledgePurchaseParams =
+                                AcknowledgePurchaseParams.newBuilder()
+                                        .setPurchaseToken(purchase.getPurchaseToken())
+                                        .build();
+                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchase);
+                    }
+                    // Item is purchased and also acknowledged
+                    else {
+                        // Update app type status and restart activity
+                        if (appPreferences.getAppType() == AppType.FREE) {
+                            appPreferences.setAppType(AppType.PRO);
+                            Activity activity = (Activity) context;
+                            activity.recreate();
+                        }
+                    }
+                }
+                // Purchase is pending
+                else if (PRO_PRODUCT_ID.equals(purchase.getSku()) && purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
+                    Toast.makeText(context.getApplicationContext(),
+                            "Purchase is Pending. Please complete Transaction", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
+        // New purchased item
+        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
+            handleCurrentPurchases(purchases);
+        }
+        // Already purchased item
+        else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+            Purchase.PurchasesResult queryAlreadyPurchasesResult = billingClient.queryPurchases(INAPP);
+            List<Purchase> alreadyPurchases = queryAlreadyPurchasesResult.getPurchasesList();
+            if(alreadyPurchases != null){
+                handleCurrentPurchases(alreadyPurchases);
+            }
+        }
+        // Canceled purchase
+        else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
+            Toast.makeText(context.getApplicationContext(),"Purchase Canceled",Toast.LENGTH_SHORT).show();
+        }
+        // Any other errors
+        else {
+            Toast.makeText(context.getApplicationContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    AcknowledgePurchaseResponseListener acknowledgePurchase = new AcknowledgePurchaseResponseListener() {
+        @Override
+        public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+            if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
+                // After purchase is acknowledged, update app type and restart activity
+                appPreferences.setAppType(AppType.PRO);
+                Activity activity = (Activity) context;
+                activity.recreate();
+            }
+        }
+    };
+
+    private boolean verifyValidSignature(String signedData, String signature) {
         try {
-            Inventory inventory = billingHelper.queryInventory(true, Arrays.asList(productId));
-            SkuDetails details = inventory.getSkuDetails(productId);
-            Intent output = new Intent();
-            output.putExtra(PRODUCT_TITLE, details.getTitle());
-            output.putExtra(PRODUCT_DESCRIPTION, details.getDescription());
-            output.putExtra(PRODUCT_TYPE, details.getType());
-            output.putExtra(PRODUCT_PRICE, details.getPrice());
-            output.putExtra(PRODUCT_PURCHASED, inventory.hasPurchase(productId) ? 1 : 0);
-            setResult(RESULT_OK, output);
-        } catch (IabException e) {
-            setResult(RESULT_CANCELED);
+            String base64Key1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAixtsWbAp6HVnO3rwOn1U6eBhen";
+            String base64Key2 = "A/Xp/AT7NqALXCCb9dYt7DG+12JW5384Iex+JEM5d8beQoTBzj2hjavL58ex";
+            String base64Key3 = "KoMPAlKAGcaJifu7ETnVxnPkwDbT+UpJEBQgd32xrMBZsMU9hbDn+lS6";
+            String base64Key4 = "/W/GrmayRcCnJgA4C7tOLGfIrtPOfQrTcacM2OEqpv5EI/Mkwjw6vGhvka9Oa55IOH9bP9WZmOesN";
+            String base64Key5 = "yyKS/xA0+F5jFkfHvg4a9Qx+/g4/MnDz5PYolde5eBYfo67ArX9ES7daAChVmkTljZKMi1eonZNJg8E1Q";
+            String base64Key6 = "KKINupsOuaeDWgctdR3qYjcl2MOtbiTf98aSLkXN/QIDAQAB";
+            String base64Key =  base64Key1 + base64Key2 + base64Key3 + base64Key4  + base64Key5 + base64Key6;
+
+            return Security.verifyPurchase(base64Key, signedData, signature);
+        } catch (IOException e) {
+            return false;
         }
-        finish();
     }
 
-    protected void purchaseItem() {
-        String productId = getIntent().getStringExtra("PRODUCT_ID");
-        short requestCode = 123;
-        billingHelper.launchPurchaseFlow(this, productId, requestCode, this, developerPayload);
-    }
-
-    @Override
-    public void onIabPurchaseFinished(IabResult result, Purchase info) {
-        if (result.isSuccess()) {
-
-            // Consume purchase immediately after purchase
-            billingHelper.consumeAsync(info, null);
-
-            // For security, check info matches developer payload
-            if (info.getDeveloperPayload().equals(developerPayload)) {
-                setResult(RESULT_OK);
-                finish();
-            } else {
-                handlePurchaseFailed(result);
-            }
-
-        } else {
-            handlePurchaseFailed(result);
-        }
-        finish();
-    }
-
-    protected void handlePurchaseFailed(IabResult result) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        billingHelper.handleActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (billingHelper != null) {
-            billingHelper.dispose();
-        }
-        billingHelper = null;
-        super.onDestroy();
-    }
-
-    // Generate base 64 key string, split for security reasons
-    public static String getBase64Key(){
-        String base64Key1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAixtsWbAp6HVnO3rwOn1U6eBhen";
-        String base64Key2 = "A/Xp/AT7NqALXCCb9dYt7DG+12JW5384Iex+JEM5d8beQoTBzj2hjavL58ex";
-        String base64Key3 = "KoMPAlKAGcaJifu7ETnVxnPkwDbT+UpJEBQgd32xrMBZsMU9hbDn+lS6";
-        String base64Key4 = "/W/GrmayRcCnJgA4C7tOLGfIrtPOfQrTcacM2OEqpv5EI/Mkwjw6vGhvka9Oa55IOH9bP9WZmOesN";
-        String base64Key5 = "yyKS/xA0+F5jFkfHvg4a9Qx+/g4/MnDz5PYolde5eBYfo67ArX9ES7daAChVmkTljZKMi1eonZNJg8E1Q";
-        String base64Key6 = "KKINupsOuaeDWgctdR3qYjcl2MOtbiTf98aSLkXN/QIDAQAB";
-        return base64Key1 + base64Key2 + base64Key3 + base64Key4  + base64Key5 + base64Key6;
-    }
 }

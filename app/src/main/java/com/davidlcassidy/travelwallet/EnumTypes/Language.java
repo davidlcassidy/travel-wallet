@@ -9,8 +9,8 @@ package com.davidlcassidy.travelwallet.EnumTypes;
 import java.util.ArrayList;
 
 /*
-ID Local Cache : UserPreferences
-WARNING : Changing ID values may change user settings to the default value within current app installs.
+ID Local Cache : AppPreferences
+WARNING : Changing ID values may change app settings to the default value within current app installs.
  */
 
 public enum Language {

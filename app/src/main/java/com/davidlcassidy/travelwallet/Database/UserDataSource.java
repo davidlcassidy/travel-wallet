@@ -13,8 +13,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
-import com.davidlcassidy.travelwallet.Classes.Owner;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 
 import java.math.BigDecimal;
@@ -24,87 +24,87 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /*
-OwnerDataSource is used to manage and access all local Owner data, via access
-to the Owner table in MainDatabase. There is no reference database for Owners.
+UserDataSource is used to manage and access all local User data, via access
+to the User table in MainDatabase. There is no reference database for Users.
  */
 
-public class OwnerDataSource {
+public class UserDataSource {
 
-    private static OwnerDataSource instance;
-    private static UserPreferences userPreferences;
+    private static UserDataSource instance;
+    private static AppPreferences appPreferences;
     private static Context context;
     private static SQLiteDatabase dbMain;
     private static MainDatabaseHelper dbHelperMain;
     private static String tableNameMain;
     private static String[] tableColumnsMain;
 
-    public static OwnerDataSource getInstance(Context context) {
+    public static UserDataSource getInstance(Context context) {
         if (instance == null) {
-            instance = new OwnerDataSource(context);
+            instance = new UserDataSource(context);
         }
         return instance;
     }
 
-    private OwnerDataSource(Context c) {
-        userPreferences = UserPreferences.getInstance(c);
+    private UserDataSource(Context c) {
+        appPreferences = AppPreferences.getInstance(c);
         context = c;
         dbHelperMain = new MainDatabaseHelper(context);
         dbMain = dbHelperMain.getDB();
 
-        tableNameMain = dbHelperMain.TABLE_O;
+        tableNameMain = dbHelperMain.TABLE_U;
         Cursor dbCursor1 = dbMain.query(tableNameMain, null, null, null, null, null, null);
         tableColumnsMain = dbCursor1.getColumnNames();
         dbCursor1.close();
     }
 
-	// Creates new user created owner and inserts owner into main database
-    public Owner create(String name, String notes) {
+	// Creates new user and inserts into main database
+    public User create(String name, String notes) {
         ContentValues values = new ContentValues();
-        values.put(dbHelperMain.COLUMN_O_NAME, name);
-        values.put(dbHelperMain.COLUMN_O_NOTES, notes);
+        values.put(dbHelperMain.COLUMN_U_NAME, name);
+        values.put(dbHelperMain.COLUMN_U_NOTES, notes);
 
         long insertId = dbMain.insert(tableNameMain, null, values);
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_CC_ID + " = " + insertId, null, null, null, null);
         cursor.moveToFirst();
-        Owner newOwner = cursorToUser(cursor);
+        User newUser = cursorToUser(cursor);
         cursor.close();
-        return newOwner;
+        return newUser;
     }
 
-	// Deletes all owners
+	// Deletes all users
     public void deleteAll(){
         dbMain.delete(tableNameMain, null, null);
     }
 
-	// Deletes specific owner
-    public void delete(Owner owner) {
-        int id = owner.getId();
+	// Deletes specific user
+    public void delete(User user) {
+        int id = user.getId();
         delete(id);
     }
 
-	// Deletes specific owner, based on woner ID
+	// Deletes specific user, based on user ID
     public void delete(int userID) {
-        dbMain.delete(tableNameMain, dbHelperMain.COLUMN_O_ID + " = " + userID, null);
+        dbMain.delete(tableNameMain, dbHelperMain.COLUMN_U_ID + " = " + userID, null);
     }
 
-	// Returns a list of all owners in database, sorted by sortField parameter
-    public ArrayList <Owner> getAll(ItemField sortField, ProgramDataSource programDS, CardDataSource cardDS){
-        ArrayList<Owner> ownerList = new ArrayList<Owner>();
+	// Returns a list of all users in database, sorted by sortField parameter
+    public ArrayList <User> getAll(ItemField sortField, ProgramDataSource programDS, CardDataSource cardDS){
+        ArrayList<User> userList = new ArrayList<User>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Owner owner = cursorToUser(cursor);
-            if (owner != null) {
+            User user = cursorToUser(cursor);
+            if (user != null) {
 
                 if (programDS != null && cardDS != null) {
-                    ArrayList<LoyaltyProgram> userPrograms = programDS.getAll(owner, null, false);
-                    ArrayList<CreditCard> userCards = cardDS.getAll(owner, null, false, false);
-                    ArrayList<CreditCard> userChase524Cards = cardDS.getChase524StatusCards(owner);
-                    SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
-                    owner.setValues(userPrograms, userCards, userChase524Cards, dateFormat);
+                    ArrayList<LoyaltyProgram> userPrograms = programDS.getAll(user, null, false);
+                    ArrayList<CreditCard> userCards = cardDS.getAll(user, null, false, false);
+                    ArrayList<CreditCard> userChase524Cards = cardDS.getChase524StatusCards(user);
+                    SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
+                    user.setValues(userPrograms, userCards, userChase524Cards, dateFormat);
                 }
 
-                ownerList.add(owner);
+                userList.add(user);
             }
             cursor.moveToNext();
         }
@@ -112,20 +112,20 @@ public class OwnerDataSource {
 
         //Defines default sort order
         if (sortField == null || programDS == null || cardDS == null){
-            sortField = ItemField.OWNERNAME;
+            sortField = ItemField.USER_NAME;
         }
 
-        // Sorts owners by selected sort field
-        final String sortBy = sortField.getName();
-        Collections.sort(ownerList, new Comparator<Owner>() {
+        // Sorts users by selected sort field
+        final ItemField finalSortField = sortField;
+        Collections.sort(userList, new Comparator<User>() {
             @Override
-            public int compare(Owner o1, Owner o2) {
+            public int compare(User o1, User o2) {
                 Integer c = null;
-                switch (sortBy) {
-                    case "Owner Name":
+                switch (finalSortField) {
+                    case USER_NAME:
                         c = o1.getName().compareTo(o2.getName());
                         break;
-                    case "Programs Value":
+                    case PROGRAMS_VALUE:
                         BigDecimal o1value = o1.getTotalProgramValue();
                         BigDecimal o2value = o2.getTotalProgramValue();
                         c = o2value.compareTo(o1value);
@@ -133,7 +133,7 @@ public class OwnerDataSource {
                             c = o1.getName().compareTo(o2.getName());
                         }
                         break;
-                    case "Credit Limit":
+                    case CREDIT_LIMIT:
                         c = o2.getCreditLimit().compareTo(o1.getCreditLimit());
                         if (c == 0) {
                             c = o1.getName().compareTo(o2.getName());
@@ -143,24 +143,24 @@ public class OwnerDataSource {
                 return c;
             }
         });
-        return ownerList;
+        return userList;
     }
 
-    // Returns a list of all owner names in database
+    // Returns a list of all user names in database
     public ArrayList <String> getAllNames(){
         ArrayList<String> nameList = new ArrayList<String>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Owner owner = cursorToUser(cursor);
-            if (owner != null) {
-                nameList.add(owner.getName());
+            User user = cursorToUser(cursor);
+            if (user != null) {
+                nameList.add(user.getName());
             }
             cursor.moveToNext();
         }
         cursor.close();
 
-        // Sorts owner names
+        // Sorts user names
         Collections.sort(nameList, new Comparator<String>() {
             @Override
             public int compare(String u1, String u2) {
@@ -172,33 +172,33 @@ public class OwnerDataSource {
         return nameList;
     }
 
-	// Returns a single owner by owner ID
-    public Owner getSingle(int id, ProgramDataSource programDS, CardDataSource cardDS) {
-        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_O_ID + " = " + id, null, null, null, null);
-        Owner owner = null;
+	// Returns a single user by user ID
+    public User getSingle(int id, ProgramDataSource programDS, CardDataSource cardDS) {
+        Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, dbHelperMain.COLUMN_U_ID + " = " + id, null, null, null, null);
+        User user = null;
         if (cursor.moveToFirst()) {
-            owner = cursorToUser(cursor);
+            user = cursorToUser(cursor);
         }
         cursor.close();
         if (programDS != null && cardDS != null) {
-            ArrayList<LoyaltyProgram> userPrograms = programDS.getAll(owner, null, false);
-            ArrayList<CreditCard> userCards = cardDS.getAll(owner, null, false, false);
-            ArrayList<CreditCard> userChase524Cards = cardDS.getChase524StatusCards(owner);
-            SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
-            owner.setValues(userPrograms, userCards, userChase524Cards, dateFormat);
+            ArrayList<LoyaltyProgram> userPrograms = programDS.getAll(user, null, false);
+            ArrayList<CreditCard> userCards = cardDS.getAll(user, null, false, false);
+            ArrayList<CreditCard> userChase524Cards = cardDS.getChase524StatusCards(user);
+            SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
+            user.setValues(userPrograms, userCards, userChase524Cards, dateFormat);
         }
-        return owner;
+        return user;
     }
 
-    // Look up single owner by owner name
-    public Owner getSingle(String userName, ProgramDataSource programDS, CardDataSource cardDS) {
+    // Look up single user by user name
+    public User getSingle(String userName, ProgramDataSource programDS, CardDataSource cardDS) {
         Integer userId = null;
         Cursor cursor = dbMain.query(tableNameMain, new String[]
-                {dbHelperMain.COLUMN_O_ID, dbHelperMain.COLUMN_O_NAME},
+                {dbHelperMain.COLUMN_U_ID, dbHelperMain.COLUMN_U_NAME},
                 null, null, null, null, null);
         if (cursor.moveToFirst()) {
-            int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_O_ID);
-            int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_O_NAME);
+            int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_U_ID);
+            int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_U_NAME);
             while (!cursor.isAfterLast()) {
                 Integer id = cursor.getInt(mainIndex_id);
                 String name = cursor.getString(mainIndex_name);
@@ -214,31 +214,31 @@ public class OwnerDataSource {
     }
 
 
-	// Update all fields for an individual owner in the main database
-    public int update(Owner owner)  {
-        Integer ID = owner.getId();
-        String name = owner.getName();
-        String notes = owner.getNotes();
+	// Update all fields for an individual user in the main database
+    public int update(User user)  {
+        Integer ID = user.getId();
+        String name = user.getName();
+        String notes = user.getNotes();
 
         ContentValues values = new ContentValues();
-        values.put(dbHelperMain.COLUMN_O_NAME, name);
+        values.put(dbHelperMain.COLUMN_U_NAME, name);
         values.put(dbHelperMain.COLUMN_CC_NOTES, notes);
 
         int numOfRows = dbMain.update(tableNameMain, values, dbHelperMain.COLUMN_CC_ID + "=" + ID, null);
         return numOfRows;
     }
 
-    // Converts database cursor to owner
-    private Owner cursorToUser(Cursor cursor)  {
-        int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_O_ID);
-        int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_O_NAME);
-        int mainIndex_notes = cursor.getColumnIndex(dbHelperMain.COLUMN_O_NOTES);
+    // Converts database cursor to user
+    private User cursorToUser(Cursor cursor)  {
+        int mainIndex_id = cursor.getColumnIndex(dbHelperMain.COLUMN_U_ID);
+        int mainIndex_name = cursor.getColumnIndex(dbHelperMain.COLUMN_U_NAME);
+        int mainIndex_notes = cursor.getColumnIndex(dbHelperMain.COLUMN_U_NOTES);
 
         Integer id = cursor.getInt(mainIndex_id);
         String name = cursor.getString(mainIndex_name);
         String notes = cursor.getString(mainIndex_notes);
 
-        return new Owner(id, name, notes);
+        return new User(id, name, notes);
     }
 
 }

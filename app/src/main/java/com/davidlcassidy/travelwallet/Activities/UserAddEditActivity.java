@@ -16,36 +16,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
-import com.davidlcassidy.travelwallet.Classes.Owner;
-import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
+import com.davidlcassidy.travelwallet.Classes.User;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.R;
 
 /*
-OwnerAddEditActivity is use to add new owners and to modify existing owners.
-For adding new owners, it is created by the floating "add" button in the
-OwnerListActivity and provided with an OWNER_ID = -1. For modifying existing owners,
-it is created by the menu "edit" button in the OwnerDetailActivity and provided with
-a OWNER_ID matching the unique owner id number in the MainDatabase. This activity is
-comprised of several owner attribute fields and a handful of value selection dialogs.
+UserAddEditActivity is use to add new users and to modify existing users.
+For adding new users, it is created by the floating "add" button in the
+UserListActivity and provided with an USER_ID = -1. For modifying existing users,
+it is created by the menu "edit" button in the UserDetailActivity and provided with
+a USER_ID matching the unique user id number in the MainDatabase. This activity is
+comprised of several user attribute fields and a handful of value selection dialogs.
  */
 
-public class OwnerAddEditActivity extends BaseActivity_Save {
+public class UserAddEditActivity extends BaseActivity_Save {
 
-    private OwnerDataSource ownerDS;
-    private Integer ownerId;
+    private UserDataSource userDS;
+    private Integer userId;
 
     private TextView nameField, notesField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_owneraddedit);
+        setContentView(R.layout.activity_useraddedit);
 
-		// Gets owner ID from intent. Owner ID of -1 means add new card
-        ownerDS = OwnerDataSource.getInstance(this);
-        ownerId = Integer.parseInt(getIntent().getStringExtra("OWNER_ID"));
+		// Gets user ID from intent User ID of -1 means add new card
+        userDS = UserDataSource.getInstance(this);
+        userId = Integer.parseInt(getIntent().getStringExtra("USER_ID"));
 
-		// Gets OwnerAddEdit activity fields
+		// Gets UserAddEdit activity fields
         nameField = (TextView) findViewById(R.id.nameField);
         notesField = (EditText) findViewById(R.id.notesField);
 
@@ -55,46 +55,46 @@ public class OwnerAddEditActivity extends BaseActivity_Save {
     protected void onResume() {
         super.onResume();
 
-		// If edit owner, sets fields to current owner values
-        if (ownerId != -1) {
-            Owner owner = ownerDS.getSingle(ownerId, null, null);
-            setTitle("Edit Owner");
+		// If edit user, sets fields to current user values
+        if (userId != -1) {
+            User user = userDS.getSingle(userId, null, null);
+            setTitle("Edit User");
 
 			// Sets activity fields
-            String oName = owner.getName();
-            String oNotes = owner.getNotes();
+            String oName = user.getName();
+            String oNotes = user.getNotes();
             if (oName != null) {nameField.setText(oName);}
             if (oNotes != null) {notesField.setText(oNotes);}
 
         } else {
-            setTitle("Add Owner");
+            setTitle("Add User");
         }
     }
 
 	// Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
-        String ownerName = nameField.getText().toString().trim();
+        String userName = nameField.getText().toString().trim();
         String notes = notesField.getText().toString();
 
-        if (ownerName.equals("")){
-            Toast.makeText(OwnerAddEditActivity.this, "Please type a name.", Toast.LENGTH_LONG).show();
+        if (userName.equals("")){
+            Toast.makeText(UserAddEditActivity.this, "Please type a name.", Toast.LENGTH_LONG).show();
         }
-		else if (ownerId == -1){
-            ownerDS.create(ownerName, notes);
-            userPreferences.setFiltersUpdateRequired(true);
+		else if (userId == -1){
+            userDS.create(userName, notes);
+            appPreferences.setFiltersUpdateRequired(true);
             finish(); //Closes activity
-            Toast.makeText(OwnerAddEditActivity.this, ownerName + " owner added.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(UserAddEditActivity.this, userName + " user added.", Toast.LENGTH_SHORT).show();
 			
-		// Updates owner if existing with new values from fields
+		// Updates user if existing with new values from fields
         } else {
-            Owner owner = ownerDS.getSingle(ownerId, null, null);
-            owner.setName(ownerName);
-            owner.setNotes(notes);
-            ownerDS.update(owner);
-            userPreferences.setFiltersUpdateRequired(true);
+            User user = userDS.getSingle(userId, null, null);
+            user.setName(userName);
+            user.setNotes(notes);
+            userDS.update(user);
+            appPreferences.setFiltersUpdateRequired(true);
             finish(); //Closes activity
-            Toast.makeText(OwnerAddEditActivity.this, ownerName + " owner updated.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(UserAddEditActivity.this, userName + " user updated.", Toast.LENGTH_SHORT).show();
         }
     }
 

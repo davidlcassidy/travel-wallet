@@ -6,6 +6,7 @@
 
 package com.davidlcassidy.travelwallet.BaseActivities;
 
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -17,8 +18,10 @@ import android.util.TypedValue;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
+import com.davidlcassidy.travelwallet.Classes.GooglePlayStore;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
+import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.R;
 
 /*
@@ -30,15 +33,18 @@ configure the layout scheme and toolbar.
 public abstract class BaseActivity extends AppCompatActivity {
 
     private Toolbar toolBar;
-    protected UserPreferences userPreferences;
+    protected AppPreferences appPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userPreferences = UserPreferences.getInstance(this);
+        appPreferences = AppPreferences.getInstance(this);
+
+        // Checks for pro purchase in Google Play Store
+        new GooglePlayStore(this);
 
         // Set app color scheme
-        ColorScheme color = userPreferences.getSetting_ColorScheme();
+        ColorScheme color = appPreferences.getSetting_ColorScheme();
         setTheme(color.getResourceId());
     }
 
@@ -65,11 +71,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        boolean recreateRequired = false;
 
         // If color scheme has been changed, recreate activity with new color scheme
         String currentTheme = getCurrentColorSchemeName();
-        String requiredTheme = userPreferences.getSetting_ColorScheme().getName();
-        if (!currentTheme.equals(requiredTheme)){
+        String newTheme = appPreferences.getSetting_ColorScheme().getName();
+        if (!currentTheme.equals(newTheme)){
+            recreateRequired = true;
+        }
+
+        if (recreateRequired){
             recreate();
         }
     }
@@ -100,4 +111,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         int[] attributeArray = new int[] {attribute};
         return this.getTheme().obtainStyledAttributes(attributeArray).getColor(0, 0);
     }
+
+    public String getAppName() {
+        AppType appType = appPreferences.getAppType();
+        if (appType == AppType.FREE) {
+            return "Travel Wallet";
+        } else {
+            return "Travel Wallet Pro";
+        }
+    }
+
+    public String getAppVersion(){
+        try {
+            return "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "";
+        }
+    }
+
 }

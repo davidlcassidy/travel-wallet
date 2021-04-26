@@ -27,9 +27,10 @@ import android.widget.Toast;
 import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
-import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
-import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
+import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.R;
 
 import java.text.ParseException;
@@ -51,14 +52,14 @@ fields and a handful of value selection dialogs.
 public class ProgramAddEditActivity extends BaseActivity_Save {
 
     private ProgramDataSource programDS;
-    private OwnerDataSource ownerDS;
+    private UserDataSource userDS;
     private Integer programId;
 
     private SimpleDateFormat dateFormat;
 
-    private TextView ownerField, typeField, nameField, lastActivityField;
+    private TextView userField, typeField, nameField, lastActivityField;
     private EditText accountNumberField, pointsField, notesField;
-    private LinearLayout ownerLayout,lastActivityLayout;
+    private LinearLayout userLayout,lastActivityLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +67,16 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         setContentView(R.layout.activity_programaddedit);
 
         programDS = ProgramDataSource.getInstance(this);
-        ownerDS = OwnerDataSource.getInstance(this);
+        userDS = UserDataSource.getInstance(this);
 		
 		// Gets program ID from intent. Program ID of -1 means add new program
         programId = getIntent().getIntExtra("PROGRAM_ID", -1);
 
         // Gets user defined data format
-        dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
+        dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
 
 		// Gets ProgramAddEdit activity fields
-        ownerField = (TextView) findViewById(R.id.ownerField);
+        userField = (TextView) findViewById(R.id.userField);
         typeField = (TextView) findViewById(R.id.typeField);
         nameField = (TextView) findViewById(R.id.nameField);
         accountNumberField = (EditText) findViewById(R.id.accountNumberField);
@@ -88,12 +89,12 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         lastActivityLayout = (LinearLayout) findViewById(R.id.lastActivityLayout);
         lastActivityLayout.setVisibility(View.GONE);
 
-        ownerLayout = (LinearLayout) findViewById(R.id.ownerLayout);
-        int numberOfOwners = ownerDS.getAll(null, null, null).size();
-        if (numberOfOwners > 0){
-            ownerLayout.setVisibility(View.VISIBLE);
+        userLayout = (LinearLayout) findViewById(R.id.userLayout);
+        int numberOfUsers = userDS.getAll(null, null, null).size();
+        if (numberOfUsers > 0){
+            userLayout.setVisibility(View.VISIBLE);
         } else {
-            ownerLayout.setVisibility(View.GONE);
+            userLayout.setVisibility(View.GONE);
         }
     }
 
@@ -106,14 +107,15 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             setTitle("Edit Loyalty Program");
 
 			// Sets activity fields
-            Owner pOwner = program.getOwner();
+            User pUser = program.getUser();
             String pType = program.getType();
             String pName = program.getName();
             String pAccountNumber = program.getAccountNumber();
             Integer pPoints = program.getPoints();
             Date pLastActivityDate = program.getLastActivityDate();
             String pNotes = program.getNotes();
-            if (pOwner != null) {ownerField.setText(pOwner.getName());}
+            if (pUser != null) {
+                userField.setText(pUser.getName());}
             if (pType != null) {typeField.setText(pType);}
             if (pName != null) {nameField.setText(pName);}
             if (pAccountNumber != null) {accountNumberField.setText(pAccountNumber);}
@@ -149,8 +151,8 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 	// Runs when save button is clicked
     @Override
     public void menuSaveClicked() {
-        String ownerName = ownerField.getText().toString();
-        Owner owner = ownerDS.getSingle(ownerName, null, null);
+        String userName = userField.getText().toString();
+        User user = userDS.getSingle(userName, null, null);
 
         String programName = nameField.getText().toString();
         Integer programRefId = programDS.getProgramRefId(String.valueOf(typeField.getText()), programName);
@@ -177,8 +179,8 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 			
 		// Creates program if new
         } else if (programId == -1) {
-            programDS.create(programRefId, owner, accountNumber, points, lastActivityDate, notes);
-            userPreferences.setProgramFiltersUpdateRequired(true);
+            programDS.create(programRefId, user, accountNumber, points, lastActivityDate, notes);
+            appPreferences.setProgramFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(ProgramAddEditActivity.this, programName + " program added.", Toast.LENGTH_SHORT).show();
 			
@@ -186,13 +188,13 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         } else {
             LoyaltyProgram program = programDS.getSingle(programId);
             program.setRefId(programRefId);
-            program.setOwner(owner);
+            program.setUser(user);
             program.setAccountNumber(accountNumber);
             program.setPoints(points);
             program.setLastActivityDate(lastActivityDate);
             program.setNotes(notes);
             programDS.update(program);
-            userPreferences.setProgramFiltersUpdateRequired(true);
+            appPreferences.setProgramFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(ProgramAddEditActivity.this, programName + " program updated.", Toast.LENGTH_SHORT).show();
         }
@@ -200,21 +202,21 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
 
 
     // Creates selection dialog
-    private void fieldSelectDialog(final String saveField) {
+    private void fieldSelectDialog(final ItemField saveField) {
 
         // Set dialog title and selection items
         String title = null;
         ArrayList<String> selectionList = null;
         switch (saveField) {
-            case "owner":
-                title = "Select Owner";
-                selectionList = ownerDS.getAllNames();
+            case USER_NAME:
+                title = "Select User";
+                selectionList = userDS.getAllNames();
                 break;
-            case "type":
+            case TYPE:
                 title = "Select Program Type";
                 selectionList = programDS.getAvailableTypes(true);
                 break;
-            case "program":
+            case PROGRAM_NAME:
                 String type = typeField.getText().toString();
                 selectionList = programDS.getAvailablePrograms(type, true, true);
                 if (selectionList.size() > 0) {
@@ -259,10 +261,10 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
                     // Sets field text to selected value
                     String selectedItem = finalSelectionList.get(selected);
                     switch (saveField) {
-                        case "owner":
-                            ownerField.setText(selectedItem);
+                        case USER_NAME:
+                            userField.setText(selectedItem);
                             break;
-                        case "type":
+                        case TYPE:
                             String currentType = typeField.getText().toString();
                             if (!currentType.equals(selectedItem)) {
                                 typeField.setText(selectedItem);
@@ -270,7 +272,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
                             }
                             updateLastActivityFieldVisibility();
                             break;
-                        case "program":
+                        case PROGRAM_NAME:
                             String selectedItem1 = selectedItem.split(SingleChoiceAdapter.getDelimiter())[0];
                             nameField.setText(selectedItem1);
                             updateLastActivityFieldVisibility();
@@ -340,13 +342,13 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         final RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
 
-        LinearLayout ownerLayout = (LinearLayout) findViewById(R.id.ownerLayout);
-        ownerLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout userLayout = (LinearLayout) findViewById(R.id.userLayout);
+        userLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                fieldSelectDialog("owner");
+                fieldSelectDialog(ItemField.USER_NAME);
             }
         });
 
@@ -356,7 +358,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                fieldSelectDialog("type");
+                fieldSelectDialog(ItemField.TYPE);
             }
         });
 
@@ -366,7 +368,7 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
             public void onClick(View v) {
                 mainLayout.requestFocus();
                 hideSoftKeyboard(ProgramAddEditActivity.this);
-                fieldSelectDialog("program");
+                fieldSelectDialog(ItemField.PROGRAM_NAME);
             }
         });
 

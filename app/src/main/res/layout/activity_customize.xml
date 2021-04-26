@@ -18,10 +18,10 @@
         android:padding="@dimen/standardPadding">
 
         <TextView
-            android:id="@+id/ownerTitle"
+            android:id="@+id/userTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Owner"
+            android:text="User"
             android:gravity="center"
             android:textStyle="bold"
             android:paddingBottom="20dp"
@@ -29,17 +29,17 @@
             android:textSize="@dimen/header"/>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/ownerPrimaryLayout"
+            android:id="@+id/userPrimaryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ownerTitle"
+            android:layout_below="@+id/userTitle"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:background="@drawable/boarder"
             android:clickable="true">
 
             <TextView
-                android:id="@+id/ownerPrimaryLabel"
+                android:id="@+id/userPrimaryLabel"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                 android:textSize="@dimen/text"/>
 
             <TextView
-                android:id="@+id/ownerPrimaryField"
+                android:id="@+id/userPrimaryField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -63,17 +63,17 @@
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/ownerSortLayout"
+            android:id="@+id/userSortLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ownerPrimaryLayout"
+            android:layout_below="@+id/userPrimaryLayout"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:background="@drawable/boarder"
             android:clickable="true">
 
             <TextView
-                android:id="@+id/ownerSortLabel"
+                android:id="@+id/userSortLabel"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -84,7 +84,7 @@
                 android:textSize="@dimen/text"/>
 
             <TextView
-                android:id="@+id/ownerSortField"
+                android:id="@+id/userSortField"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Loyalty Program"
-            android:layout_below="@+id/ownerSortLayout"
+            android:layout_below="@+id/userSortLayout"
             android:gravity="center"
             android:textStyle="bold"
             android:paddingTop="25dp"

@@ -7,15 +7,15 @@
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
-ID Local Cache : UserPreferences
-WARNING : Changing ID values may change user settings to the default value within current app installs.
+ID Local Cache : AppPreferences
+WARNING : Changing ID values may change app settings to the default value within current app installs.
  */
 
 public enum AppType {
 
 	// Enum members
-    Free(1, "Free"),
-    Pro(2, "Pro");
+    FREE(1, "Free"),
+    PRO(2, "Pro");
 
 	private final int id;
     private final String text;

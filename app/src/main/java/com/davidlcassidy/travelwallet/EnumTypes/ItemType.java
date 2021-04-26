@@ -13,9 +13,10 @@ ID Local Cache : None
 public enum ItemType {
 	
 	// Enum members
-    LOYALTY_PROGRAM(1, "Loyalty Program"),
-    CREDIT_CARD(2, "Credit Card"),
-    OWNER(3, "Owner");
+    USER(1, "User"),
+    LOYALTY_PROGRAM(2, "Loyalty Program"),
+    CREDIT_CARD(3, "Credit Card");
+
 
     private final int id;
     private final String name;

@@ -30,7 +30,7 @@ Travel Wallet primarily consist of three interfaces, each with its own tab and d
 - Loyalty Program Interface - Provides users the ability add, view, edit, and delete loyalty programs
 - Credit Card Interface - Provides users the ability add, view, edit, and delete credit cards
 
-Along with these three interfaces, there are two buttons located on the top of the main screen. The first is the Owners button allowing the user to manage multiple program/card owners. The second is a dropdown menu where the user can modify app settings, open a summary report, view the developer's note, and upgrade to Travel Wallet Pro if they have not already.
+Along with these three interfaces, there are two buttons located on the top of the main screen. The first is the Users button allowing the user to manage multiple program/card users. The second is a dropdown menu where the user can modify app settings, open a summary report, view the developer's note, and upgrade to Travel Wallet Pro if they have not already.
 
 ### Notifications Interface
 
@@ -99,4 +99,4 @@ can avoid duplicated effort or unnecessary work.
 
 Travel Wallet Android App
 
-Copyright (C) 2018 David L Cassidy. All rights reserved.
+Copyright (C) 2021 David L Cassidy. All rights reserved.

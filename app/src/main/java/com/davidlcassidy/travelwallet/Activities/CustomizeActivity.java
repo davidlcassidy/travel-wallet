@@ -33,15 +33,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /*
-CustomizeActivity is use to allow user to view and modify the customization UserPreferencess. It is
+CustomizeActivity is use to allow user to view and modify the customization AppPreferencess. It is
 created by the dropdown menu in the MainActivity and is comprised of several user preferences
 fields and a handful of value selection dialogs.
  */
 
 public class CustomizeActivity extends BaseActivity_Save {
 
-    private TextView ownerPrimaryField;
-    private TextView ownerSortField;
+    private TextView userPrimaryField;
+    private TextView userSortField;
     private TextView programPrimaryField;
     private TextView programSortField;
     private TextView programNotificationField;
@@ -58,8 +58,8 @@ public class CustomizeActivity extends BaseActivity_Save {
         setTitle("Customize");
 
 		// Gets Customizations activity fields
-        ownerPrimaryField = (TextView) findViewById(R.id.ownerPrimaryField);
-        ownerSortField = (TextView) findViewById(R.id.ownerSortField);
+        userPrimaryField = (TextView) findViewById(R.id.userPrimaryField);
+        userSortField = (TextView) findViewById(R.id.userSortField);
         programPrimaryField = (TextView) findViewById(R.id.programPrimaryField);
         programSortField = (TextView) findViewById(R.id.programSortField);
         programNotificationField = (TextView) findViewById(R.id.programNotificationField);
@@ -78,20 +78,20 @@ public class CustomizeActivity extends BaseActivity_Save {
         super.onResume();
 
 		// Gets values from user preferences
-        ItemField ownerPrimary = userPreferences.getCustom_OwnerPrimaryField();
-        ItemField ownerSort = userPreferences.getCustom_OwnerSortField();
-        ItemField programPrimary = userPreferences.getCustom_ProgramPrimaryField();
-        ItemField programSort = userPreferences.getCustom_ProgramSortField();
-        String programNotificationPeriod = userPreferences.getCustom_ProgramNotificationPeriod();
-        String programFilters = userPreferences.getCustom_ProgramFilters() ? "ON" : "OFF";
-        ItemField cardPrimary = userPreferences.getCustom_CardPrimaryField();
-        ItemField cardSort = userPreferences.getCustom_CardSortField();
-        String cardNotificationPeriod = userPreferences.getCustom_CardNotificationPeriod();
-        String cardFilters = userPreferences.getCustom_CardFilters() ? "ON" : "OFF";
+        ItemField userPrimary = appPreferences.getCustom_UserPrimaryField();
+        ItemField userSort = appPreferences.getCustom_UserSortField();
+        ItemField programPrimary = appPreferences.getCustom_ProgramPrimaryField();
+        ItemField programSort = appPreferences.getCustom_ProgramSortField();
+        String programNotificationPeriod = appPreferences.getCustom_ProgramNotificationPeriod();
+        String programFilters = appPreferences.getCustom_ProgramFilters() ? "ON" : "OFF";
+        ItemField cardPrimary = appPreferences.getCustom_CardPrimaryField();
+        ItemField cardSort = appPreferences.getCustom_CardSortField();
+        String cardNotificationPeriod = appPreferences.getCustom_CardNotificationPeriod();
+        String cardFilters = appPreferences.getCustom_CardFilters() ? "ON" : "OFF";
 
 		// Sets activity fields to values from user preferences
-        ownerPrimaryField.setText(ownerPrimary.getName());
-        ownerSortField.setText(ownerSort.getName());
+        userPrimaryField.setText(userPrimary.getName());
+        userSortField.setText(userSort.getName());
         programPrimaryField.setText(programPrimary.getName());
         programSortField.setText(programSort.getName());
         setNotificationField(ItemType.LOYALTY_PROGRAM, programNotificationPeriod);
@@ -107,8 +107,8 @@ public class CustomizeActivity extends BaseActivity_Save {
     public void menuSaveClicked() {
 
 		// Gets values from activity fields
-        ItemField ownerPrimary = ItemField.fromName(ownerPrimaryField.getText().toString());
-        ItemField ownerSort = ItemField.fromName(ownerSortField.getText().toString());
+        ItemField userPrimary = ItemField.fromName(userPrimaryField.getText().toString());
+        ItemField userSort = ItemField.fromName(userSortField.getText().toString());
         ItemField programPrimary = ItemField.fromName(programPrimaryField.getText().toString());
         ItemField programSort = ItemField.fromName(programSortField.getText().toString());
         String programNotificationPeriod = getNotificationField(ItemType.LOYALTY_PROGRAM);
@@ -119,18 +119,18 @@ public class CustomizeActivity extends BaseActivity_Save {
         boolean cardFilters = cardFiltersField.getText().toString().equals("ON");
 
 		// Saves values from activity fields to user preferences
-        userPreferences.setCustom_OwnerPrimaryField(ownerPrimary);
-        userPreferences.setCustom_OwnerSortField(ownerSort);
-        userPreferences.setCustom_ProgramPrimaryField(programPrimary);
-        userPreferences.setCustom_ProgramSortField(programSort);
-        userPreferences.setCustom_ProgramNotificationPeriod(programNotificationPeriod);
-        userPreferences.setCustom_ProgramFilters(programFilters);
-        userPreferences.setCustom_CardPrimaryField(cardPrimary);
-        userPreferences.setCustom_CardSortField(cardSort);
-        userPreferences.setCustom_CardNotificationPeriod(cardNotificationPeriod);
-        userPreferences.setCustom_CardFilters(cardFilters);
+        appPreferences.setCustom_UserPrimaryField(userPrimary);
+        appPreferences.setCustom_UserSortField(userSort);
+        appPreferences.setCustom_ProgramPrimaryField(programPrimary);
+        appPreferences.setCustom_ProgramSortField(programSort);
+        appPreferences.setCustom_ProgramNotificationPeriod(programNotificationPeriod);
+        appPreferences.setCustom_ProgramFilters(programFilters);
+        appPreferences.setCustom_CardPrimaryField(cardPrimary);
+        appPreferences.setCustom_CardSortField(cardSort);
+        appPreferences.setCustom_CardNotificationPeriod(cardNotificationPeriod);
+        appPreferences.setCustom_CardFilters(cardFilters);
 
-        userPreferences.setFiltersUpdateRequired(true);
+        appPreferences.setFiltersUpdateRequired(true);
 
 		//Closes activity and sends success message to user
         finish();
@@ -174,79 +174,55 @@ public class CustomizeActivity extends BaseActivity_Save {
 
         // Set dialog title and selection items
         String title = null;
-        ArrayList<String> selectionList = null;
+        ArrayList<String> selectionList = new ArrayList<>();
         switch (saveField) {
-            case "ownerPrimary":
-                title = "Set Owner Primary Field";
-                Country country = userPreferences.getSetting_Country();
+            case "userPrimary":
+                title = "Set User Primary Field";
+                Country country = appPreferences.getSetting_Country();
+                selectionList.add(ItemField.ITEM_COUNTS.getName());
+                selectionList.add(ItemField.PROGRAMS_VALUE.getName());
+                selectionList.add(ItemField.CREDIT_LIMIT.getName());
+                selectionList.add(ItemField.CREDIT_LIMIT.getName());
                 if (country == Country.USA) {
-                    selectionList = new ArrayList<String>() {{
-                        add(ItemField.ITEMCOUNTS.getName());
-                        add(ItemField.PROGRAMSVALUE.getName());
-                        add(ItemField.CREDITLIMIT.getName());
-                        add(ItemField.CHASESTATUS.getName());
-                        add(ItemField.OWNERNOTES.getName());
-                    }};
-                } else {
-                    selectionList = new ArrayList<String>() {{
-                        add(ItemField.ITEMCOUNTS.getName());
-                        add(ItemField.PROGRAMSVALUE.getName());
-                        add(ItemField.CREDITLIMIT.getName());
-                        add(ItemField.OWNERNOTES.getName());
-                    }};
+                    selectionList.add(ItemField.CHASE_STATUS.getName());
                 }
+                selectionList.add(ItemField.USER_NOTES.getName());
                 break;
-            case "ownerSort":
-                title = "Set Owner Sort Field";
-                selectionList = new ArrayList<String>() {{
-                    add(ItemField.OWNERNAME.getName());
-                    add(ItemField.PROGRAMSVALUE.getName());
-                    add(ItemField.CREDITLIMIT.getName());
-                }};
+            case "userSort":
+                title = "Set User Sort Field";
+                selectionList.add(ItemField.USER_NAME.getName());
+                selectionList.add(ItemField.PROGRAMS_VALUE.getName());
+                selectionList.add(ItemField.CREDIT_LIMIT.getName());
                 break;
             case "programPrimary":
                 title = "Set Program Primary Field";
-                selectionList = new ArrayList<String>() {{
-                    add(ItemField.ACCOUNTNUMBER.getName());
-                    add(ItemField.POINTS.getName());
-                    add(ItemField.VALUE.getName());
-                    add(ItemField.EXPIRATIONDATE.getName());
-                    add(ItemField.PROGRAMNOTES.getName());
-                }};
+                selectionList.add(ItemField.ACCOUNT_NUMBER.getName());
+                selectionList.add(ItemField.POINTS.getName());
+                selectionList.add(ItemField.VALUE.getName());
+                selectionList.add(ItemField.EXPIRATION_DATE.getName());
+                selectionList.add(ItemField.PROGRAM_NOTES.getName());
                 break;
             case "programSort":
                 title = "Set Program Sort Field";
-                selectionList = new ArrayList<String>() {{
-                    add(ItemField.PROGRAMNAME.getName());
-                    add(ItemField.POINTS.getName());
-                    add(ItemField.VALUE.getName());
-                    add(ItemField.EXPIRATIONDATE.getName());
-                }};
+                selectionList.add(ItemField.PROGRAM_NAME.getName());
+                selectionList.add(ItemField.POINTS.getName());
+                selectionList.add(ItemField.VALUE.getName());
+                selectionList.add(ItemField.EXPIRATION_DATE.getName());
                 break;
             case "cardPrimary":
                 title = "Set Card Primary Field";
-                selectionList = new ArrayList<String>() {{
-                    add(ItemField.ANNUALFEE.getName());
-                    add(ItemField.OPENDATE.getName());
-                    add(ItemField.AFDATE.getName());
-                    add(ItemField.CARDNOTES.getName());
-                }};
+                selectionList.add(ItemField.ANNUAL_FEE.getName());
+                selectionList.add(ItemField.OPEN_DATE.getName());
+                selectionList.add(ItemField.AF_DATE.getName());
+                selectionList.add(ItemField.CARD_NOTES.getName());
                 break;
             case "cardSort":
                 title = "Set Card Sort Field";
-                selectionList = new ArrayList<String>() {{
-                    add(ItemField.CARDNAME.getName());
-                    add(ItemField.BANK.getName());
-                    add(ItemField.ANNUALFEE.getName());
-                    add(ItemField.OPENDATE.getName());
-                    add(ItemField.AFDATE.getName());
-                    List<String> selectionList = Arrays.asList(
-                            ItemField.CARDNAME.getName(),
-                            ItemField.BANK.getName(),
-                            ItemField.ANNUALFEE.getName(),
-                            ItemField.OPENDATE.getName(),
-                            ItemField.AFDATE.getName());
-                }};
+                selectionList.add(ItemField.CARD_NAME.getName());
+                selectionList.add(ItemField.BANK.getName());
+                selectionList.add(ItemField.ANNUAL_FEE.getName());
+                selectionList.add(ItemField.OPEN_DATE.getName());
+                selectionList.add(ItemField.AF_DATE.getName());
                 break;
         }
         final ArrayList<String> finalSelectionList = selectionList;
@@ -282,11 +258,11 @@ public class CustomizeActivity extends BaseActivity_Save {
                     // Sets field text to selected value
                     String selectedItem = finalSelectionList.get(selected);
                     switch (saveField) {
-                        case "ownerPrimary":
-                            ownerPrimaryField.setText(selectedItem);
+                        case "userPrimary":
+                            userPrimaryField.setText(selectedItem);
                             break;
-                        case "ownerSort":
-                            ownerSortField.setText(selectedItem);
+                        case "userSort":
+                            userSortField.setText(selectedItem);
                             break;
                         case "programPrimary":
                             programPrimaryField.setText(selectedItem);
@@ -328,11 +304,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         numPicker.setMinValue(1);
         numPicker.setMaxValue(50);
         final NumberPicker periodPicker = (NumberPicker) npView.findViewById(R.id.periodPicker);
-        final ArrayList<String> periodList = new ArrayList<String>() {{
-            add("Days");
-            add("Weeks");
-            add("Months");
-        }};
+        final List<String> periodList = Arrays.asList("Days", "Weeks", "Months");
         periodPicker.setMinValue(0);
         periodPicker.setMaxValue(periodList.size()-1);
 
@@ -432,11 +404,11 @@ public class CustomizeActivity extends BaseActivity_Save {
         }
 
 		// Save to notification field, depending on group
-        switch (itemType.getName()) {
-            case "Loyalty Program":
+        switch (itemType) {
+            case LOYALTY_PROGRAM:
                 programNotificationField.setText(newValue);
                 break;
-            case "Credit Card":
+            case CREDIT_CARD:
                 cardNotificationField.setText(newValue);
                 break;
         }
@@ -447,11 +419,11 @@ public class CustomizeActivity extends BaseActivity_Save {
         String fieldValue = "";
 
 		// Get value from notification field, depending on group
-        switch (itemType.getName()) {
-            case "Loyalty Program":
+        switch (itemType) {
+            case LOYALTY_PROGRAM:
                 fieldValue = programNotificationField.getText().toString();
                 break;
-            case "Credit Card":
+            case CREDIT_CARD:
                 fieldValue = cardNotificationField.getText().toString();
                 break;
         }
@@ -465,18 +437,18 @@ public class CustomizeActivity extends BaseActivity_Save {
 	// Sets layout click listeners
     private void setClickListeners (){
 
-        LinearLayout ownerPrimaryLayout = (LinearLayout) findViewById(R.id.ownerPrimaryLayout);
-        ownerPrimaryLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout userPrimaryLayout = (LinearLayout) findViewById(R.id.userPrimaryLayout);
+        userPrimaryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fieldSelectDialog("ownerPrimary");
+                fieldSelectDialog("userPrimary");
             }});
 
-        LinearLayout ownerSortLayout = (LinearLayout) findViewById(R.id.ownerSortLayout);
-        ownerSortLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout userSortLayout = (LinearLayout) findViewById(R.id.userSortLayout);
+        userSortLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fieldSelectDialog("ownerSort");
+                fieldSelectDialog("userSort");
             }});
 
         LinearLayout programPrimaryLayout = (LinearLayout) findViewById(R.id.programPrimaryLayout);

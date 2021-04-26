@@ -18,30 +18,30 @@ import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.Language;
 
 /*
-UserPreferences class is used to read and write values to the shared user preferences. These are used
+AppPreferences class is used to read and write values to the shared user preferences. These are used
 for filters, settings, and database versions which need to remain consistent across different sessions.
  */
 
-public class UserPreferences {
+public class AppPreferences {
 
-    public static UserPreferences instance;
+    public static AppPreferences instance;
     private static SharedPreferences sharedPref;
     private static SharedPreferences.Editor spEditor;
 
 
-    // Sets user preference keys
-    private static String nUserPreferences = "UserPreferences";
+    // Sets app preference keys
+    private static String nAppPreferences = "AppPreferences";
     private static String nAppType = "AppType";
     private static String nProgramFiltersUpdateRequired = "ProgramFilterUpdateRequired";
     private static String nCardFiltersUpdateRequired = "CardFilterUpdateRequired";
 
-    private static String nFilter_ProgramOwner = "Filter_ProgramOwner";
+    private static String nFilter_ProgramUser = "Filter_ProgramUser";
     private static String nFilter_ProgramType = "Filter_ProgramType";
-    private static String nFilter_CardOwner = "Filter_CardOwner";
+    private static String nFilter_CardUser = "Filter_CardUser";
     private static String nFilter_CardStatus = "Filter_CardStatus";
 
-    private static String nCustom_OwnerPrimaryField = "Custom_OwnerPrimaryField";
-    private static String nCustom_OwnerSortField = "Custom_OwnerSortField";
+    private static String nCustom_UserPrimaryField = "Custom_UserPrimaryField";
+    private static String nCustom_UserSortField = "Custom_UserSortField";
     private static String nCustom_ProgramPrimaryField = "Custom_ProgramPrimaryField";
     private static String nCustom_ProgramSortField = "Custom_ProgramSortField";
     private static String nCustom_ProgramNotificationPeriod = "Custom_ProgramNotificationPeriod";
@@ -63,23 +63,23 @@ public class UserPreferences {
     private static String nDatabase_RefDBVersion = "Database_RefDBVersion";
 
     // Sets user preference default values
-    private static AppType dAppType = AppType.Free;
+    private static AppType dAppType = AppType.FREE;
     private static boolean dProgramFiltersUpdateRequired = true;
     private static boolean dCardFiltersUpdateRequired = true;
 
-    private static String dFilter_ProgramOwner = "All Owners";
+    private static String dFilter_ProgramUser = "All User";
     private static String dFilter_ProgramType = "All Types";
-    private static String dFilter_CardOwner = "All Owners";
+    private static String dFilter_CardUser = "All User";
     private static String dFilter_CardStatus = "All Statuses";
 
-    private static ItemField dCustom_OwnerPrimaryField = ItemField.ITEMCOUNTS;
-    private static ItemField dCustom_OwnerSortField = ItemField.OWNERNAME;
-    private static ItemField dCustom_ProgramPrimaryField = ItemField.ACCOUNTNUMBER;
-    private static ItemField dCustom_ProgramSortField = ItemField.PROGRAMNAME;
+    private static ItemField dCustom_UserPrimaryField = ItemField.ITEM_COUNTS;
+    private static ItemField dCustom_UserSortField = ItemField.USER_NAME;
+    private static ItemField dCustom_ProgramPrimaryField = ItemField.ACCOUNT_NUMBER;
+    private static ItemField dCustom_ProgramSortField = ItemField.PROGRAM_NAME;
     private static String dCustom_ProgramNotificationPeriod = "4 W";
     private static boolean dCustom_ProgramFilters = true;
-    private static ItemField dCustom_CardPrimaryField = ItemField.OPENDATE;
-    private static ItemField dCustom_CardSortField = ItemField.CARDNAME;
+    private static ItemField dCustom_CardPrimaryField = ItemField.OPEN_DATE;
+    private static ItemField dCustom_CardSortField = ItemField.CARD_NAME;
     private static String dCustom_CardNotificationPeriod = "4 W";
     private static boolean dCustom_CardFilters = true;
     
@@ -94,17 +94,17 @@ public class UserPreferences {
     private static Integer dDatabase_MainDBVersion = 0;
     private static Integer dDatabase_RefDBVersion = 0;
 
-    // Gets instance of UserPreferences. Creates instance if it doesn't exist.
-    public static UserPreferences getInstance(Context context) {
+    // Gets instance of AppPreferences. Creates instance if it doesn't exist.
+    public static AppPreferences getInstance(Context context) {
         if (instance == null) {
-            instance = new UserPreferences(context);
+            instance = new AppPreferences(context);
         }
         return instance;
     }
 
-    // Private UserPreferences constructor called by getInstance method
-    private UserPreferences(Context context) {
-        sharedPref = context.getSharedPreferences(nUserPreferences, Context.MODE_PRIVATE);
+    // Private AppPreferences constructor called by getInstance method
+    private AppPreferences(Context context) {
+        sharedPref = context.getSharedPreferences(nAppPreferences, Context.MODE_PRIVATE);
         spEditor = sharedPref.edit();
     }
 
@@ -153,13 +153,13 @@ public class UserPreferences {
         spEditor.commit();
     }
 
-    // Filter UserPreferences setters/getters
-    public String getFilter_ProgramOwner() {
-        return sharedPref.getString(nFilter_ProgramOwner, dFilter_ProgramOwner);
+    // Filter AppPreferences setters/getters
+    public String getFilter_ProgramUser() {
+        return sharedPref.getString(nFilter_ProgramUser, dFilter_ProgramUser);
     }
 
-    public void setFilter_ProgramOwner(String programOwner) {
-        spEditor.putString(nFilter_ProgramOwner, programOwner);
+    public void setFilter_ProgramUser(String programUser) {
+        spEditor.putString(nFilter_ProgramUser, programUser);
         spEditor.commit();
     }
 
@@ -172,12 +172,12 @@ public class UserPreferences {
         spEditor.commit();
     }
 
-    public String getFilter_CardOwner() {
-        return sharedPref.getString(nFilter_CardOwner, dFilter_CardOwner);
+    public String getFilter_CardUser() {
+        return sharedPref.getString(nFilter_CardUser, dFilter_CardUser);
     }
 
-    public void setFilter_CardOwner(String cardOwner) {
-        spEditor.putString(nFilter_CardOwner, cardOwner);
+    public void setFilter_CardUser(String cardUser) {
+        spEditor.putString(nFilter_CardUser, cardUser);
         spEditor.commit();
     }
 
@@ -190,35 +190,35 @@ public class UserPreferences {
         spEditor.commit();
     }
     
-    public ItemField getCustom_OwnerPrimaryField() {
-        int id = sharedPref.getInt(nCustom_OwnerPrimaryField, dCustom_OwnerPrimaryField.getId());
+    public ItemField getCustom_UserPrimaryField() {
+        int id = sharedPref.getInt(nCustom_UserPrimaryField, dCustom_UserPrimaryField.getId());
         ItemField itemField = ItemField.fromId(id);
         if (itemField != null){
             return itemField;
         } else {
-            spEditor.putInt(nCustom_OwnerPrimaryField, dCustom_OwnerPrimaryField.getId());
-            return dCustom_OwnerPrimaryField;
+            spEditor.putInt(nCustom_UserPrimaryField, dCustom_UserPrimaryField.getId());
+            return dCustom_UserPrimaryField;
         }
     }
 
-    public void setCustom_OwnerPrimaryField(ItemField ownerPrimaryField) {
-        spEditor.putInt(nCustom_OwnerPrimaryField, ownerPrimaryField.getId());
+    public void setCustom_UserPrimaryField(ItemField userPrimaryField) {
+        spEditor.putInt(nCustom_UserPrimaryField, userPrimaryField.getId());
         spEditor.commit();
     }
 
-    public ItemField getCustom_OwnerSortField() {
-        int id = sharedPref.getInt(nCustom_OwnerSortField, dCustom_OwnerSortField.getId());
+    public ItemField getCustom_UserSortField() {
+        int id = sharedPref.getInt(nCustom_UserSortField, dCustom_UserSortField.getId());
         ItemField itemField = ItemField.fromId(id);
         if (itemField != null){
             return itemField;
         } else {
-            spEditor.putInt(nCustom_OwnerSortField, dCustom_OwnerSortField.getId());
-            return dCustom_OwnerSortField;
+            spEditor.putInt(nCustom_UserSortField, dCustom_UserSortField.getId());
+            return dCustom_UserSortField;
         }
     }
 
-    public void setCustom_OwnerSortField(ItemField OwnerSortField) {
-        spEditor.putInt(nCustom_OwnerSortField, OwnerSortField.getId());
+    public void setCustom_UserSortField(ItemField userSortField) {
+        spEditor.putInt(nCustom_UserSortField, userSortField.getId());
         spEditor.commit();
     }
 
@@ -429,7 +429,7 @@ public class UserPreferences {
     }
 
 
-    // Database UserPreferences setters/getters
+    // Database AppPreferences setters/getters
     public Integer getDatabase_MainDBVersion() {
         return sharedPref.getInt(nDatabase_MainDBVersion, dDatabase_MainDBVersion);
     }

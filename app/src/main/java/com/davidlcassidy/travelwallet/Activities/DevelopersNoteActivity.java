@@ -6,7 +6,7 @@
 
 package com.davidlcassidy.travelwallet.Activities;
 
-import android.content.pm.PackageManager;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_BackOnly;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
 import com.davidlcassidy.travelwallet.R;
 
 /*
@@ -27,31 +26,15 @@ public class DevelopersNoteActivity extends BaseActivity_BackOnly {
     private TextView text;
     private Button button;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_textbutton);
         setTitle("Developer's Note");
 
-        // Set app name
-        String appName;
-        AppType appType = userPreferences.getAppType();
-        if (appType == AppType.Pro) {
-            appName = "Travel Wallet Pro";
-        } else {
-            appName = "Travel Wallet";
-        }
-
-        // Set app version
-        String appVersion = null;
-        try {
-            appVersion = "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
         title = (TextView) findViewById(R.id.title);
-        title.setText(appName + " " + appVersion);
+        title.setText(getAppName() + " " + getAppVersion());
 
         text = (TextView) findViewById(R.id.text);
         text.setText(

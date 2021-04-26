@@ -19,7 +19,4 @@
     <item
         android:id="@+id/DeveloperNote"
         android:title="Developer's Note"/>
-    <item
-        android:id="@+id/GetPro"
-        android:title="Upgrade to Pro"/>
 </menu>

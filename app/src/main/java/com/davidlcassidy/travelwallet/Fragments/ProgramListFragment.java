@@ -22,9 +22,9 @@ import android.widget.TextView;
 import com.davidlcassidy.travelwallet.Adapters.FilterSpinnerAdapter;
 import com.davidlcassidy.travelwallet.Adapters.ProgramListAdapter;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
-import com.davidlcassidy.travelwallet.Classes.Owner;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
-import com.davidlcassidy.travelwallet.Database.OwnerDataSource;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
+import com.davidlcassidy.travelwallet.Classes.User;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Activities.ProgramDetailActivity;
@@ -45,9 +45,9 @@ no programs (empty listview), directing users to add new programs with the "add"
 public class ProgramListFragment extends Fragment {
 
     private Activity activity;
-    private UserPreferences userPreferences;
+    private AppPreferences appPreferences;
     private ProgramDataSource programDS;
-    private OwnerDataSource userDS;
+    private UserDataSource userDS;
     private ArrayList<LoyaltyProgram> fullProgramList, filteredProgramList;
     private TextView emptyListText;
     private ListView lv;
@@ -59,11 +59,11 @@ public class ProgramListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         activity = getActivity();
 
-        userPreferences = UserPreferences.getInstance(getContext());
-        userPreferences.setProgramFiltersUpdateRequired(true);
+        appPreferences = AppPreferences.getInstance(getContext());
+        appPreferences.setProgramFiltersUpdateRequired(true);
 
         programDS = ProgramDataSource.getInstance(getContext());
-        userDS = OwnerDataSource.getInstance(getContext());
+        userDS = UserDataSource.getInstance(getContext());
 
 		// Sets the text used when loyalty program list is empty
         emptyListText = (TextView) view.findViewById(R.id.emptyListText);
@@ -94,11 +94,11 @@ public class ProgramListFragment extends Fragment {
         super.onResume();
 
 		// Gets all loyalty programs sorted by field defined in user preferences
-        ItemField sortField = userPreferences.getCustom_ProgramSortField();
+        ItemField sortField = appPreferences.getCustom_ProgramSortField();
         fullProgramList = programDS.getAll(null, sortField, false);
 
-        if (userPreferences.getProgramFiltersUpdateRequired() == true) {
-            if (userPreferences.getCustom_ProgramFilters() == true) {
+        if (appPreferences.getProgramFiltersUpdateRequired() == true) {
+            if (appPreferences.getCustom_ProgramFilters() == true) {
                 filterLayout.setVisibility(LinearLayout.VISIBLE);
                 setFilters(true);
                 filterPrograms();
@@ -106,7 +106,7 @@ public class ProgramListFragment extends Fragment {
                 filterLayout.setVisibility(LinearLayout.GONE);
                 filteredProgramList = fullProgramList;
             }
-            userPreferences.setProgramFiltersUpdateRequired(false);
+            appPreferences.setProgramFiltersUpdateRequired(false);
         }
 
 		// Hides list and shows empty list text if there are no loyalty programs
@@ -131,25 +131,25 @@ public class ProgramListFragment extends Fragment {
 
     }
 
-    private void setFilters(boolean onlySetOwnerFilter){
+    private void setFilters(boolean onlySetUserFilter){
 
-        // Creates program owner filter with values
-        ArrayList<String> owners = userDS.getAllNames();
-        if (owners.size() == 0) {
-            owners.add(0, "No Owners Added");
+        // Creates program user filter with values
+        ArrayList<String> users = userDS.getAllNames();
+        if (users.size() == 0) {
+            users.add(0, "No Users Added");
             filter1.setEnabled(false);
             filter1.setClickable(false);
         } else {
-            owners.add(0, "All Owners");
+            users.add(0, "All Users");
             filter1.setEnabled(true);
             filter1.setClickable(true);
         }
-        FilterSpinnerAdapter ownersSpinnerAdapter = new FilterSpinnerAdapter(activity, owners);
-        filter1.setAdapter(ownersSpinnerAdapter);
+        FilterSpinnerAdapter usersSpinnerAdapter = new FilterSpinnerAdapter(activity, users);
+        filter1.setAdapter(usersSpinnerAdapter);
         filter1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                userPreferences.setFilter_ProgramOwner(parent.getItemAtPosition(position).toString());
+                appPreferences.setFilter_ProgramUser(parent.getItemAtPosition(position).toString());
                 filterPrograms();
                 onResume();
             }
@@ -160,16 +160,16 @@ public class ProgramListFragment extends Fragment {
             }
         });
 
-        // Sets program owner filter to value in user preferences
-        String filter1value = userPreferences.getFilter_ProgramOwner();
-        int filter1Position = owners.indexOf(filter1value);
+        // Sets program user filter to value in user preferences
+        String filter1value = appPreferences.getFilter_ProgramUser();
+        int filter1Position = users.indexOf(filter1value);
         if (filter1Position == -1) {
             filter1.setSelection(0);
         } else {
             filter1.setSelection(filter1Position);
         }
 
-        if (!onlySetOwnerFilter) {
+        if (!onlySetUserFilter) {
 
             // Creates program type filter with values
             ArrayList<String> programTypes = programDS.getAvailableTypes(false);
@@ -179,7 +179,7 @@ public class ProgramListFragment extends Fragment {
             filter2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    userPreferences.setFilter_ProgramType(parent.getItemAtPosition(position).toString());
+                    appPreferences.setFilter_ProgramType(parent.getItemAtPosition(position).toString());
                     filterPrograms();
                     onResume();
                 }
@@ -191,7 +191,7 @@ public class ProgramListFragment extends Fragment {
             });
 
             // Sets program type filter to value in user preferences
-            String filter2value = userPreferences.getFilter_ProgramType();
+            String filter2value = appPreferences.getFilter_ProgramType();
             int filter2Position = programTypes.indexOf(filter2value);
             if (filter2Position == -1) {
                 filter2.setSelection(0);
@@ -204,12 +204,12 @@ public class ProgramListFragment extends Fragment {
     private void filterPrograms(){
         filteredProgramList = new ArrayList<LoyaltyProgram>();
 
-        String filter1value = userPreferences.getFilter_ProgramOwner();
-        String filter2value = userPreferences.getFilter_ProgramType();
+        String filter1value = appPreferences.getFilter_ProgramUser();
+        String filter2value = appPreferences.getFilter_ProgramType();
         for (LoyaltyProgram program : fullProgramList) {
-            if (!Arrays.asList("All Owners", "No Owners Added").contains(filter1value)) {
-                Owner owner = program.getOwner();
-                if (owner == null || !owner.getName().equals(filter1value)) {
+            if (!Arrays.asList("All Users", "No Users Added").contains(filter1value)) {
+                User user = program.getUser();
+                if (user == null || !user.getName().equals(filter1value)) {
                     continue;
                 }
             }

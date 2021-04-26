@@ -7,33 +7,34 @@
 package com.davidlcassidy.travelwallet.EnumTypes;
 
 /*
-ID Local Cache : UserPreferences
-WARNING : Changing ID values may change user settings to the default value within current app installs.
+ID Local Cache : AppPreferences
+WARNING : Changing ID values may change app settings to the default value within current app installs.
  */
 
 public enum ItemField {
 
 	// Enum members
-    PROGRAMNAME(1, ItemType.LOYALTY_PROGRAM, "Program Name"),
-    ACCOUNTNUMBER(2, ItemType.LOYALTY_PROGRAM, "Account Number"),
-    POINTS(3, ItemType.LOYALTY_PROGRAM, "Points"),
-    VALUE(4, ItemType.LOYALTY_PROGRAM, "Value"),
-    EXPIRATIONDATE(5, ItemType.LOYALTY_PROGRAM, "Expiration Date"),
-    PROGRAMNOTES(6, ItemType.LOYALTY_PROGRAM, "Notes"),
+    TYPE(11, ItemType.LOYALTY_PROGRAM, "Program Name"),
+    PROGRAM_NAME(12, ItemType.LOYALTY_PROGRAM, "Program Name"),
+    ACCOUNT_NUMBER(13, ItemType.LOYALTY_PROGRAM, "Account Number"),
+    POINTS(14, ItemType.LOYALTY_PROGRAM, "Points"),
+    VALUE(15, ItemType.LOYALTY_PROGRAM, "Value"),
+    EXPIRATION_DATE(16, ItemType.LOYALTY_PROGRAM, "Expiration Date"),
+    PROGRAM_NOTES(17, ItemType.LOYALTY_PROGRAM, "Notes"),
 	
 	BANK(21, ItemType.CREDIT_CARD, "Bank"),
-    CARDNAME(22, ItemType.CREDIT_CARD, "Card Name"),
-    OPENDATE(23, ItemType.CREDIT_CARD, "Open Date"),
-    AFDATE(24, ItemType.CREDIT_CARD, "Annual Fee Date"),
-    ANNUALFEE(25, ItemType.CREDIT_CARD, "Annual Fee"),
-    CARDNOTES(26, ItemType.CREDIT_CARD, "Notes"),
+    CARD_NAME(22, ItemType.CREDIT_CARD, "Card Name"),
+    OPEN_DATE(23, ItemType.CREDIT_CARD, "Open Date"),
+    AF_DATE(24, ItemType.CREDIT_CARD, "Annual Fee Date"),
+    ANNUAL_FEE(25, ItemType.CREDIT_CARD, "Annual Fee"),
+    CARD_NOTES(26, ItemType.CREDIT_CARD, "Notes"),
 
-    OWNERNAME(31, ItemType.OWNER, "Owner Name"),
-    ITEMCOUNTS(32, ItemType.OWNER, "Item Counts"),
-    PROGRAMSVALUE(33, ItemType.OWNER, "Programs Value"),
-    CREDITLIMIT(34, ItemType.OWNER, "Credit Limit"),
-    CHASESTATUS(35, ItemType.OWNER, "Chase 5/24 Status"),
-    OWNERNOTES(36, ItemType.OWNER, "Notes");
+    USER_NAME(31, ItemType.USER, "User Name"),
+    ITEM_COUNTS(32, ItemType.USER, "Item Counts"),
+    PROGRAMS_VALUE(33, ItemType.USER, "Programs Value"),
+    CREDIT_LIMIT(34, ItemType.USER, "Credit Limit"),
+    CHASE_STATUS(35, ItemType.USER, "Chase 5/24 Status"),
+    USER_NOTES(36, ItemType.USER, "Notes");
 
 	private final int id;
     private final ItemType itemType;

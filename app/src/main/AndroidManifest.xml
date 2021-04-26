@@ -34,11 +34,11 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.CardAddEditActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.OwnerListActivity"
+        <activity android:name=".Activities.UserListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.OwnerDetailActivity"
+        <activity android:name=".Activities.UserDetailActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.OwnerAddEditActivity"
+        <activity android:name=".Activities.UserAddEditActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.CustomizeActivity"
             android:screenOrientation="portrait"/>

@@ -19,7 +19,7 @@ import com.davidlcassidy.travelwallet.EnumTypes.Currency;
 import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
 import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
 import com.davidlcassidy.travelwallet.R;
-import com.davidlcassidy.travelwallet.Classes.UserPreferences;
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -29,11 +29,11 @@ import java.util.List;
 
 public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
 
-    private UserPreferences userPreferences;
+    private AppPreferences appPreferences;
 
     public ProgramListAdapter(Context context, List<LoyaltyProgram> programs) {
         super(context, 0, programs);
-        userPreferences = UserPreferences.getInstance(context);
+        appPreferences = AppPreferences.getInstance(context);
     }
 
     @Override
@@ -42,9 +42,9 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_main, parent, false);
         }
 
-        final ItemField primaryField = userPreferences.getCustom_ProgramPrimaryField();
+        final ItemField primaryField = appPreferences.getCustom_ProgramPrimaryField();
         DecimalFormat numberFormat = NumberPattern.COMMADOT.getNumberFormat();
-        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
 
 		// Gets the item at this position
         LoyaltyProgram program = getItem(position);
@@ -61,20 +61,20 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
 
 		// Sets field values, based on user preferences
         programField.setText(program.getName());
-        switch (primaryField.getName()) {
-            case "Account Number":
+        switch (primaryField) {
+            case ACCOUNT_NUMBER:
                 messageField.setText(program.getAccountNumber());
                 break;
-            case "Points":
+            case POINTS:
                 messageField.setText(numberFormat.format(program.getPoints()));
                 break;
-            case "Value":
-                Currency currency = userPreferences.getSetting_Currency();
+            case VALUE:
+                Currency currency = appPreferences.getSetting_Currency();
                 BigDecimal programValue = program.getTotalValue();
                 String programValueString = currency.numToString(programValue, NumberPattern.COMMADOT);
                 messageField.setText(programValueString);
                 break;
-            case "Expiration Date":
+            case EXPIRATION_DATE:
                 Date lastActivityDate = program.getLastActivityDate();
                 Date expirationDate = program.getExpirationDate();
                 String expirationOverride = program.getExpirationOverride();
@@ -88,8 +88,7 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
                 }
                 messageField.setText(message);
                 break;
-            case "Notes":
-
+            case PROGRAM_NOTES:
                 // Gets the first 25 characters of the first notes line
                 String notes = program.getNotes();
                 messageField.setText(notes

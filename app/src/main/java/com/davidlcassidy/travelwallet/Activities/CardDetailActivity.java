@@ -19,7 +19,7 @@ import android.widget.ToggleButton;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_EditDelete;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Detail;
-import com.davidlcassidy.travelwallet.Classes.Owner;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Adapters.DetailListAdapter;
 import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
@@ -107,10 +107,10 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
     protected void onResume() {
         super.onResume();
 
-        SimpleDateFormat dateFormat = userPreferences.getSetting_DatePattern().getDateFormat();
+        SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
         NumberPattern numberPattern = NumberPattern.COMMADOT;
         DecimalFormat decimalFormat = numberPattern.getDecimalFormat();
-        Currency currency = userPreferences.getSetting_Currency();
+        Currency currency = appPreferences.getSetting_Currency();
 
         // Gets card annual fee and formats as currency string
         CreditCard card = cardDS.getSingle(cardId);
@@ -128,9 +128,9 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
 
 		// Creates list of credit card field/value pairs
         detailList.clear();
-        Owner owner = card.getOwner();
-        if (owner != null){
-            detailList.add(new Detail("Owner", owner.getName()));
+        User user = card.getUser();
+        if (user != null){
+            detailList.add(new Detail("User", user.getName()));
         }
         detailList.add(new Detail("Name", card.getName()));
         detailList.add(new Detail("Bank", card.getBank()));
@@ -204,7 +204,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
             @Override
             public void onClick(DialogInterface dialog, int selected) {
                 cardDS.delete(cardId);
-                userPreferences.setCardFiltersUpdateRequired(true);
+                appPreferences.setCardFiltersUpdateRequired(true);
                 finish();
             }});
 
