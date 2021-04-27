@@ -22,14 +22,12 @@ import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Detail;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
+import com.davidlcassidy.travelwallet.Enums.CardStatus;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,8 +75,8 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
 
         // Sets text and colors for notification button
         notificationButton = footer.findViewById(R.id.notificationButton);
-        notificationButton.setTextOn("Monitoring : ON");
-        notificationButton.setTextOff("Monitoring : OFF");
+        notificationButton.setTextOn("Notifications : ON");
+        notificationButton.setTextOff("Notifications : OFF");
         if (card.getNotificationStatus() == NotificationStatus.UNMONITORED) {
             notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
         } else {
@@ -108,18 +106,16 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         super.onResume();
 
         SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
-        NumberPattern numberPattern = NumberPattern.COMMADOT;
-        DecimalFormat decimalFormat = numberPattern.getDecimalFormat();
         Currency currency = appPreferences.getSetting_Currency();
 
         // Gets card annual fee and formats as currency string
         CreditCard card = cardDS.getSingle(cardId);
         BigDecimal cardAF = card.getAnnualFee();
-        String cardAFString = currency.numToString(cardAF, numberPattern);
+        String cardAFString = currency.formatValue(cardAF);
 
         // Get card credit limit and formats as currency string
         BigDecimal creditlimit = card.getCreditLimit();
-        String creditLimitString = currency.numToString(creditlimit, numberPattern);
+        String creditLimitString = currency.formatValue(creditlimit);
 
         // Sets card image and card name text for list header
         int logoNum = this.getResources().getIdentifier("card_000_image", "drawable", this.getPackageName());
@@ -153,7 +149,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
         if (closeDate != null && status == CardStatus.CLOSED) {
             detailList.add(new Detail("Close Date", dateFormat.format(closeDate)));
         }
-        detailList.add(new Detail("Foreign Fee", decimalFormat.format(card.getForeignTransactionFee()) + " %"));
+        detailList.add(new Detail("Foreign Fee", getNumberPattern().getNumberFormat(true).format(card.getForeignTransactionFee()) + " %"));
 
         // Creates adapter using card details list and sets to list
         DetailListAdapter adapter = new DetailListAdapter(this, detailList);

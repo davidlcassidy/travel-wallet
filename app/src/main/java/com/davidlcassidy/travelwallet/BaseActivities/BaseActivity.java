@@ -20,8 +20,9 @@ import android.widget.LinearLayout;
 
 import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.GooglePlayStore;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
-import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
+import com.davidlcassidy.travelwallet.Enums.AppType;
+import com.davidlcassidy.travelwallet.Enums.ColorScheme;
+import com.davidlcassidy.travelwallet.Enums.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
 /*
@@ -99,6 +100,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         setSupportActionBar(toolBar);
     }
 
+    public NumberPattern getNumberPattern(){
+        return appPreferences.getSetting_Currency().getNumberPattern();
+    }
+
     // Gets name of color scheme in current theme
     private String getCurrentColorSchemeName() {
         TypedValue outValue = new TypedValue();
@@ -112,6 +117,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return this.getTheme().obtainStyledAttributes(attributeArray).getColor(0, 0);
     }
 
+    // Gets name of application
     public String getAppName() {
         AppType appType = appPreferences.getAppType();
         if (appType == AppType.FREE) {
@@ -121,6 +127,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    // Gets version of application
     public String getAppVersion() {
         try {
             return "v" + this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;

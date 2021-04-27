@@ -14,7 +14,7 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 import com.davidlcassidy.travelwallet.Activities.MainActivity;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
+import com.davidlcassidy.travelwallet.Enums.ItemType;
 import com.davidlcassidy.travelwallet.R;
 
 import static android.support.v4.app.NotificationCompat.PRIORITY_HIGH;

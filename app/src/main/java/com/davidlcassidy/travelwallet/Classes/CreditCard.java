@@ -6,9 +6,9 @@
 
 package com.davidlcassidy.travelwallet.Classes;
 
-import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.Country;
-import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
+import com.davidlcassidy.travelwallet.Enums.CardStatus;
+import com.davidlcassidy.travelwallet.Enums.Country;
+import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;

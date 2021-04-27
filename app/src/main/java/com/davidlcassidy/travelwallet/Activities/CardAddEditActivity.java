@@ -30,10 +30,10 @@ import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.UserDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.Country;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
+import com.davidlcassidy.travelwallet.Enums.CardStatus;
+import com.davidlcassidy.travelwallet.Enums.Country;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -253,19 +253,19 @@ public class CardAddEditActivity extends BaseActivity_Save {
         String bankString = String.valueOf(bankField.getText());
         Integer cardRefId = cardDS.getCardRefId(bankString, cardName);
 
-        // Checks that credit card is selected
         if (cardName.equals("")) {
+            // Checks that credit card is selected
             Toast.makeText(CardAddEditActivity.this, "Please select a credit card.", Toast.LENGTH_LONG).show();
 
-            // Creates card if new
         } else if (cardId == -1) {
+            // Creates card if new
             cardDS.create(cardRefId, user, cardStatus, creditLimit, openDate, afDate, closeDate, notes);
             appPreferences.setCardFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(CardAddEditActivity.this, cardName + " card added.", Toast.LENGTH_SHORT).show();
 
-            // Updates card if existing with new values from fields
         } else {
+            // Updates card if existing with new values from fields
             CreditCard card = cardDS.getSingle(cardId);
             card.setRefId(cardRefId);
             card.setUser(user);

@@ -22,13 +22,11 @@ import com.davidlcassidy.travelwallet.Classes.Detail;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,8 +72,8 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
 
         // Sets text and colors for notification button
         notificationButton = footer.findViewById(R.id.notificationButton);
-        notificationButton.setTextOn("Monitoring : ON");
-        notificationButton.setTextOff("Monitoring : OFF");
+        notificationButton.setTextOn("Notifications : ON");
+        notificationButton.setTextOff("Notifications : OFF");
         if (program.getNotificationStatus() == NotificationStatus.UNMONITORED) {
             notificationButton.setBackgroundColor(getResources().getColor(R.color.gray));
         } else {
@@ -105,14 +103,12 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         super.onResume();
 
         SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
-        NumberPattern numberPattern = NumberPattern.COMMADOT;
-        DecimalFormat numberFormat = numberPattern.getNumberFormat();
         Currency currency = appPreferences.getSetting_Currency();
 
         // Gets loyalty program value and formats as currency string
         LoyaltyProgram program = programDS.getSingle(programId);
         BigDecimal value = program.getTotalValue();
-        String programValueString = currency.numToString(value, numberPattern);
+        String programValueString = currency.formatValue(value);
 
         // Sets program image for list header
         int logoNum = this.getResources().getIdentifier(program.getLogoImage(), "drawable", this.getPackageName());
@@ -129,7 +125,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         detailList.add(new Detail("Name", program.getName()));
         detailList.add(new Detail("Type", program.getType()));
         detailList.add(new Detail("Account Number", program.getAccountNumber()));
-        detailList.add(new Detail("Points", numberFormat.format(program.getPoints())));
+        detailList.add(new Detail("Points", getNumberPattern().getNumberFormat(false).format(program.getPoints())));
         detailList.add(new Detail("Value", programValueString));
 
         // Creates adapter using program details list and sets to list

@@ -24,7 +24,6 @@ public class DevelopersNoteActivity extends BaseActivity_BackOnly {
 
     private TextView title;
     private TextView text;
-    private Button button;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -53,13 +52,11 @@ public class DevelopersNoteActivity extends BaseActivity_BackOnly {
                         "\n" +
                         "Thank you and safe travels!\n" +
                         "\n" +
-                        "Email:  travelwallet@davidlcassidy.com\n" +
-                        "Website:  www.DavidLCassidy.com"
+                        "Email:  evilsushipirate@gmail.com"
         );
         Linkify.addLinks(text, Linkify.ALL);
 
-        button = findViewById(R.id.button);
-        button.setVisibility(View.GONE);
+        findViewById(R.id.button).setVisibility(View.GONE);
 
     }
 }

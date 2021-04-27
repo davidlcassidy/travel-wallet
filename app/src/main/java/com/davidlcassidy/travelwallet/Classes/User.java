@@ -11,7 +11,7 @@ User class is created by UserDataSource and contains the data for a user
 from the MainDatabase.
  */
 
-import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
+import com.davidlcassidy.travelwallet.Enums.CardStatus;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;

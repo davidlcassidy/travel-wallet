@@ -89,8 +89,8 @@ public class UserAddEditActivity extends BaseActivity_Save {
             finish(); //Closes activity
             Toast.makeText(UserAddEditActivity.this, userName + " user added.", Toast.LENGTH_SHORT).show();
 
-            // Updates user if existing with new values from fields
         } else {
+            // Updates user if existing with new values from fields
             User user = userDS.getSingle(userId, null, null);
             user.setName(userName);
             user.setNotes(notes);

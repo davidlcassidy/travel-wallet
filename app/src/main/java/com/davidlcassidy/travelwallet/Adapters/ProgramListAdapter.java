@@ -16,9 +16,8 @@ import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -43,7 +42,8 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
         }
 
         final ItemField primaryField = appPreferences.getCustom_ProgramPrimaryField();
-        DecimalFormat numberFormat = NumberPattern.COMMADOT.getNumberFormat();
+        Currency currency = appPreferences.getSetting_Currency();
+        DecimalFormat numberFormat = currency.getNumberPattern().getNumberFormat(false);
         SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
 
         // Gets the item at this position
@@ -69,9 +69,8 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
                 messageField.setText(numberFormat.format(program.getPoints()));
                 break;
             case VALUE:
-                Currency currency = appPreferences.getSetting_Currency();
                 BigDecimal programValue = program.getTotalValue();
-                String programValueString = currency.numToString(programValue, NumberPattern.COMMADOT);
+                String programValueString = currency.formatValue(programValue);
                 messageField.setText(programValueString);
                 break;
             case EXPIRATION_DATE:

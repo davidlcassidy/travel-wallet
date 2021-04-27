@@ -16,9 +16,9 @@ import android.widget.TextView;
 
 import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
+import com.davidlcassidy.travelwallet.Enums.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -64,7 +64,7 @@ public class CardListAdapter extends ArrayAdapter<CreditCard> {
             case ANNUAL_FEE:
                 Currency currency = appPreferences.getSetting_Currency();
                 BigDecimal annualFee = card.getAnnualFee();
-                String annualFeeString = currency.numToString(annualFee, NumberPattern.COMMADOT);
+                String annualFeeString = currency.formatValue(annualFee);
                 messageField.setText(annualFeeString);
                 break;
             case OPEN_DATE:

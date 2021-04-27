@@ -32,11 +32,10 @@ import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.NotificationTimerService;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
+import com.davidlcassidy.travelwallet.Enums.AppType;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
+import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
 import com.davidlcassidy.travelwallet.Fragments.CardListFragment;
 import com.davidlcassidy.travelwallet.Fragments.NotificationsListFragment;
 import com.davidlcassidy.travelwallet.Fragments.ProgramListFragment;
@@ -86,9 +85,13 @@ public class MainActivity extends BaseActivity_Main {
         fab = findViewById(R.id.fabPlus);
         fab.hide();
 
-        // Opens summary dialog if configured in user settings
-        if (appPreferences.getSetting_InitialSummary()) {
-            showSummary();
+
+        if (!appPreferences.getFirstAppLaunch() && appPreferences.getAppType() == AppType.FREE && Math.random() < 0.08) {
+            // Randomly opens upgrade prompt for free users, except on first launch
+            showUpgradePromptPopup();
+        } else if (appPreferences.getSetting_InitialSummary()) {
+            // Opens summary dialog if configured in user settings
+            showSummaryPopup();
         }
 
         // Sets actions of floating "plus" button, depending on displayed fragment
@@ -207,7 +210,7 @@ public class MainActivity extends BaseActivity_Main {
                 switch (selectedItemName) {
                     case "Summary":
                         // Opens Summary Popup
-                        showSummary();
+                        showSummaryPopup();
                         break;
                     case "Customize":
                         // Opens Customize Activity
@@ -237,9 +240,57 @@ public class MainActivity extends BaseActivity_Main {
         popupMenu.show();
     }
 
+    // Opens Upgrade Prompt Popup
+    public void showUpgradePromptPopup() {
+        // Gets dialog layout
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_upgrade, null);
+
+        // Creates dialog
+        final AlertDialog diag = new AlertDialog.Builder(this).setView(v).create();
+
+        // Sets title in dialog toolbar on top
+        Toolbar toolBar1 = v.findViewById(R.id.toolbar);
+        toolBar1.setTitle("Enjoying Travel Wallet?");
+
+        // Sets text in dialog
+        TextView mainText = v.findViewById(R.id.text);
+        String text =
+                "If you like Travel Wallet, please consider upgrading to Travel Wallet Pro to " +
+                        "support our ongoing development effort. \n\nIt is a low, one time cost " +
+                        "and will forever remove all of the limitations of the free version of " +
+                        "Travel Wallet. \n\nThank you!\n";
+        mainText.setText(text);
+
+        // Opens PurchaseProActivity when "Upgrade" button is clicked
+        Button upgradeButton = v.findViewById(R.id.upgradeButton);
+        upgradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                diag.dismiss();
+                Intent intent = new Intent(MainActivity.this, PurchaseProActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Closes dialog when "Close" button is clicked
+        Button closeButton = v.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                diag.dismiss();
+            }
+        });
+
+        // Displays dialog
+        diag.show();
+
+        // Dims background while dialog is active
+        diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
     // Opens Summary Popup
-    public void showSummary() {
-        NumberPattern numberPattern = NumberPattern.COMMADOT;
+    public void showSummaryPopup() {
         Currency currency = appPreferences.getSetting_Currency();
 
         ProgramDataSource programDS = ProgramDataSource.getInstance(this);
@@ -274,7 +325,7 @@ public class MainActivity extends BaseActivity_Main {
         for (LoyaltyProgram p : programs) {
             total = total.add(p.getTotalValue());
         }
-        programValue.setText(currency.numToString(total, numberPattern));
+        programValue.setText(currency.formatValue(total));
 
         // Retrieves programs next expiration data and saves to summary dialog fields
         for (LoyaltyProgram program : programDS.getAll(null, ItemField.EXPIRATION_DATE, false)) {
@@ -303,7 +354,7 @@ public class MainActivity extends BaseActivity_Main {
         for (CreditCard cc : cardList) {
             totalAF = totalAF.add(cc.getAnnualFee());
         }
-        cardAF.setText(currency.numToString(totalAF, numberPattern));
+        cardAF.setText(currency.formatValue(totalAF));
 
         // Retrieves cards next AF data and saves to summary dialog field
         for (CreditCard card : cardDS.getAll(null, ItemField.AF_DATE, false, true)) {
@@ -323,12 +374,11 @@ public class MainActivity extends BaseActivity_Main {
             }
         }
 
-        // Runs with "Close" button is clicked
+        // Closes dialog when "Close" button is clicked
         Button closeButton2 = v.findViewById(R.id.closeButton);
         closeButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Dialog is destroyed
                 diag.dismiss();
             }
         });
@@ -340,7 +390,7 @@ public class MainActivity extends BaseActivity_Main {
         diag.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-    // Opens User Limit Popup
+    // Opens Program/Card Limit Popup
     public void showLimitPopup(String limitTitle, String limitText) {
         // Gets dialog layout
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -357,7 +407,7 @@ public class MainActivity extends BaseActivity_Main {
         TextView mainText = v.findViewById(R.id.text);
         mainText.setText(limitText);
 
-        // Runs with "Upgrade" button is clicked
+        // Opens PurchaseProActivity when "Upgrade" button is clicked
         Button upgradeButton = v.findViewById(R.id.upgradeButton);
         upgradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,12 +418,11 @@ public class MainActivity extends BaseActivity_Main {
             }
         });
 
-        // Runs with "Close" button is clicked
+        // Closes dialog when "Close" button is clicked
         Button closeButton = v.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Dialog is destroyed
                 diag.dismiss();
             }
         });

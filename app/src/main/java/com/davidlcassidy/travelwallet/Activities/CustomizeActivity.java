@@ -22,9 +22,9 @@ import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
-import com.davidlcassidy.travelwallet.EnumTypes.Country;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
+import com.davidlcassidy.travelwallet.Enums.Country;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
+import com.davidlcassidy.travelwallet.Enums.ItemType;
 import com.davidlcassidy.travelwallet.R;
 
 import java.lang.reflect.Method;
@@ -102,7 +102,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         cardFiltersField.setText(cardFilters);
     }
 
-    // Runs when save button is clicked
+    // Updates user customizations when save button is clicked
     @Override
     public void menuSaveClicked() {
 
@@ -342,11 +342,10 @@ public class CustomizeActivity extends BaseActivity_Save {
             e.printStackTrace();
         }
 
-        // Runs with "Ok" button is clicked
+        // Sets notification field text to selected time period value when "Ok" button is clicked
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Sets notification field text to selected time period value
                 String selectedNum = String.valueOf(numPicker.getValue());
                 String selectedPeriod = String.valueOf(periodList.get(periodPicker.getValue()));
                 if (!selectedNum.equals(-1) && !selectedPeriod.equals(-1)) {
@@ -355,9 +354,9 @@ public class CustomizeActivity extends BaseActivity_Save {
             }
         });
 
-        // Runs with "Cancel" button is clicked
+
+        // Closes dialog with no action when "Cancel" button is clicked
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            // Dialog closes with no further action
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }

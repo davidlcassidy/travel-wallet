@@ -27,8 +27,8 @@ import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.UserDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
+import com.davidlcassidy.travelwallet.Enums.AppType;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
 import com.davidlcassidy.travelwallet.R;
 
 import java.util.ArrayList;
@@ -142,7 +142,7 @@ public class UserListActivity extends BaseActivity_BackOnly {
                         "development, please upgrade to Travel Wallet Pro.";
         mainText.setText(text);
 
-        // Runs with "Upgrade" button is clicked
+        // Opens PurchaseProActivity when "Upgrade" button is clicked
         Button upgradeButton = v.findViewById(R.id.upgradeButton);
         upgradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,12 +153,11 @@ public class UserListActivity extends BaseActivity_BackOnly {
             }
         });
 
-        // Runs with "Close" button is clicked
+        // Closes dialog when "Close" button is clicked
         Button closeButton = v.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Dialog is destroyed
                 diag.dismiss();
             }
         });

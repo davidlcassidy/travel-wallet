@@ -26,8 +26,8 @@ import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
+import com.davidlcassidy.travelwallet.Enums.CardStatus;
+import com.davidlcassidy.travelwallet.Enums.ItemType;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -86,14 +86,14 @@ public class NotificationsListFragment extends Fragment {
                 Notification selection = notificationList.get(position);
                 ItemType selectionType = selection.getItemType();
 
-                // If loyalty program notification is clicked, ProgramDetailActivity activity opens
                 if (selectionType == ItemType.LOYALTY_PROGRAM) {
+                    // If loyalty program notification is clicked, ProgramDetailActivity activity opens
                     Intent intent = new Intent(view.getContext(), ProgramDetailActivity.class);
                     intent.putExtra("PROGRAM_ID", selection.getId());
                     startActivity(intent);
 
-                    // If credit card notification is clicked, CardDetailActivity activity opens
                 } else if (selectionType == ItemType.CREDIT_CARD) {
+                    // If credit card notification is clicked, CardDetailActivity activity opens
                     Intent intent = new Intent(view.getContext(), CardDetailActivity.class);
                     intent.putExtra("CARD_ID", selection.getId());
                     startActivity(intent);

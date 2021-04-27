@@ -22,7 +22,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
+import com.davidlcassidy.travelwallet.Enums.AppType;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -15,11 +15,11 @@ import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Classes.User;
-import com.davidlcassidy.travelwallet.EnumTypes.CardStatus;
-import com.davidlcassidy.travelwallet.EnumTypes.Country;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
+import com.davidlcassidy.travelwallet.Enums.CardStatus;
+import com.davidlcassidy.travelwallet.Enums.Country;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
+import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

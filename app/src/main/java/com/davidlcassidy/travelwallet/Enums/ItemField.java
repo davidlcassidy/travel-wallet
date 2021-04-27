@@ -4,7 +4,7 @@
  * Last modified 7/25/19 10:48 PM
  */
 
-package com.davidlcassidy.travelwallet.EnumTypes;
+package com.davidlcassidy.travelwallet.Enums;
 
 /*
 ID Local Cache : AppPreferences

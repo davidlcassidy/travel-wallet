@@ -30,7 +30,7 @@ import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.UserDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
 import com.davidlcassidy.travelwallet.R;
 
 import java.text.ParseException;
@@ -196,15 +196,15 @@ public class ProgramAddEditActivity extends BaseActivity_Save {
         if (programName.equals("")) {
             Toast.makeText(ProgramAddEditActivity.this, "Please select a loyalty program.", Toast.LENGTH_LONG).show();
 
-            // Creates program if new
         } else if (programId == -1) {
+            // Creates program if new
             programDS.create(programRefId, user, accountNumber, points, lastActivityDate, notes);
             appPreferences.setProgramFiltersUpdateRequired(true);
             finish(); //Closes activity
             Toast.makeText(ProgramAddEditActivity.this, programName + " program added.", Toast.LENGTH_SHORT).show();
 
-            // Updates program if existing with new values from fields
         } else {
+            // Updates program if existing with new values from fields
             LoyaltyProgram program = programDS.getSingle(programId);
             program.setRefId(programRefId);
             program.setUser(user);

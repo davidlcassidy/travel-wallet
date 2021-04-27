@@ -20,9 +20,9 @@ import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
+import com.davidlcassidy.travelwallet.Enums.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -80,18 +80,18 @@ public class UserListAdapter extends ArrayAdapter<User> {
                 break;
             case "Programs Value":
                 BigDecimal totalProgramValue = user.getTotalProgramValue();
-                String totalProgramValueString = currency.numToString(totalProgramValue, NumberPattern.COMMADOT);
+                String totalProgramValueString = currency.formatValue(totalProgramValue);
                 messageField.setText(totalProgramValueString);
                 break;
             case "Credit Limit":
                 BigDecimal totalCL = user.getCreditLimit();
-                String totalCLString = currency.numToString(totalCL, NumberPattern.COMMADOT);
+                String totalCLString = currency.formatValue(totalCL);
                 messageField.setText(totalCLString);
                 break;
             case "Chase 5/24 Status":
                 String status = user.getChase524Status();
                 String eligibilityDateString = user.getChase524StatusEligibilityDate();
-                messageField.setText(status + "  -  Eligibile " + eligibilityDateString);
+                messageField.setText(status + "  -  Eligible " + eligibilityDateString);
                 break;
             case "Notes":
 

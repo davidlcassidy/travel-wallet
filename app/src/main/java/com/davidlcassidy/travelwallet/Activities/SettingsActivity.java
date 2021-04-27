@@ -19,12 +19,12 @@ import android.widget.Toast;
 
 import com.davidlcassidy.travelwallet.Adapters.SingleChoiceAdapter;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_Save;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
-import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
-import com.davidlcassidy.travelwallet.EnumTypes.Country;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
-import com.davidlcassidy.travelwallet.EnumTypes.Language;
+import com.davidlcassidy.travelwallet.Enums.AppType;
+import com.davidlcassidy.travelwallet.Enums.ColorScheme;
+import com.davidlcassidy.travelwallet.Enums.Country;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.DatePattern;
+import com.davidlcassidy.travelwallet.Enums.Language;
 import com.davidlcassidy.travelwallet.R;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class SettingsActivity extends BaseActivity_Save {
         colorSchemeField.setText(colorScheme.getName());
     }
 
-    // Runs when save button is clicked
+    // Updates user settings when save button is clicked
     @Override
     public void menuSaveClicked() {
 

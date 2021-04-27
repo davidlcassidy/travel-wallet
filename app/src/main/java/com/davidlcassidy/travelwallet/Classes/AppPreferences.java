@@ -9,13 +9,14 @@ package com.davidlcassidy.travelwallet.Classes;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
-import com.davidlcassidy.travelwallet.EnumTypes.ColorScheme;
-import com.davidlcassidy.travelwallet.EnumTypes.Country;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.DatePattern;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.Language;
+import com.davidlcassidy.travelwallet.Enums.AppType;
+import com.davidlcassidy.travelwallet.Enums.ColorScheme;
+import com.davidlcassidy.travelwallet.Enums.Country;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.DatePattern;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
+import com.davidlcassidy.travelwallet.Enums.Language;
+import com.davidlcassidy.travelwallet.Enums.NumberPattern;
 
 /*
 AppPreferences class is used to read and write values to the shared user preferences. These are used
@@ -32,6 +33,7 @@ public class AppPreferences {
     // Sets app preference keys
     private static final String nAppPreferences = "AppPreferences";
     private static final String nAppType = "AppType";
+    private static final String nFirstAppLaunch = "FirstAppLaunch";
     private static final String nProgramFiltersUpdateRequired = "ProgramFilterUpdateRequired";
     private static final String nCardFiltersUpdateRequired = "CardFilterUpdateRequired";
 
@@ -64,6 +66,7 @@ public class AppPreferences {
 
     // Sets user preference default values
     private static final AppType dAppType = AppType.FREE;
+    private static final boolean dFirstAppLaunch = true;
     private static final boolean dProgramFiltersUpdateRequired = true;
     private static final boolean dCardFiltersUpdateRequired = true;
 
@@ -122,6 +125,17 @@ public class AppPreferences {
     public void setAppType(AppType appType) {
         spEditor.putInt(nAppType, appType.getId());
         spEditor.commit();
+    }
+
+    public boolean getFirstAppLaunch() {
+        int dFirstAppLaunchInt = (dFirstAppLaunch) ? 1 : 0;
+        boolean firstAppLaunch = sharedPref.getInt(nFirstAppLaunch, dFirstAppLaunchInt) == 1;
+        if (firstAppLaunch){
+            // Update value after first app launch
+            spEditor.putInt(nFirstAppLaunch, 0);
+            spEditor.commit();
+        }
+        return firstAppLaunch;
     }
 
     public boolean getProgramFiltersUpdateRequired() {

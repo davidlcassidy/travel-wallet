@@ -8,7 +8,7 @@ package com.davidlcassidy.travelwallet.Classes;
 
 import android.content.Context;
 
-import com.davidlcassidy.travelwallet.EnumTypes.ItemType;
+import com.davidlcassidy.travelwallet.Enums.ItemType;
 
 import java.util.Date;
 

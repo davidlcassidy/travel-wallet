@@ -4,7 +4,11 @@
  * Last modified 7/25/19 10:48 PM
  */
 
-package com.davidlcassidy.travelwallet.EnumTypes;
+package com.davidlcassidy.travelwallet.Enums;
+
+import android.content.Context;
+
+import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -17,23 +21,19 @@ ID Local Cache : None
 public enum NumberPattern {
 
     // Enum members
-    COMMADOT(1, ",.", "1,234.00"),
-    DOTCOMMA(2, ".,", "1.234,00");
+    COMMADOT(1, ',', '.'),
+    DOTCOMMA(2, '.', ',');
 
     private final int id;
-    private final String symbols;
-    private final String sampleNumber;
     private final DecimalFormat numberFormat;
     private final DecimalFormat decimalFormat;
 
-    NumberPattern(int id, String symbols, String sampleNumber) {
+    NumberPattern(int id, Character groupingSeparator, Character decimalSeparator) {
         this.id = id;
-        this.symbols = symbols;
-        this.sampleNumber = sampleNumber;
 
         DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(Locale.getDefault());
-        decimalSymbols.setGroupingSeparator(symbols.charAt(0));
-        decimalSymbols.setDecimalSeparator(symbols.charAt(1));
+        decimalSymbols.setGroupingSeparator(groupingSeparator);
+        decimalSymbols.setDecimalSeparator(decimalSeparator);
 
         this.numberFormat = new DecimalFormat("#,###", decimalSymbols);
         this.decimalFormat = new DecimalFormat("#,##0.00", decimalSymbols);
@@ -55,12 +55,11 @@ public enum NumberPattern {
     }
 
     // Returns number format from number pattern
-    public DecimalFormat getNumberFormat() {
-        return numberFormat;
-    }
-
-    // Returns decimal format from number pattern
-    public DecimalFormat getDecimalFormat() {
-        return decimalFormat;
+    public DecimalFormat getNumberFormat(boolean withDecimal) {
+        if(withDecimal){
+            return decimalFormat;
+        } else {
+            return numberFormat;
+        }
     }
 }

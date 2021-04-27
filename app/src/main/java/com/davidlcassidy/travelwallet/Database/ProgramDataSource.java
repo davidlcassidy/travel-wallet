@@ -16,8 +16,8 @@ import com.davidlcassidy.travelwallet.Classes.AppPreferences;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
 import com.davidlcassidy.travelwallet.Classes.User;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
-import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
+import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;

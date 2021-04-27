@@ -20,7 +20,7 @@ import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.davidlcassidy.travelwallet.BaseActivities.BaseActivity_BackOnly;
 import com.davidlcassidy.travelwallet.Classes.Constants;
 import com.davidlcassidy.travelwallet.Classes.GooglePlayStore;
-import com.davidlcassidy.travelwallet.EnumTypes.AppType;
+import com.davidlcassidy.travelwallet.Enums.AppType;
 import com.davidlcassidy.travelwallet.R;
 
 import java.util.List;
@@ -114,8 +114,9 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
             googlePlayStore.getProductDetails(GooglePlayStore.PRO_PRODUCT_ID, skuDetailsResponseListener);
 
 
-            // Change title and text after successful purchase
+
         } else if (appPreferences.getAppType() != AppType.FREE) {
+            // Change title and text after successful purchase
             setTitle("Travel Wallet Pro");
 
             title.setText("Thank you!");

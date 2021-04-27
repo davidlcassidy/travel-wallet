@@ -6,7 +6,7 @@
 
 package com.davidlcassidy.travelwallet.Classes;
 
-import com.davidlcassidy.travelwallet.EnumTypes.NotificationStatus;
+import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
 
 import java.math.BigDecimal;
 import java.util.Calendar;

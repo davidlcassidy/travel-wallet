@@ -27,7 +27,7 @@ import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.UserDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.ItemField;
+import com.davidlcassidy.travelwallet.Enums.ItemField;
 import com.davidlcassidy.travelwallet.R;
 
 import java.util.ArrayList;

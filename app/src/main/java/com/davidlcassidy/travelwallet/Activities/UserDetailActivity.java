@@ -19,9 +19,9 @@ import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.UserDataSource;
-import com.davidlcassidy.travelwallet.EnumTypes.Country;
-import com.davidlcassidy.travelwallet.EnumTypes.Currency;
-import com.davidlcassidy.travelwallet.EnumTypes.NumberPattern;
+import com.davidlcassidy.travelwallet.Enums.Country;
+import com.davidlcassidy.travelwallet.Enums.Currency;
+import com.davidlcassidy.travelwallet.Enums.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
 /*
@@ -79,10 +79,10 @@ public class UserDetailActivity extends BaseActivity_EditDelete {
         String name = user.getName();
         String notes = user.getNotes();
         String numPrograms = String.valueOf(user.getProgramCount());
-        String totalProgramValue = currency.numToString(user.getTotalProgramValue(), NumberPattern.COMMADOT);
+        String totalProgramValue = currency.formatValue(user.getTotalProgramValue());
         String numCards = String.valueOf(user.getCardCount());
-        String totalAF = currency.numToString(user.getTotalAF(), NumberPattern.COMMADOT);
-        String creditLimit = currency.numToString(user.getCreditLimit(), NumberPattern.COMMADOT);
+        String totalAF = currency.formatValue(user.getTotalAF());
+        String creditLimit = currency.formatValue(user.getCreditLimit());
 
         // Set user field values
         nameText.setText(name);
