@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Fragments;
@@ -173,7 +173,7 @@ public class CardListFragment extends Fragment {
         if (!onlySetUserFilter) {
 
             // Creates card status filter with values
-            ArrayList<String> cardStatuses = new ArrayList<String>();
+            ArrayList<String> cardStatuses = new ArrayList<>();
             cardStatuses.add("All Statuses");
             cardStatuses.add(CardStatus.OPEN.getName());
             cardStatuses.add(CardStatus.CLOSED.getName());
@@ -205,7 +205,7 @@ public class CardListFragment extends Fragment {
     }
 
     private void filterCards() {
-        filteredCardList = new ArrayList<CreditCard>();
+        filteredCardList = new ArrayList<>();
 
         String filter1value = appPreferences.getFilter_CardUser();
         String filter2value = appPreferences.getFilter_CardStatus();

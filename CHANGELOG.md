@@ -1,3 +1,11 @@
+v1.4.10 : 2021-04-28
+Feature Release
+
+ - Renamed Owners to Users
+ - Added additional anti-churning rules
+ - Added support for regional number patterns
+ - Updated reference database
+
 v1.4.9 : 2019-07-25
 Feature Release
 

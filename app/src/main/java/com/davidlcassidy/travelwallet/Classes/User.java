@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Classes;
@@ -120,9 +120,6 @@ public class User {
         Collections.sort(capitolOne16Dates);
         Collections.sort(chase524Dates);
 
-        this.totalAF = totalAF;
-        this.creditLimit = totalCL;
-
         // Calculates anti-churning rules statuses and eligibility dates
         Calendar eligibilityDate = Calendar.getInstance();
         List<Date> boaEligibilityDates = new ArrayList<>();
@@ -164,6 +161,9 @@ public class User {
         } else {
             this.chase524EligibilityDate = "NOW";
         }
+
+        this.totalAF = totalAF;
+        this.creditLimit = totalCL;
 
     }
 

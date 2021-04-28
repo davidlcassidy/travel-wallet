@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -206,9 +206,6 @@ public class CustomizeActivity extends BaseActivity_Save {
                 selectionList.add(ItemField.ITEM_COUNTS.getName());
                 selectionList.add(ItemField.PROGRAMS_VALUE.getName());
                 selectionList.add(ItemField.CREDIT_LIMIT.getName());
-                if (country == Country.USA) {
-                    selectionList.add(ItemField.CHASE_STATUS.getName());
-                }
                 selectionList.add(ItemField.USER_NOTES.getName());
                 break;
             case "userSort":

@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -61,7 +61,7 @@ public class CardDetailActivity extends BaseActivity_EditDelete {
 
         cardDS = CardDataSource.getInstance(this);
         cardId = getIntent().getIntExtra("CARD_ID", -1);
-        detailList = new ArrayList<Detail>();
+        detailList = new ArrayList<>();
         final CreditCard card = cardDS.getSingle(cardId);
 
         // Adds image to list header and notification button to list footer

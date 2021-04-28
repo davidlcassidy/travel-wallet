@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Enums;
@@ -50,7 +50,7 @@ public enum Country {
 
     // Returns the names of every country
     public static ArrayList<String> getAllNames() {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (Country country : Country.values()) {
             list.add(country.getName());
         }

@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Adapters;
@@ -80,13 +80,7 @@ public class UserListAdapter extends ArrayAdapter<User> {
                 String totalCLString = currency.formatValue(totalCL);
                 messageField.setText(totalCLString);
                 break;
-            case "Chase 5/24 Status":
-                String status = user.getChase524Status();
-                String eligibilityDateString = user.getChase524EligibilityDate();
-                messageField.setText(status + "  -  Eligible " + eligibilityDateString);
-                break;
             case "Notes":
-
                 // Gets the first 25 characters of the first notes line
                 String notes = user.getNotes();
                 messageField.setText(notes

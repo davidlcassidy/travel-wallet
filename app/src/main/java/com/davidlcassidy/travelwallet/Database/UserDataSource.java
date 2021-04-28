@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Database;
@@ -89,7 +89,7 @@ public class UserDataSource {
 
     // Returns a list of all users in database, sorted by sortField parameter
     public ArrayList<User> getAll(ItemField sortField, ProgramDataSource programDS, CardDataSource cardDS) {
-        ArrayList<User> userList = new ArrayList<User>();
+        ArrayList<User> userList = new ArrayList<>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -147,7 +147,7 @@ public class UserDataSource {
 
     // Returns a list of all user names in database
     public ArrayList<String> getAllNames() {
-        ArrayList<String> nameList = new ArrayList<String>();
+        ArrayList<String> nameList = new ArrayList<>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

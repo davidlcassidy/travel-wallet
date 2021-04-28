@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Database;
@@ -134,7 +134,7 @@ public class ProgramDataSource {
 
     // Returns a list of all loyalty programs in database, sorted by sortField parameter
     public ArrayList<LoyaltyProgram> getAll(User user, ItemField sortField, boolean onlyWithNotifications) {
-        ArrayList<LoyaltyProgram> programList = new ArrayList<LoyaltyProgram>();
+        ArrayList<LoyaltyProgram> programList = new ArrayList<>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -266,7 +266,7 @@ public class ProgramDataSource {
 
         // Sort alphabetically and remove duplicates
         Collections.sort(typeList);
-        typeList = new ArrayList<String>(new LinkedHashSet<String>(typeList));
+        typeList = new ArrayList<>(new LinkedHashSet<>(typeList));
 
         return typeList;
     }

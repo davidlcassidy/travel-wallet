@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Database;
@@ -143,7 +143,7 @@ public class CardDataSource {
 
     // Returns a list of all credit cards in database, sorted by sortField parameter
     public ArrayList<CreditCard> getAll(User user, ItemField sortField, boolean onlyWithNotifications, boolean excludeClosed) {
-        ArrayList<CreditCard> cardList = new ArrayList<CreditCard>();
+        ArrayList<CreditCard> cardList = new ArrayList<>();
         Cursor cursor = dbMain.query(tableNameMain, tableColumnsMain, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -270,7 +270,7 @@ public class CardDataSource {
 
         // Sort alphabetically and remove duplicates
         Collections.sort(bankList);
-        bankList = new ArrayList<String>(new LinkedHashSet<String>(bankList));
+        bankList = new ArrayList<String>(new LinkedHashSet<>(bankList));
 
         return bankList;
     }

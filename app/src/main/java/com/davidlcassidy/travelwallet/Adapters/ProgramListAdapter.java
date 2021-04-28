@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Adapters;
@@ -63,8 +63,7 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
         programField.setText(program.getName());
         switch (primaryField) {
             case ACCOUNT_NUMBER:
-                String accountNumber =  program.getAccountNumber();
-                messageField.setText(accountNumber);
+                messageField.setText(program.getAccountNumber());
                 break;
             case POINTS:
                 messageField.setText(numberFormat.format(program.getPoints()));

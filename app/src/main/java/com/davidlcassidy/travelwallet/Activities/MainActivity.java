@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Activities;
@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity_Main {
 
         // TEST MODE:
         // Launches app with one of every available loyalty program and credit card
-        boolean testMode = true; //TODO Change back
+        boolean testMode = false;
         if (testMode) {
             addAllCardsAndPrograms(true, true);
         }
@@ -512,7 +512,7 @@ public class MainActivity extends BaseActivity_Main {
             for (String cBank : cardDS.getAvailableBanks(null, false)) {
                 for (String cName : cardDS.getAvailableCards(null, cBank, false)) {
                     Integer refID = cardDS.getCardRefId(cBank, cName);
-                    Calendar afDate = openDate;
+                    Calendar afDate = (Calendar) openDate.clone();
                     afDate.add(YEAR, 1);
                     cardDS.create(refID, user, CardStatus.OPEN, new BigDecimal("0.0"), openDate.getTime(), afDate.getTime(), null, "");
                     openDate.add(DAY, -5);

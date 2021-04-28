@@ -12,8 +12,7 @@
  
 #####Update copyright comments
 
- - From Code menu, click the Update Copyright option to update all file copyright comments
- - Run git command: git checkout -- app/src/main/java/com/android/
+ - From Android Studio Code menu, click the Update Copyright option to update all file copyright comments
  
 #####Confirm/Update Github user
  - Run git command: git config --global user.name "davidlcassidy"

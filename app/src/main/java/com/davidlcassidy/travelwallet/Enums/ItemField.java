@@ -1,7 +1,7 @@
 /*
  * Travel Wallet Android App
- * Copyright (C) 2018 David L Cassidy. All rights reserved.
- * Last modified 7/25/19 10:48 PM
+ * Copyright (C) 2021 David L Cassidy. All rights reserved.
+ * Last modified 4/28/21 11:39 AM
  */
 
 package com.davidlcassidy.travelwallet.Enums;
@@ -33,8 +33,7 @@ public enum ItemField {
     ITEM_COUNTS(32, ItemType.USER, "Item Counts"),
     PROGRAMS_VALUE(33, ItemType.USER, "Programs Value"),
     CREDIT_LIMIT(34, ItemType.USER, "Credit Limit"),
-    CHASE_STATUS(35, ItemType.USER, "Chase 5/24 Status"),
-    USER_NOTES(36, ItemType.USER, "User Notes");
+    USER_NOTES(35, ItemType.USER, "User Notes");
 
     private final int id;
     private final ItemType itemType;
