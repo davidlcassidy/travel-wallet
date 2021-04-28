@@ -6,10 +6,6 @@
 
 package com.davidlcassidy.travelwallet.Enums;
 
-import android.content.Context;
-
-import com.davidlcassidy.travelwallet.Classes.AppPreferences;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -25,18 +21,14 @@ public enum NumberPattern {
     DOTCOMMA(2, '.', ',');
 
     private final int id;
-    private final DecimalFormat numberFormat;
-    private final DecimalFormat decimalFormat;
+    private final DecimalFormatSymbols decimalSymbols;
 
     NumberPattern(int id, Character groupingSeparator, Character decimalSeparator) {
         this.id = id;
 
-        DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(Locale.getDefault());
-        decimalSymbols.setGroupingSeparator(groupingSeparator);
-        decimalSymbols.setDecimalSeparator(decimalSeparator);
-
-        this.numberFormat = new DecimalFormat("#,###", decimalSymbols);
-        this.decimalFormat = new DecimalFormat("#,##0.00", decimalSymbols);
+        this.decimalSymbols = new DecimalFormatSymbols(Locale.getDefault());
+        this.decimalSymbols.setGroupingSeparator(groupingSeparator);
+        this.decimalSymbols.setDecimalSeparator(decimalSeparator);
     }
 
     // Returns number pattern from ID
@@ -57,9 +49,9 @@ public enum NumberPattern {
     // Returns number format from number pattern
     public DecimalFormat getNumberFormat(boolean withDecimal) {
         if(withDecimal){
-            return decimalFormat;
+            return new DecimalFormat("#,##0.00", this.decimalSymbols);
         } else {
-            return numberFormat;
+            return new DecimalFormat("#,###", this.decimalSymbols);
         }
     }
 }

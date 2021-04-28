@@ -44,6 +44,7 @@ public class AppPreferences {
 
     private static final String nCustom_UserPrimaryField = "Custom_UserPrimaryField";
     private static final String nCustom_UserSortField = "Custom_UserSortField";
+    private static final String nCustom_UserAntiChurningRules = "Custom_UserAntiChurningRules";
     private static final String nCustom_ProgramPrimaryField = "Custom_ProgramPrimaryField";
     private static final String nCustom_ProgramSortField = "Custom_ProgramSortField";
     private static final String nCustom_ProgramNotificationPeriod = "Custom_ProgramNotificationPeriod";
@@ -77,6 +78,7 @@ public class AppPreferences {
 
     private static final ItemField dCustom_UserPrimaryField = ItemField.ITEM_COUNTS;
     private static final ItemField dCustom_UserSortField = ItemField.USER_NAME;
+    private static final boolean dCustom_UserAntiChurningRules = true;
     private static final ItemField dCustom_ProgramPrimaryField = ItemField.ACCOUNT_NUMBER;
     private static final ItemField dCustom_ProgramSortField = ItemField.PROGRAM_NAME;
     private static final String dCustom_ProgramNotificationPeriod = "4 W";
@@ -233,6 +235,17 @@ public class AppPreferences {
 
     public void setCustom_UserSortField(ItemField userSortField) {
         spEditor.putInt(nCustom_UserSortField, userSortField.getId());
+        spEditor.commit();
+    }
+
+    public boolean getCustom_UserAntiChurningRules() {
+        int dUserAntiChurningRules = (dCustom_UserAntiChurningRules) ? 1 : 0;
+        return sharedPref.getInt(nCustom_UserAntiChurningRules, dUserAntiChurningRules) == 1;
+    }
+
+    public void setCustom_UserAntiChurningRules(boolean antiChurningRules) {
+        int antiChurningRulesInt = (antiChurningRules) ? 1 : 0;
+        spEditor.putInt(nCustom_UserAntiChurningRules, antiChurningRulesInt);
         spEditor.commit();
     }
 

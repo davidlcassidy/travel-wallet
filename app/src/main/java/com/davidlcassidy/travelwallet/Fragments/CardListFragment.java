@@ -98,8 +98,8 @@ public class CardListFragment extends Fragment {
         ItemField sortField = appPreferences.getCustom_CardSortField();
         fullCardList = cardDS.getAll(null, sortField, false, false);
 
-        if (appPreferences.getCardFiltersUpdateRequired() == true) {
-            if (appPreferences.getCustom_CardFilters() == true) {
+        if (appPreferences.getCardFiltersUpdateRequired()) {
+            if (appPreferences.getCustom_CardFilters()) {
                 filterLayout.setVisibility(LinearLayout.VISIBLE);
                 setFilters(true);
                 filterCards();

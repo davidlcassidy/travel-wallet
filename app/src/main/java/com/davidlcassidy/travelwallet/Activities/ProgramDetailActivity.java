@@ -139,7 +139,7 @@ public class ProgramDetailActivity extends BaseActivity_EditDelete {
         Date expirationDate = program.getExpirationDate();
         String expirationOverride = program.getExpirationOverride();
         notificationButton.setVisibility(View.VISIBLE);
-        if (program.hasExpirationDate() == false) {
+        if (!program.hasExpirationDate()) {
             notificationButton.setVisibility(View.GONE);
             if (expirationOverride != null) {
                 detailList.add(new Detail("Expiration", expirationOverride));

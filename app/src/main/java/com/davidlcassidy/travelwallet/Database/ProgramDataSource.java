@@ -155,7 +155,7 @@ public class ProgramDataSource {
         }
         cursor.close();
 
-        //Defines default sort order
+        // Defines default sort order
         if (sortField == null) {
             sortField = ItemField.PROGRAM_NAME;
         }
@@ -336,7 +336,7 @@ public class ProgramDataSource {
             if (program != null) {
                 currentStatus = program.getNotificationStatus();
                 Date expirationDate = program.getExpirationDate();
-                if (program.hasExpirationDate() == false || expirationDate == null) {
+                if (!program.hasExpirationDate() || expirationDate == null) {
                     if (currentStatus == NotificationStatus.ON) {
                         program.setNotificationStatus(NotificationStatus.OFF);
                         update(program);

@@ -30,9 +30,12 @@ import com.davidlcassidy.travelwallet.Classes.Constants;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.NotificationTimerService;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.Enums.AppType;
+import com.davidlcassidy.travelwallet.Enums.CardStatus;
 import com.davidlcassidy.travelwallet.Enums.Currency;
 import com.davidlcassidy.travelwallet.Enums.ItemField;
 import com.davidlcassidy.travelwallet.Enums.NotificationStatus;
@@ -44,8 +47,12 @@ import com.davidlcassidy.travelwallet.R;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static android.icu.text.DateTimePatternGenerator.DAY;
+import static java.util.Calendar.YEAR;
 
 /*
 MainActivity is the primary activity of the application and the first activity loaded.
@@ -68,6 +75,13 @@ public class MainActivity extends BaseActivity_Main {
         setDisplayHomeEnabled(false);
         cardDS = CardDataSource.getInstance(this);
         programDS = ProgramDataSource.getInstance(this);
+
+        // TEST MODE:
+        // Launches app with one of every available loyalty program and credit card
+        boolean testMode = true; //TODO Change back
+        if (testMode) {
+            addAllCardsAndPrograms(true, true);
+        }
 
         // Starts Notification Timer Service
         startService(new Intent(this, NotificationTimerService.class));
@@ -318,61 +332,67 @@ public class MainActivity extends BaseActivity_Main {
 
         // Retrieves programs total value data and saves to summary dialog fields
         SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
-        programCount.setText(String.valueOf(programDS.getAll(null, null, false).size()));
-        programNotifications.setText(String.valueOf(programDS.getAll(null, null, true).size()));
-        ArrayList<LoyaltyProgram> programs = programDS.getAll(null, null, false);
-        BigDecimal total = BigDecimal.valueOf(0);
-        for (LoyaltyProgram p : programs) {
-            total = total.add(p.getTotalValue());
-        }
-        programValue.setText(currency.formatValue(total));
+        ArrayList<LoyaltyProgram> programs = programDS.getAll(null, ItemField.EXPIRATION_DATE, false);
+        programCount.setText(String.valueOf(programs.size()));
 
-        // Retrieves programs next expiration data and saves to summary dialog fields
-        for (LoyaltyProgram program : programDS.getAll(null, ItemField.EXPIRATION_DATE, false)) {
+        BigDecimal totalProgramValue = BigDecimal.valueOf(0);
+        int programNotificationCount = 0;
+        boolean programNextExpireIsSet = false;
+        for (LoyaltyProgram program : programs) {
+            totalProgramValue = totalProgramValue.add(program.getTotalValue());
 
-            // Checks if program monitoring is on and has an expiration date
+            // Counts programs with notifications
             NotificationStatus notificationStatus = program.getNotificationStatus();
+            if (notificationStatus == NotificationStatus.ON){
+                programNotificationCount++;
+            }
+
+            // Retrieves the next expiring monitored program
             Date expDate = program.getExpirationDate();
             boolean hasExpirationDate = program.hasExpirationDate() && expDate != null;
-            if (notificationStatus != NotificationStatus.UNMONITORED && hasExpirationDate) {
-
-                // Checks program if expiration date is in future and program has points
+            if (!programNextExpireIsSet && notificationStatus != NotificationStatus.UNMONITORED && hasExpirationDate) {
                 int points = program.getPoints();
                 if (expDate.compareTo(today) > 0 && points > 0) {
                     TextView programNextExpire = v.findViewById(R.id.programNextExpireField);
                     programNextExpire.setText(dateFormat.format(program.getExpirationDate()));
-                    break;
+                    programNextExpireIsSet = true;
                 }
             }
         }
+        programValue.setText(currency.formatValue(totalProgramValue));
+        programNotifications.setText(String.valueOf(programNotificationCount));
 
-        // Retrieves cards total AF data and saves to summary dialog field
-        cardCount.setText(String.valueOf(cardDS.getAll(null, null, false, false).size()));
-        cardNotifications.setText(String.valueOf(cardDS.getAll(null, null, true, true).size()));
-        ArrayList<CreditCard> cardList = cardDS.getAll(null, null, false, true);
+        ArrayList<CreditCard> cardList = cardDS.getAll(null, ItemField.AF_DATE, false, false);
+        cardCount.setText(String.valueOf(cardList.size()));
+
         BigDecimal totalAF = BigDecimal.valueOf(0);
-        for (CreditCard cc : cardList) {
-            totalAF = totalAF.add(cc.getAnnualFee());
+        int cardNotificationCount = 0;
+        boolean cardNextAfDateIsSet = false;
+        for (CreditCard card : cardList) {
+            // Counts programs with notifications
+            NotificationStatus notificationStatus = card.getNotificationStatus();
+            if (notificationStatus == NotificationStatus.ON){
+                cardNotificationCount++;
+            }
+
+            if (card.getStatus() == CardStatus.OPEN) {
+                // Sums total annual fees of all open cards
+                totalAF = totalAF.add(card.getAnnualFee());
+
+                // Retrieves the next annual fee due
+                Date annualFeeDate = card.getAfDate();
+                boolean hasAnnualFee = card.hasAnnualFee() && annualFeeDate != null;
+                if (!cardNextAfDateIsSet && card.getNotificationStatus() != NotificationStatus.UNMONITORED && hasAnnualFee) {
+                    if (annualFeeDate.compareTo(today) > 0) {
+                        TextView cardNextAF = v.findViewById(R.id.cardNextAFField);
+                        cardNextAF.setText(dateFormat.format(card.getAfDate()));
+                        cardNextAfDateIsSet = true;
+                    }
+                }
+            }
         }
         cardAF.setText(currency.formatValue(totalAF));
-
-        // Retrieves cards next AF data and saves to summary dialog field
-        for (CreditCard card : cardDS.getAll(null, ItemField.AF_DATE, false, true)) {
-
-            // Checks if card monitoring is on and has an annual fee
-            NotificationStatus notificationStatus = card.getNotificationStatus();
-            Date annualFeeDate = card.getAfDate();
-            boolean hasAnnualFee = card.hasAnnualFee() && annualFeeDate != null;
-            if (notificationStatus != NotificationStatus.UNMONITORED && hasAnnualFee) {
-
-                // Checks program if annual fee date is in future
-                if (annualFeeDate.compareTo(today) > 0) {
-                    TextView cardNextAF = v.findViewById(R.id.cardNextAFField);
-                    cardNextAF.setText(dateFormat.format(card.getAfDate()));
-                    break;
-                }
-            }
-        }
+        cardNotifications.setText(String.valueOf(cardNotificationCount));
 
         // Closes dialog when "Close" button is clicked
         Button closeButton2 = v.findViewById(R.id.closeButton);
@@ -469,6 +489,35 @@ public class MainActivity extends BaseActivity_Main {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
+        }
+    }
+
+    private void addAllCardsAndPrograms(boolean createPrograms, boolean createCards) {
+        UserDataSource userDS = UserDataSource.getInstance(this);
+        userDS.deleteAll();
+        User user = userDS.create("Test User", "Test Notes");
+        if (createPrograms) {
+            programDS.deleteAll();
+            for (String pType : programDS.getAvailableTypes(false)) {
+                for (String pName : programDS.getAvailablePrograms(pType, false, false)) {
+                    Integer refID = programDS.getProgramRefId(pType, pName);
+                    Double pointValue = Math.random() * 100000;
+                    programDS.create(refID, user, "ABC123", pointValue.intValue(), new Date(), "");
+                }
+            }
+        }
+        if (createCards) {
+            cardDS.deleteAll();
+            Calendar openDate = Calendar.getInstance();
+            for (String cBank : cardDS.getAvailableBanks(null, false)) {
+                for (String cName : cardDS.getAvailableCards(null, cBank, false)) {
+                    Integer refID = cardDS.getCardRefId(cBank, cName);
+                    Calendar afDate = openDate;
+                    afDate.add(YEAR, 1);
+                    cardDS.create(refID, user, CardStatus.OPEN, new BigDecimal("0.0"), openDate.getTime(), afDate.getTime(), null, "");
+                    openDate.add(DAY, -5);
+                }
+            }
         }
     }
 }

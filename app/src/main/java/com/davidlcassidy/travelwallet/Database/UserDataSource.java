@@ -99,9 +99,8 @@ public class UserDataSource {
                 if (programDS != null && cardDS != null) {
                     ArrayList<LoyaltyProgram> userPrograms = programDS.getAll(user, null, false);
                     ArrayList<CreditCard> userCards = cardDS.getAll(user, null, false, false);
-                    ArrayList<CreditCard> userChase524Cards = cardDS.getChase524StatusCards(user);
                     SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
-                    user.setValues(userPrograms, userCards, userChase524Cards, dateFormat);
+                    user.setValues(userPrograms, userCards, dateFormat);
                 }
 
                 userList.add(user);
@@ -110,7 +109,7 @@ public class UserDataSource {
         }
         cursor.close();
 
-        //Defines default sort order
+        // Defines default sort order
         if (sortField == null || programDS == null || cardDS == null) {
             sortField = ItemField.USER_NAME;
         }
@@ -183,9 +182,8 @@ public class UserDataSource {
         if (programDS != null && cardDS != null) {
             ArrayList<LoyaltyProgram> userPrograms = programDS.getAll(user, null, false);
             ArrayList<CreditCard> userCards = cardDS.getAll(user, null, false, false);
-            ArrayList<CreditCard> userChase524Cards = cardDS.getChase524StatusCards(user);
             SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
-            user.setValues(userPrograms, userCards, userChase524Cards, dateFormat);
+            user.setValues(userPrograms, userCards, dateFormat);
         }
         return user;
     }

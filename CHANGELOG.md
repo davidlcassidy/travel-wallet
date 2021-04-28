@@ -76,13 +76,13 @@ Feature Release
 v1.3.1 : 2018-06-25
 Feature Release
 
- - Updated users detail activity layout
+ - Updated owners detail activity layout
  - Updated summary report (minor)
 
 v1.3.0 : 2018-06-24
 Minor Release
 
- - Added users interface allowing for multiple program/card users
+ - Added owners interface allowing for multiple program/card owners
  - Added Chase 5/24 status support
  - Added program/card filters
  - Added support for custom program/card notes

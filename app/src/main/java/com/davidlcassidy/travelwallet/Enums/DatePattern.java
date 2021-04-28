@@ -21,7 +21,7 @@ public enum DatePattern {
     DMY_MED(2, "dd MMM yyyy", "31 Jan 2005"),
     DMY_SHORT(3, "dd/MM/yyyy", "31/01/2005"),
     MDY_LONG(4, "MMMM dd, yyyy", "January 31, 2005"),
-    MDY_MED(5, "MMM dd, yyyy", "Jan 31, 2001"),
+    MDY_MED(5, "MMM dd, yyyy", "Jan 31, 2005"),
     MDY_SHORT(6, "MM/dd/yyyy", "01/31/2005"),
     YMD_SHORT(7, "yyyy-MM-dd", "2005-01-31");
 

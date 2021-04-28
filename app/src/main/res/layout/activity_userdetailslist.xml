@@ -211,26 +211,39 @@
 
         </LinearLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cardChaseStatusLayout"
+        <TextView
+            android:id="@+id/antiChurningRulesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/cardCreditLimitLayout"
+            android:text="Anti-Churning Rules"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/header"/>
+
+        <LinearLayout
+            android:id="@+id/antiChurningBoaStatusLayout"
+            android:layout_below="@+id/antiChurningRulesTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/cardChaseStatusName"
-                android:text="Chase 5/24 Status"
+                android:id="@+id/antiChurningBoaStatusName"
                 android:layout_width="0dp"
-                android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:layout_gravity="left|center_vertical"
-                android:textSize="15sp"/>
+                android:layout_weight="7"
+                android:text="Bank of America 2/3/4 Status"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/cardChaseStatusField"
+                android:id="@+id/antiChurningBoaStatusField"
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
@@ -241,16 +254,16 @@
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cardChaseStatusDateLayout"
-            android:layout_below="@+id/cardChaseStatusLayout"
+            android:id="@+id/antiChurningBoaDateLayout"
+            android:layout_below="@+id/antiChurningBoaStatusLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/cardChaseStatusDateName"
-                android:text="Chase 5/24 Elgibility Date"
+                android:id="@+id/antiChurningBoaDateName"
+                android:text="Bank of America Eligibility Date"
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
@@ -259,7 +272,123 @@
                 android:textSize="15sp"/>
 
             <TextView
-                android:id="@+id/cardChaseStatusDateField"
+                android:id="@+id/antiChurningBoaDateField"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/antiChurningCapitalOneStatusLayout"
+            android:layout_below="@+id/antiChurningBoaDateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/antiChurningCapitalOneStatusName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_weight="7"
+                android:text="Capital One 1/6 Status"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/antiChurningCapitalOneStatusField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/antiChurningCapitalOneDateLayout"
+            android:layout_below="@+id/antiChurningCapitalOneStatusLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/antiChurningCapitalOneDateName"
+                android:text="Capital One Eligibility Date"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/antiChurningCapitalOneDateField"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/antiChurningChaseStatusLayout"
+            android:layout_below="@+id/antiChurningCapitalOneDateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/antiChurningChaseStatusName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_weight="7"
+                android:text="Chase 5/24 Status"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/antiChurningChaseStatusField"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_gravity="right|center_vertical"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/antiChurningChaseDateLayout"
+            android:layout_below="@+id/antiChurningChaseStatusLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/antiChurningChaseDateName"
+                android:text="Chase Eligibility Date"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="left|center_vertical"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/antiChurningChaseDateField"
                 android:layout_width="0dp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content"

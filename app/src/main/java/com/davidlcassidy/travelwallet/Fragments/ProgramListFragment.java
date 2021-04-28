@@ -97,8 +97,8 @@ public class ProgramListFragment extends Fragment {
         ItemField sortField = appPreferences.getCustom_ProgramSortField();
         fullProgramList = programDS.getAll(null, sortField, false);
 
-        if (appPreferences.getProgramFiltersUpdateRequired() == true) {
-            if (appPreferences.getCustom_ProgramFilters() == true) {
+        if (appPreferences.getProgramFiltersUpdateRequired()) {
+            if (appPreferences.getCustom_ProgramFilters()) {
                 filterLayout.setVisibility(LinearLayout.VISIBLE);
                 setFilters(true);
                 filterPrograms();
@@ -202,7 +202,7 @@ public class ProgramListFragment extends Fragment {
     }
 
     private void filterPrograms() {
-        filteredProgramList = new ArrayList<LoyaltyProgram>();
+        filteredProgramList = new ArrayList<>();
 
         String filter1value = appPreferences.getFilter_ProgramUser();
         String filter2value = appPreferences.getFilter_ProgramType();

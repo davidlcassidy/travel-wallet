@@ -167,7 +167,7 @@ public class CardDataSource {
         }
         cursor.close();
 
-        //Defines default sort order
+        // Defines default sort order
         if (sortField == null) {
             sortField = ItemField.CARD_NAME;
         }
@@ -233,40 +233,6 @@ public class CardDataSource {
             }
         });
         return cardList;
-    }
-
-    // Returns a list of all US credit cards in database that count towards Chase 5/24 status
-    public ArrayList<CreditCard> getChase524StatusCards(User user) {
-        ArrayList<CreditCard> fullCardList = getAll(user, ItemField.OPEN_DATE, false, false);
-        ArrayList<CreditCard> recentCardList = new ArrayList<CreditCard>();
-
-        // Establish cutoff date 24 months before today
-        Calendar cutoffDate = Calendar.getInstance();
-        cutoffDate.add(Calendar.MONTH, -24);
-
-        // List of issuers whose business cards also count towards 5/24 status
-        List<String> businessCardsCreditCheck = Arrays.asList("Capital One", "Discover");
-
-        for (CreditCard card : fullCardList) {
-            Date openDate = card.getOpenDate();
-            boolean usCard = card.getCountry().getId() == Country.USA.getId();
-
-            // Skips foreign cards and cards with no open date
-            if (openDate != null && usCard) {
-
-                Calendar openDateCal = Calendar.getInstance();
-                openDateCal.setTime(openDate);
-
-                if (openDateCal.after(cutoffDate)) {
-                    if (card.getType().equals("P")) {
-                        recentCardList.add(card);
-                    } else if (card.getType().equals("B") && businessCardsCreditCheck.contains(card.getBank())) {
-                        recentCardList.add(card);
-                    }
-                }
-            }
-        }
-        return recentCardList;
     }
 
     // Returns a single credit card by card ID
@@ -372,7 +338,7 @@ public class CardDataSource {
             if (card != null) {
                 currentStatus = card.getNotificationStatus();
                 Date annualFeeDate = card.getAfDate();
-                if (card.getStatus() == CardStatus.CLOSED || card.hasAnnualFee() == false || annualFeeDate == null) {
+                if (card.getStatus() == CardStatus.CLOSED || !card.hasAnnualFee() || annualFeeDate == null) {
                     if (currentStatus == NotificationStatus.ON) {
                         card.setNotificationStatus(NotificationStatus.OFF);
                         update(card);

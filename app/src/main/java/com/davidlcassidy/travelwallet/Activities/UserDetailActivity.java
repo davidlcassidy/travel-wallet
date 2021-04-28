@@ -21,7 +21,6 @@ import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.Enums.Country;
 import com.davidlcassidy.travelwallet.Enums.Currency;
-import com.davidlcassidy.travelwallet.Enums.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
 /*
@@ -39,10 +38,13 @@ public class UserDetailActivity extends BaseActivity_EditDelete {
     private Currency currency;
     private Integer userId;
 
-    private LinearLayout cardChaseStatusLayout, cardChaseStatusDateLayout;
+    private LinearLayout antiChurningBoaStatusLayout, antiChurningBoaDateLayout,
+            antiChurningCapitalOneStatusLayout, antiChurningCapitalOneDateLayout,
+            antiChurningChaseStatusLayout, antiChurningChaseDateLayout;
     private TextView nameText, notesField, programCountField, programValueField,
-            cardCountField, cardAFField, cardCreditLimitField, cardChaseStatusField,
-            cardChaseStatusDateField;
+            cardCountField, cardAFField, cardCreditLimitField, antiChurningTitle,
+            antiChurningBoaStatusField, antiChurningBoaDateField, antiChurningCapitalOneStatusField,
+            antiChurningCapitalOneDateField, antiChurningChaseStatusField, antiChurningChaseDateField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +66,20 @@ public class UserDetailActivity extends BaseActivity_EditDelete {
         cardCountField = findViewById(R.id.cardCountField);
         cardAFField = findViewById(R.id.cardAFField);
         cardCreditLimitField = findViewById(R.id.cardCreditLimitField);
-        cardChaseStatusField = findViewById(R.id.cardChaseStatusField);
-        cardChaseStatusDateField = findViewById(R.id.cardChaseStatusDateField);
+        antiChurningTitle = findViewById(R.id.antiChurningRulesTitle);
+        antiChurningBoaStatusField = findViewById(R.id.antiChurningBoaStatusField);
+        antiChurningBoaDateField = findViewById(R.id.antiChurningBoaDateField);
+        antiChurningCapitalOneStatusField = findViewById(R.id.antiChurningCapitalOneStatusField);
+        antiChurningCapitalOneDateField = findViewById(R.id.antiChurningCapitalOneDateField);
+        antiChurningChaseStatusField = findViewById(R.id.antiChurningChaseStatusField);
+        antiChurningChaseDateField = findViewById(R.id.antiChurningChaseDateField);
 
-        cardChaseStatusLayout = findViewById(R.id.cardChaseStatusLayout);
-        cardChaseStatusDateLayout = findViewById(R.id.cardChaseStatusDateLayout);
+        antiChurningBoaStatusLayout = findViewById(R.id.antiChurningBoaStatusLayout);
+        antiChurningBoaDateLayout = findViewById(R.id.antiChurningBoaDateLayout);
+        antiChurningCapitalOneStatusLayout = findViewById(R.id.antiChurningCapitalOneStatusLayout);
+        antiChurningCapitalOneDateLayout = findViewById(R.id.antiChurningCapitalOneDateLayout);
+        antiChurningChaseStatusLayout = findViewById(R.id.antiChurningChaseStatusLayout);
+        antiChurningChaseDateLayout = findViewById(R.id.antiChurningChaseDateLayout);
     }
 
     protected void onResume() {
@@ -98,18 +109,30 @@ public class UserDetailActivity extends BaseActivity_EditDelete {
         cardAFField.setText(totalAF);
         cardCreditLimitField.setText(creditLimit);
 
-        // Only show Chase 524 status in US
-        Country country = appPreferences.getSetting_Country();
-        if (country == Country.USA) {
-            cardChaseStatusLayout.setVisibility(View.VISIBLE);
-            cardChaseStatusDateLayout.setVisibility(View.VISIBLE);
-            String chaseStatus = user.getChase524Status();
-            String chaseEligibilityDateString = user.getChase524StatusEligibilityDate();
-            cardChaseStatusField.setText(chaseStatus);
-            cardChaseStatusDateField.setText(chaseEligibilityDateString);
+        // Only show anti-churning rules if in the US and with Customized option
+        if (appPreferences.getSetting_Country() == Country.USA && appPreferences.getCustom_UserAntiChurningRules()) {
+            antiChurningTitle.setVisibility(View.VISIBLE);
+            antiChurningChaseStatusLayout.setVisibility(View.VISIBLE);
+            antiChurningChaseDateLayout.setVisibility(View.VISIBLE);
+            antiChurningBoaStatusLayout.setVisibility(View.VISIBLE);
+            antiChurningBoaDateLayout.setVisibility(View.VISIBLE);
+            antiChurningCapitalOneStatusLayout.setVisibility(View.VISIBLE);
+            antiChurningCapitalOneDateLayout.setVisibility(View.VISIBLE);
+
+            antiChurningBoaStatusField.setText(user.getBoa234Status());
+            antiChurningBoaDateField.setText(user.getBoa234EligibilityDate());
+            antiChurningCapitalOneStatusField.setText(user.getCapitolOne16Status());
+            antiChurningCapitalOneDateField.setText(user.getCapitolOne16EligibilityDate());
+            antiChurningChaseStatusField.setText(user.getChase524Status());
+            antiChurningChaseDateField.setText(user.getChase524EligibilityDate());
         } else {
-            cardChaseStatusLayout.setVisibility(View.GONE);
-            cardChaseStatusDateLayout.setVisibility(View.GONE);
+            antiChurningTitle.setVisibility(View.GONE);
+            antiChurningChaseStatusLayout.setVisibility(View.GONE);
+            antiChurningChaseDateLayout.setVisibility(View.GONE);
+            antiChurningBoaStatusLayout.setVisibility(View.GONE);
+            antiChurningBoaDateLayout.setVisibility(View.GONE);
+            antiChurningCapitalOneStatusLayout.setVisibility(View.GONE);
+            antiChurningCapitalOneDateLayout.setVisibility(View.GONE);
         }
     }
 

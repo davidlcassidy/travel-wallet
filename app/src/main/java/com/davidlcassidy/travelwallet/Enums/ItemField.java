@@ -14,27 +14,27 @@ WARNING : Changing ID values may change app settings to the default value within
 public enum ItemField {
 
     // Enum members
-    TYPE(11, ItemType.LOYALTY_PROGRAM, "Program Name"),
+    TYPE(11, ItemType.LOYALTY_PROGRAM, "Type"),
     PROGRAM_NAME(12, ItemType.LOYALTY_PROGRAM, "Program Name"),
     ACCOUNT_NUMBER(13, ItemType.LOYALTY_PROGRAM, "Account Number"),
     POINTS(14, ItemType.LOYALTY_PROGRAM, "Points"),
     VALUE(15, ItemType.LOYALTY_PROGRAM, "Value"),
     EXPIRATION_DATE(16, ItemType.LOYALTY_PROGRAM, "Expiration Date"),
-    PROGRAM_NOTES(17, ItemType.LOYALTY_PROGRAM, "Notes"),
+    PROGRAM_NOTES(17, ItemType.LOYALTY_PROGRAM, "Program Notes"),
 
     BANK(21, ItemType.CREDIT_CARD, "Bank"),
     CARD_NAME(22, ItemType.CREDIT_CARD, "Card Name"),
     OPEN_DATE(23, ItemType.CREDIT_CARD, "Open Date"),
     AF_DATE(24, ItemType.CREDIT_CARD, "Annual Fee Date"),
     ANNUAL_FEE(25, ItemType.CREDIT_CARD, "Annual Fee"),
-    CARD_NOTES(26, ItemType.CREDIT_CARD, "Notes"),
+    CARD_NOTES(26, ItemType.CREDIT_CARD, "Card Notes"),
 
     USER_NAME(31, ItemType.USER, "User Name"),
     ITEM_COUNTS(32, ItemType.USER, "Item Counts"),
     PROGRAMS_VALUE(33, ItemType.USER, "Programs Value"),
     CREDIT_LIMIT(34, ItemType.USER, "Credit Limit"),
     CHASE_STATUS(35, ItemType.USER, "Chase 5/24 Status"),
-    USER_NOTES(36, ItemType.USER, "Notes");
+    USER_NOTES(36, ItemType.USER, "User Notes");
 
     private final int id;
     private final ItemType itemType;

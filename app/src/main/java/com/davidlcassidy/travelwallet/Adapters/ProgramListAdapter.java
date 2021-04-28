@@ -63,7 +63,8 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
         programField.setText(program.getName());
         switch (primaryField) {
             case ACCOUNT_NUMBER:
-                messageField.setText(program.getAccountNumber());
+                String accountNumber =  program.getAccountNumber();
+                messageField.setText(accountNumber);
                 break;
             case POINTS:
                 messageField.setText(numberFormat.format(program.getPoints()));
@@ -80,7 +81,7 @@ public class ProgramListAdapter extends ArrayAdapter<LoyaltyProgram> {
                 String message = null;
 
                 // Uses expiration override value if there is no expiration date
-                if (program.hasExpirationDate() == false && expirationOverride != null) {
+                if (!program.hasExpirationDate() && expirationOverride != null) {
                     message = expirationOverride;
                 } else if (expirationDate != null && lastActivityDate != null) {
                     message = dateFormat.format(expirationDate);

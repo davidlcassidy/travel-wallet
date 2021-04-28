@@ -113,8 +113,6 @@ public class PurchaseProActivity extends BaseActivity_BackOnly {
             };
             googlePlayStore.getProductDetails(GooglePlayStore.PRO_PRODUCT_ID, skuDetailsResponseListener);
 
-
-
         } else if (appPreferences.getAppType() != AppType.FREE) {
             // Change title and text after successful purchase
             setTitle("Travel Wallet Pro");

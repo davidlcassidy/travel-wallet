@@ -42,6 +42,7 @@ public class CustomizeActivity extends BaseActivity_Save {
 
     private TextView userPrimaryField;
     private TextView userSortField;
+    private TextView userAntiChurningRulesField;
     private TextView programPrimaryField;
     private TextView programSortField;
     private TextView programNotificationField;
@@ -50,6 +51,8 @@ public class CustomizeActivity extends BaseActivity_Save {
     private TextView cardSortField;
     private TextView cardNotificationField;
     private TextView cardFiltersField;
+
+    private LinearLayout userAntiChurningRulesLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         // Gets Customizations activity fields
         userPrimaryField = findViewById(R.id.userPrimaryField);
         userSortField = findViewById(R.id.userSortField);
+        userAntiChurningRulesField = findViewById(R.id.userAntiChurningRulesField);
         programPrimaryField = findViewById(R.id.programPrimaryField);
         programSortField = findViewById(R.id.programSortField);
         programNotificationField = findViewById(R.id.programNotificationField);
@@ -68,6 +72,12 @@ public class CustomizeActivity extends BaseActivity_Save {
         cardSortField = findViewById(R.id.cardSortField);
         cardNotificationField = findViewById(R.id.cardNotificationField);
         cardFiltersField = findViewById(R.id.cardFiltersField);
+
+        // Hide anti-churning option if outside the US
+        userAntiChurningRulesLayout = findViewById(R.id.userAntiChurningRulesLayout);
+        if (appPreferences.getSetting_Country() != Country.USA){
+            userAntiChurningRulesLayout.setVisibility(View.GONE);
+        }
 
         // Sets activity click listeners
         setClickListeners();
@@ -80,6 +90,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         // Gets values from user preferences
         ItemField userPrimary = appPreferences.getCustom_UserPrimaryField();
         ItemField userSort = appPreferences.getCustom_UserSortField();
+        String userAntiChurningRules = appPreferences.getCustom_UserAntiChurningRules() ? "ON" : "OFF";
         ItemField programPrimary = appPreferences.getCustom_ProgramPrimaryField();
         ItemField programSort = appPreferences.getCustom_ProgramSortField();
         String programNotificationPeriod = appPreferences.getCustom_ProgramNotificationPeriod();
@@ -92,6 +103,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         // Sets activity fields to values from user preferences
         userPrimaryField.setText(userPrimary.getName());
         userSortField.setText(userSort.getName());
+        userAntiChurningRulesField.setText(userAntiChurningRules);
         programPrimaryField.setText(programPrimary.getName());
         programSortField.setText(programSort.getName());
         setNotificationField(ItemType.LOYALTY_PROGRAM, programNotificationPeriod);
@@ -109,6 +121,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         // Gets values from activity fields
         ItemField userPrimary = ItemField.fromName(userPrimaryField.getText().toString());
         ItemField userSort = ItemField.fromName(userSortField.getText().toString());
+        boolean userAntiChurningRules = userAntiChurningRulesField.getText().toString().equals("ON");
         ItemField programPrimary = ItemField.fromName(programPrimaryField.getText().toString());
         ItemField programSort = ItemField.fromName(programSortField.getText().toString());
         String programNotificationPeriod = getNotificationField(ItemType.LOYALTY_PROGRAM);
@@ -121,6 +134,7 @@ public class CustomizeActivity extends BaseActivity_Save {
         // Saves values from activity fields to user preferences
         appPreferences.setCustom_UserPrimaryField(userPrimary);
         appPreferences.setCustom_UserSortField(userSort);
+        appPreferences.setCustom_UserAntiChurningRules(userAntiChurningRules);
         appPreferences.setCustom_ProgramPrimaryField(programPrimary);
         appPreferences.setCustom_ProgramSortField(programSort);
         appPreferences.setCustom_ProgramNotificationPeriod(programNotificationPeriod);
@@ -135,6 +149,16 @@ public class CustomizeActivity extends BaseActivity_Save {
         //Closes activity and sends success message to user
         finish();
         Toast.makeText(CustomizeActivity.this, "Customizations updated.", Toast.LENGTH_SHORT).show();
+    }
+
+    // Toggles user anti-churning rules on/off
+    private void userAntiChurningRulesFieldClick() {
+        String currentValue = userAntiChurningRulesField.getText().toString();
+        if (currentValue.equals("ON")) {
+            userAntiChurningRulesField.setText("OFF");
+        } else if (currentValue.equals("OFF")) {
+            userAntiChurningRulesField.setText("ON");
+        }
     }
 
     // Displays time period spinner dialog for user selection
@@ -181,7 +205,6 @@ public class CustomizeActivity extends BaseActivity_Save {
                 Country country = appPreferences.getSetting_Country();
                 selectionList.add(ItemField.ITEM_COUNTS.getName());
                 selectionList.add(ItemField.PROGRAMS_VALUE.getName());
-                selectionList.add(ItemField.CREDIT_LIMIT.getName());
                 selectionList.add(ItemField.CREDIT_LIMIT.getName());
                 if (country == Country.USA) {
                     selectionList.add(ItemField.CHASE_STATUS.getName());
@@ -448,6 +471,13 @@ public class CustomizeActivity extends BaseActivity_Save {
             @Override
             public void onClick(View v) {
                 fieldSelectDialog("userSort");
+            }
+        });
+
+        userAntiChurningRulesLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userAntiChurningRulesFieldClick();
             }
         });
 

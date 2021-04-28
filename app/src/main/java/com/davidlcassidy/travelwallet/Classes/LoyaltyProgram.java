@@ -65,7 +65,7 @@ public class LoyaltyProgram implements Comparable<LoyaltyProgram> {
     // monthsExpire which indicates the time period allowed of inactivity by each program before
     // closing the account
     public void updateExpirationDate() {
-        if (lastActivityDate == null || hasExpirationDate() == false) {
+        if (lastActivityDate == null || !hasExpirationDate()) {
             expirationDate = null;
         } else {
             Calendar c = Calendar.getInstance();

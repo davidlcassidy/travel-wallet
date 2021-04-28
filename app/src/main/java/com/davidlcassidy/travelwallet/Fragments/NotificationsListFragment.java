@@ -24,18 +24,24 @@ import com.davidlcassidy.travelwallet.Adapters.NotificationListAdapter;
 import com.davidlcassidy.travelwallet.Classes.CreditCard;
 import com.davidlcassidy.travelwallet.Classes.LoyaltyProgram;
 import com.davidlcassidy.travelwallet.Classes.Notification;
+import com.davidlcassidy.travelwallet.Classes.User;
 import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
+import com.davidlcassidy.travelwallet.Database.UserDataSource;
 import com.davidlcassidy.travelwallet.Enums.CardStatus;
 import com.davidlcassidy.travelwallet.Enums.ItemType;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import static android.icu.text.DateTimePatternGenerator.DAY;
+import static java.util.Calendar.MONTH;
 
 /*
 NotificationsListFragment is the first fragment within MainActivity that displays a
@@ -62,13 +68,6 @@ public class NotificationsListFragment extends Fragment {
         programDS = ProgramDataSource.getInstance(getContext());
         cardDS = CardDataSource.getInstance(getContext());
         notificationList = new ArrayList<Notification>();
-
-        // TEST MODE:
-        // Launches app with one of every available loyalty program and credit card
-        boolean testMode = false;
-        if (testMode) {
-            addAllCardsAndPrograms();
-        }
 
         // Hides filters
         LinearLayout filterLayout = view.findViewById(R.id.filterLayout);
@@ -159,21 +158,4 @@ public class NotificationsListFragment extends Fragment {
         }
     }
 
-    private void addAllCardsAndPrograms() {
-        programDS.deleteAll();
-        cardDS.deleteAll();
-        for (String pType : programDS.getAvailableTypes(false)) {
-            for (String pName : programDS.getAvailablePrograms(pType, false, false)) {
-                Integer refID = programDS.getProgramRefId(pType, pName);
-                Double pointValue = Math.random() * 100000;
-                programDS.create(refID, null, "ABC123", pointValue.intValue(), new Date(), "");
-            }
-        }
-        for (String cBank : cardDS.getAvailableBanks(null, false)) {
-            for (String cName : cardDS.getAvailableCards(null, cBank, false)) {
-                Integer refID = cardDS.getCardRefId(cBank, cName);
-                cardDS.create(refID, null, CardStatus.OPEN, new BigDecimal("0.0"), new Date(), new Date(), null, "");
-            }
-        }
-    }
 }

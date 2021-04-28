@@ -96,12 +96,46 @@
 
         </LinearLayout>
 
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/userAntiChurningRulesLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userSortLayout"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/boarder"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/userAntiChurningRulesLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:text="Anti-Churning Rules"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text"/>
+
+            <TextView
+                android:id="@+id/userAntiChurningRulesField"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:gravity="right"
+                android:layout_gravity="left"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/text"/>
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/programTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Loyalty Program"
-            android:layout_below="@+id/userSortLayout"
+            android:layout_below="@+id/userAntiChurningRulesLayout"
             android:gravity="center"
             android:textStyle="bold"
             android:paddingTop="25dp"

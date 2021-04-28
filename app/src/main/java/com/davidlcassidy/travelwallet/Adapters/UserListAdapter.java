@@ -22,7 +22,6 @@ import com.davidlcassidy.travelwallet.Database.CardDataSource;
 import com.davidlcassidy.travelwallet.Database.ProgramDataSource;
 import com.davidlcassidy.travelwallet.Enums.Currency;
 import com.davidlcassidy.travelwallet.Enums.ItemField;
-import com.davidlcassidy.travelwallet.Enums.NumberPattern;
 import com.davidlcassidy.travelwallet.R;
 
 import java.math.BigDecimal;
@@ -65,13 +64,6 @@ public class UserListAdapter extends ArrayAdapter<User> {
         logo.setVisibility(View.GONE);
         userField.setText(user.getName());
 
-        // Sets field values, based on user preferences
-        ArrayList<LoyaltyProgram> userPrograms = programDS.getAll(user, null, false);
-        ArrayList<CreditCard> userCards = cardDS.getAll(user, null, false, false);
-        ArrayList<CreditCard> userChase524Cards = cardDS.getChase524StatusCards(user);
-        SimpleDateFormat dateFormat = appPreferences.getSetting_DatePattern().getDateFormat();
-        user.setValues(userPrograms, userCards, userChase524Cards, dateFormat);
-
         switch (primaryField.getName()) {
             case "Item Counts":
                 String numPrograms = String.valueOf(user.getProgramCount());
@@ -90,7 +82,7 @@ public class UserListAdapter extends ArrayAdapter<User> {
                 break;
             case "Chase 5/24 Status":
                 String status = user.getChase524Status();
-                String eligibilityDateString = user.getChase524StatusEligibilityDate();
+                String eligibilityDateString = user.getChase524EligibilityDate();
                 messageField.setText(status + "  -  Eligible " + eligibilityDateString);
                 break;
             case "Notes":
